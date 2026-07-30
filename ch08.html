@@ -23,6 +23,7 @@
   .sw.a{background:linear-gradient(135deg,var(--cyan),#2bb3c8)}
   .sw.b{background:linear-gradient(135deg,var(--violet),#6a5bff)}
   .sw.ab{background:linear-gradient(135deg,var(--amber),#e0a83a)}
+  #p-build #gridBuild .grid-stage{max-width:70px;margin:14px auto;}
 </style>
 </head>
 <body>
@@ -38,67 +39,76 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab on" data-p="learn">Learn</button>
     <button class="tab" data-p="build">Build It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
-  <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
-    <h2>The area-model of fraction multiplication</h2>
-    <p class="lede">
-      Aaron's pet tortoise walks <b>2/5 km</b> in an hour. How far in <b>3/4</b> of an hour?
-      Shade a rectangle: rows for one fraction, columns for the other.
-      The <span style="color:var(--amber)">overlap</span> is the product.
-    </p>
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">First, see how two fractions multiply as a picture. Shade one fraction across the rows and the other down the columns. The overlap is the product.</p>
 
-    <div class="fracpickers">
-      <div class="fracpicker fp-col-a">
-        <div class="fp-label">Fraction A · shades rows</div>
-        <div class="fp-frac">
-          <div class="stepper"><button class="stp" id="aNumDown">−</button><span class="num" id="aNum">3</span><button class="stp" id="aNumUp">+</button></div>
-          <div class="fp-bar">/</div>
-          <div class="stepper"><button class="stp" id="aDenDown">−</button><span class="num" id="aDen">4</span><button class="stp" id="aDenUp">+</button></div>
-        </div>
-      </div>
-      <div class="fracpicker fp-col-b">
-        <div class="fp-label">Fraction B · shades columns</div>
-        <div class="fp-frac">
-          <div class="stepper"><button class="stp" id="bNumDown">−</button><span class="num" id="bNum">2</span><button class="stp" id="bNumUp">+</button></div>
-          <div class="fp-bar">/</div>
-          <div class="stepper"><button class="stp" id="bDenDown">−</button><span class="num" id="bDen">5</span><button class="stp" id="bDenUp">+</button></div>
-        </div>
+    <div class="mascot-row">
+      <div id="mascotLearn"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Hi! I'm Pochi.</h2>
+        <p class="lede" style="margin:0">I'll explain how the shaded overlap becomes the fraction product.</p>
       </div>
     </div>
 
-    <div class="legend">
-      <span><i class="sw a"></i> Fraction A</span>
-      <span><i class="sw b"></i> Fraction B</span>
-      <span><i class="sw ab"></i> Overlap = product</span>
+    <div class="learn-slide on" id="slide0">
+      <p class="lede">Split the rectangle into equal rows for the first fraction and columns for the second.</p>
+      <p class="lede">For example, 3/4 means 3 shaded rows out of 4, and 2/5 means 2 shaded columns out of 5.</p>
     </div>
 
-    <div id="gridExplore"></div>
+    <div class="learn-slide" id="slide1">
+      <p class="lede">The cells shaded by both the rows and the columns are double-shaded.</p>
+      <p class="lede">These double-shaded cells are the product of the two fractions.</p>
+    </div>
 
-    <div class="readout">
-      <div class="card">
-        <div class="k">Expression</div>
-        <div class="v frac" id="exExpr">3/4 × 2/5</div>
-      </div>
-      <div class="card">
-        <div class="k">Product (unsimplified)</div>
-        <div class="v frac" id="exProd">6/20</div>
-      </div>
-      <div class="card">
-        <div class="k">Simplest form</div>
-        <div class="v frac" id="exSimp">3/10</div>
-      </div>
+    <div class="learn-slide" id="slide2">
+      <p class="lede">In this picture, 3 rows × 2 columns gives 6 double-shaded cells.</p>
+      <p class="lede">The whole rectangle has 4 × 5 = 20 cells, so the product is 6/20.</p>
+    </div>
+
+    <div class="learn-slide" id="slide3">
+      <p class="lede">Now simplify the overlap fraction: 6/20 = 3/10.</p>
+      <p class="lede">In Build It, you'll match the target product by shading rows and columns the right way.</p>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next →</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next →</button>
+    </div>
+
+    <div id="learnDone" class="hide" style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🌟</div>
+      <h2 style="margin:10px 0">Great! You’re ready.</h2>
+      <p class="lede">Now go to Build It to practice shading the product yourself.</p>
     </div>
   </section>
 
   <!-- ============ BUILD IT ============ -->
   <section class="panel hide" id="p-build">
     <h2>Build It</h2>
-    <p class="lede">I'll name a product from the textbook. Set the two fractions so their overlap matches it, then check.</p>
+    <p class="lede">Set the first fraction by choosing how many rows are shaded, and set the second fraction by choosing how many columns are shaded.</p>
+    <p class="lede">The square cells shaded by both rows and columns are the product. Make that overlap equal the target fraction, then press Check.</p>
+    <div class="build-help">
+      <ul>
+        <li><strong>Fraction A</strong> = shaded rows.</li>
+        <li><strong>Fraction B</strong> = shaded columns.</li>
+        <li>Overlap of rows and columns is your product.</li>
+      </ul>
+    </div>
 
     <div class="quest">
       <div class="q" id="bq">Build a product of <b>1/8</b></div>
@@ -174,7 +184,7 @@
 /* =====================================================================
    CHAPTER 8 — Working with Fractions
    Explore = area-model fraction multiplication (BTP.Grid).
-   Build It = given a target product, adjust two fractions to match it.
+   Build It = choose two fractions and match their overlapping area to the target product.
    Challenge = BTP.setupQuiz.
    ===================================================================== */
 
@@ -183,46 +193,95 @@ function simplify(n,d){ const g = gcd(n,d); return [n/g, d/g]; }
 function fracStr(n,d){ return n + "/" + d; }
 
 /* ---------------------------------------------------------------
-   EXPLORE
+   LEARN
    --------------------------------------------------------------- */
-let aNum=3, aDen=4, bNum=2, bDen=5;
+const LEARN_SLIDES = ["slide0","slide1","slide2","slide3"];
+let learnI = 0;
+let lcI = 0, lcRight = 0;
+const RIGHT_PHRASES = ["Yes! Exactly right.", "Nailed it.", "Good job!"];
+const WRONG_PHRASES = ["Not quite — try again.", "Close! One more step.", "Almost there."];
+const LEARN_CHECK = [
+  { q:"What does 2/5 mean in the picture?", opts:["2 shaded columns out of 5","2 shaded rows out of 5","2 shaded cells out of 5","5 shaded columns out of 2"], a:0,
+    why:"2/5 means 2 columns are shaded out of 5 total columns." },
+  { q:"If 3 rows and 2 columns overlap, how many overlap cells are there?", opts:["6","5","3","2"], a:0,
+    why:"3 rows times 2 columns gives 6 overlapping cells." },
+  { q:"6 overlapping cells out of 20 total cells is the product fraction...", opts:["6/20","2/5","3/10","3/20"], a:0,
+    why:"The product is the overlap fraction before simplification: 6/20." }
+];
 
-function clampFrac(state){
-  state.den = Math.max(2, Math.min(6, state.den));
-  state.num = Math.max(1, Math.min(state.den-1, state.num));
+function paintLearnDots(){
+  document.getElementById("learnDots").innerHTML = LEARN_SLIDES.map((_,i)=>
+    '<div class="learn-dot'+(i===learnI?' on':'')+'"></div>').join("");
+}
+function showLearnSlide(i){
+  learnI = i;
+  LEARN_SLIDES.forEach((id,idx)=>document.getElementById(id).classList.toggle("on", idx===i));
+  paintLearnDots();
+  document.getElementById("learnNext").textContent = (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
+  if(i === 0) pochi.say("2/5 means 2 shaded columns out of 5.", 3200);
+  if(i === 1) pochi.say("The overlap is the product.", 3000);
+  if(i === 2) pochi.say("3×2 is 6 overlap cells.", 3000);
+  if(i === 3) pochi.say("Now simplify the overlap to finish.", 3000);
 }
 
-function renderExplore(){
-  document.getElementById("aNum").textContent = aNum;
-  document.getElementById("aDen").textContent = aDen;
-  document.getElementById("bNum").textContent = bNum;
-  document.getElementById("bDen").textContent = bDen;
-
-  const g = BTP.Grid("gridExplore", aDen, bDen);
-  for(let r=0;r<aDen;r++){
-    for(let c=0;c<bDen;c++){
-      const rowOn = r < aNum, colOn = c < bNum;
-      if(rowOn && colOn) g.cells[r][c].classList.add("on-both");
-      else if(rowOn) g.cells[r][c].classList.add("on");
-      else if(colOn) g.cells[r][c].classList.add("on2");
-    }
+document.getElementById("learnNext").onclick = ()=>{
+  if(learnI < LEARN_SLIDES.length-1){
+    showLearnSlide(learnI+1);
+  } else {
+    document.getElementById("learnSlideNav").classList.add("hide");
+    startLearnCheck();
   }
+};
 
-  const pNum = aNum*bNum, pDen = aDen*bDen;
-  const [sNum, sDen] = simplify(pNum, pDen);
-  document.getElementById("exExpr").textContent = fracStr(aNum,aDen) + " × " + fracStr(bNum,bDen);
-  document.getElementById("exProd").textContent = fracStr(pNum,pDen);
-  document.getElementById("exSimp").textContent = (sDen===1 ? String(sNum) : fracStr(sNum,sDen));
+function startLearnCheck(){
+  lcI = 0; lcRight = 0;
+  document.getElementById("learnDone").classList.add("hide");
+  document.getElementById("learnCheck").classList.remove("hide");
+  loadLearnCheck();
 }
-
-function wireStepper(numId, denId, get, set){
-  document.getElementById(numId+"Up").onclick = ()=>{ const s=get(); s.num++; clampFrac(s); set(s); renderExplore(); };
-  document.getElementById(numId+"Down").onclick = ()=>{ const s=get(); s.num--; clampFrac(s); set(s); renderExplore(); };
-  document.getElementById(denId+"Up").onclick = ()=>{ const s=get(); s.den++; clampFrac(s); set(s); renderExplore(); };
-  document.getElementById(denId+"Down").onclick = ()=>{ const s=get(); s.den--; clampFrac(s); set(s); renderExplore(); };
+function loadLearnCheck(){
+  const item = LEARN_CHECK[lcI];
+  document.getElementById("lcq").textContent = item.q;
+  document.getElementById("lcfb").className = "fb";
+  document.getElementById("lcnext").classList.add("hide");
+  document.getElementById("lcbar").style.width = (lcI/LEARN_CHECK.length*100) + "%";
+  const box = document.getElementById("lcopts");
+  box.innerHTML = "";
+  item.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>{
+      const bs=[...box.children]; bs.forEach(x=>x.disabled=true);
+      bs[item.a].classList.add("right");
+      const fb = document.getElementById("lcfb");
+      if(i===item.a){
+        lcRight++;
+        BTP.addXP(5); BTP.touchStreak();
+        fb.className="fb good show";
+        fb.innerHTML="<b>"+BTP.pick(RIGHT_PHRASES)+"</b> " + item.why + " <span style='opacity:.75'>+5 XP</span>";
+        BTP.toast("+5 XP");
+        pochi.react("happy");
+      } else {
+        bs[i].classList.add("wrong");
+        fb.className="fb bad show";
+        fb.innerHTML="<b>"+BTP.pick(WRONG_PHRASES)+"</b> " + item.why;
+        pochi.react("sad");
+        BTP.shakeEl(fb);
+      }
+      document.getElementById("lcnext").classList.remove("hide");
+    };
+    box.appendChild(b);
+  });
 }
-wireStepper("aNum","aDen", ()=>({num:aNum,den:aDen}), s=>{aNum=s.num;aDen=s.den;});
-wireStepper("bNum","bDen", ()=>({num:bNum,den:bDen}), s=>{bNum=s.num;bDen=s.den;});
+document.getElementById("lcnext").onclick = ()=>{
+  lcI++;
+  if(lcI >= LEARN_CHECK.length){
+    document.getElementById("learnCheck").classList.add("hide");
+    document.getElementById("learnDone").classList.remove("hide");
+    document.getElementById("lcbar").style.width = "100%";
+    pochi.say(lcRight===LEARN_CHECK.length ? "Perfect! You're ready." : "Good try — practice will help too.", 3200);
+  } else loadLearnCheck();
+};
 
 /* ---------------------------------------------------------------
    BUILD IT
@@ -400,14 +459,18 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","build","quiz"].forEach(p=>{
+    ["learn","build","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 
-renderExplore();
+const MASCOT_CFG = { color:"#fafafa", accent:"#f2f2f2", accent2:"#b0b0b0", earStyle:"dot" };
+const pochi = BTP.Mascot("mascotLearn", MASCOT_CFG);
+pochi.say("Hi! I'm Pochi — let's match the overlap to the target product.", 4200);
+
+showLearnSlide(0);
 loadBuild();
 BTP.paintStats();
 </script>
