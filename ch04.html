@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 4</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ---------- chapter-4-only extras: Learn tab visuals ---------- */
+.age-row{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px 0;font-size:15px;flex-wrap:wrap}
+.age-box{background:#0d142a;border:2px solid var(--line);border-radius:12px;padding:14px 20px;font-weight:800;font-size:19px;color:var(--cyan);min-width:70px;text-align:center;animation:agePop .4s ease backwards}
+.age-arrow{font-size:20px;color:var(--violet);font-weight:700;animation:arrowPulse 1.4s ease-in-out infinite}
+@keyframes agePop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes arrowPulse{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+
+.lrow{display:flex;gap:8px;justify-content:center;margin:20px 0;flex-wrap:wrap;align-items:flex-end}
+.lshape{width:28px;height:36px;position:relative;animation:lPop .3s ease backwards}
+.lshape i{position:absolute;left:0;bottom:0;width:4px;height:36px;background:var(--cyan);border-radius:2px;display:block}
+.lshape b{position:absolute;left:0;bottom:0;width:28px;height:4px;background:var(--cyan);border-radius:2px;display:block}
+@keyframes lPop{from{opacity:0;transform:translateY(10px) scale(.6)}to{opacity:1;transform:translateY(0) scale(1)}}
+.lcount{text-align:center;font-size:14px;color:var(--dim);margin-top:6px}
+.lcount b{color:var(--amber)}
+
+.expr-morph{display:flex;align-items:center;justify-content:center;gap:16px;margin:26px 0;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+.expr-old{color:var(--dim)}
+.expr-old .x-sym{display:inline-block;animation:xStrike 1.8s ease-in-out infinite;color:var(--red)}
+@keyframes xStrike{0%,40%{opacity:1;transform:scale(1)}55%{opacity:.15;transform:scale(1.3) rotate(12deg)}70%,100%{opacity:1;transform:scale(1)}}
+.expr-arrow{color:var(--violet);font-size:22px;animation:arrowPulse 1.4s ease-in-out infinite}
+.expr-new{color:var(--green)}
+
+.recap-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0}
+.recap-chip{background:#0d142a;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--ink);animation:agePop .4s ease backwards}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 4 · Expressions Using Letter-Numbers</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Patterns</button>
+    <button class="tab" data-p="practice">Predict It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <div class="mascot-row">
+      <div id="nyxLearn"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">A secret code for numbers</h2>
+        <p class="lede" style="margin:0">Meet Nyx. A quick story, then a couple of checks — before you touch a single button.</p>
+      </div>
+    </div>
+
+    <!-- slide 0: the hook -->
+    <div class="learn-slide on" id="slide0">
+      <p class="lede">Shabnam is always <b>3 years older</b> than Aftab. When Aftab was 10, Shabnam was 13. When Aftab is 23...</p>
+      <div class="age-row">
+        <div class="age-box">Aftab = 23</div>
+        <div class="age-arrow">+3 &rarr;</div>
+        <div class="age-box" style="animation-delay:.25s">Shabnam = 26</div>
+      </div>
+      <p class="lede">Instead of writing "Aftab's age" every single time, mathematicians use a <b>letter</b> — say <b>a</b> — to stand in for it. That's a <b>letter-number</b>.</p>
+    </div>
+
+    <!-- slide 1: matchstick Ls -->
+    <div class="learn-slide" id="slide1">
+      <p class="lede">Parthiv lines up matchstick <b>L</b> shapes. Every single L costs exactly <b>2</b> matchsticks — no more, no less.</p>
+      <div class="lrow" id="lrow"></div>
+      <div class="lcount" id="lcount"></div>
+      <p class="lede">However many Ls he builds — call that <b>n</b> — the sticks needed are always <b>2 &times; n</b>. One tiny expression covers every possible n.</p>
+    </div>
+
+    <!-- slide 2: dropping the multiplication sign -->
+    <div class="learn-slide" id="slide2">
+      <p class="lede">Writing <b>&times;</b> between a number and a letter gets old fast. So mathematicians quietly drop it.</p>
+      <div class="expr-morph">
+        <span class="expr-old">4 <span class="x-sym">&times;</span> n</span>
+        <span class="expr-arrow">&rarr;</span>
+        <span class="expr-new">4n</span>
+      </div>
+      <p class="lede">4 &times; n and 4n mean the <b>exact same thing</b>. Number always comes first, letter right after — no gap, no dot, no fuss.</p>
+    </div>
+
+    <!-- slide 3: recap -->
+    <div class="learn-slide" id="slide3">
+      <p class="lede">That's the whole trick: swap a changing quantity for a letter, write the rule <b>once</b>, and it works for every value — 5, 50, or 5 million.</p>
+      <div class="recap-row">
+        <div class="recap-chip">letter-number</div>
+        <div class="recap-chip" style="animation-delay:.1s">algebraic expression</div>
+        <div class="recap-chip" style="animation-delay:.2s">simplest form</div>
+      </div>
+      <p class="lede">Ready for a couple of quick checks?</p>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <!-- quick-check questions -->
+    <div id="learnCheck" class="hide">
+      <div class="quest" id="lcq-wrap">
+        <div class="q" id="lcq">…</div>
+      </div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide" style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🦇</div>
+      <h2 style="margin:10px 0">Nice — you've cracked the code</h2>
+      <p class="lede">Head to <b>Patterns</b> to build the matchstick squares yourself, or <b>Predict It</b> to practice.</p>
+    </div>
+  </section>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row">
+      <div id="nyxExplore"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Squares in a row</h2>
+        <p class="lede" style="margin:0">
+          Join matchstick squares side by side. The first square takes 4 sticks; every square after
+          that shares one side with the last, so it only costs <b>3 more</b>. Slide the stepper and
+          watch the count and the letter-expression move together.
+        </p>
+      </div>
+    </div>
+
+    <div id="patternGrid"></div>
+
+    <div style="display:flex; align-items:center; gap:10px; margin:14px 0">
+      <button class="zb" id="stepMinus">&minus;</button>
+      <div style="font-weight:700; font-size:15px">Step (squares built): <span id="stepVal">1</span></div>
+      <button class="zb" id="stepPlus">+</button>
+    </div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Squares so far (w)</div>
+        <div class="v" id="squareVal">1</div>
+      </div>
+      <div class="card">
+        <div class="k">Matchsticks needed</div>
+        <div class="v" id="stickVal">4</div>
+      </div>
+      <div class="card">
+        <div class="k">As an expression</div>
+        <div class="v frac" id="exprVal">3 &times; 1 + 1 = <b>4</b></div>
+      </div>
+    </div>
+
+    <p class="lede" style="margin-top:10px">
+      Formula: <b>4 + 3 &times; (w &minus; 1)</b>, which simplifies to <b>3w + 1</b> matchsticks for
+      w squares.
+    </p>
+  </section>
+
+  <!-- ============ PREDICT ============ -->
+  <section class="panel hide" id="p-practice">
+    <div class="mascot-row">
+      <div id="nyxPractice"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Predict It</h2>
+        <p class="lede" style="margin:0">
+          Given the step number, predict the count &mdash; or work backwards from a count to the step.
+          Same idea as the chapter's number-machines and matchstick puzzles.
+        </p>
+      </div>
+    </div>
+    <div class="bar"><i id="prbar"></i></div>
+
+    <div id="prbox" style="margin-top:16px">
+      <div class="quest"><div class="q" id="prq">…</div><div class="meta" id="prm"></div></div>
+      <div class="opts" id="propts"></div>
+      <div class="fb" id="prfb"></div>
+      <button class="btn hide" id="prnext">Next &rarr;</button>
+    </div>
+
+    <div id="prdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">✅</div>
+      <h2 style="margin:10px 0">Round done</h2>
+      <p class="lede" id="prscore"></p>
+      <button class="btn" id="pragain">Go again</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <div class="mascot-row">
+      <div id="nyxQuiz"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
+
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 4 — Expressions Using Letter-Numbers
+   Learn: Aftab/Shabnam age story -> matchstick Ls -> dropping the ×
+   symbol -> recap, then a 3-question quick check.
+   Explore: BTP.Grid renders the "squares joined in a row" matchstick
+   pattern from the chapter's Figure-it-Out (Q12): step w needs 3w+1
+   sticks. A stepper drives grid.fillCount() while the readout shows
+   the live expression.
+   Predict It: a rotating mini multiple-choice bank on the same ideas.
+   Challenge: BTP.setupSectionQuiz over 4 real textbook sections.
+
+   Nyx is this chapter's mascot — an original character (not a licensed
+   one) with a slightly playful, mischievous voice, mounted separately
+   in each of the 4 tabs since a mascot living in one hidden tab's DOM
+   can't animate while another tab is showing.
+   ===================================================================== */
+
+const MASCOT_CFG = { color:"#8b7bff", accent:"#ff6bd6", accent2:"#241531", earStyle:"hood" };
+
+const RIGHT_PHRASES = ["Heh — nailed it.", "Ooh, nice one!", "Yesss, that's the one.", "Look at you go.", "Correct — sneaky good."];
+const WRONG_PHRASES  = ["Ha, not quite — but watch this.", "Close! Let's peek at why.", "Nope, but a good guess. Here's the trick.", "Mm, almost — one step off."];
+
+/* ---------------------------------------------------------------
+   LEARN — story slides, then a 3-question comprehension check
+   --------------------------------------------------------------- */
+const nyxLearn = BTP.Mascot("nyxLearn", MASCOT_CFG);
+nyxLearn.say("Heh. Ready to learn a little math mischief?", 3200);
+
+function buildLRow(n){
+  const root = document.getElementById("lrow");
+  root.innerHTML = "";
+  for(let i=0;i<n;i++){
+    const d = document.createElement("div");
+    d.className = "lshape";
+    d.style.animationDelay = (i*140) + "ms";
+    d.innerHTML = "<i></i><b></b>";
+    root.appendChild(d);
+  }
+  document.getElementById("lcount").innerHTML =
+    n + " L" + (n===1?"":"s") + " &times; 2 sticks each = <b>" + (n*2) + " matchsticks</b>";
+}
+
+const LEARN_SLIDES = ["slide0","slide1","slide2","slide3"];
+let learnI = 0;
+function paintLearnDots(){
+  document.getElementById("learnDots").innerHTML = LEARN_SLIDES.map((_,i)=>
+    '<div class="learn-dot'+(i===learnI?' on':'')+'"></div>').join("");
+}
+function showLearnSlide(i){
+  learnI = i;
+  LEARN_SLIDES.forEach((id,idx)=>document.getElementById(id).classList.toggle("on", idx===i));
+  paintLearnDots();
+  document.getElementById("learnNext").textContent = (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
+  if(i === 0) nyxLearn.say("Same 3-year gap, every single time. That's the pattern.", 3000);
+  if(i === 1){ buildLRow(4); nyxLearn.say("Every L. Always 2 sticks. Watch the count stack up.", 3000); }
+  if(i === 2) nyxLearn.say("Poof — the times sign just vanishes.", 2400);
+  if(i === 3) nyxLearn.say("Got it memorised? Let's find out.", 2200);
+}
+document.getElementById("learnNext").onclick = ()=>{
+  if(learnI < LEARN_SLIDES.length-1){
+    showLearnSlide(learnI+1);
+  } else {
+    document.getElementById("learnSlideNav").classList.add("hide");
+    startLearnCheck();
+  }
+};
+
+const LEARN_CHECK = [
+  { q:"Shabnam's age is always 3 more than Aftab's: s = a + 3. If Aftab (a) is 30, what is Shabnam's age?", opts:["33","27","30","3"], a:0,
+    why:"Replace a with 30 in the expression a + 3: 30 + 3 = 33." },
+  { q:"Every matchstick L costs 2 sticks. What expression gives the sticks needed for n Ls?", opts:["2n","n + 2","2 + n","n / 2"], a:0,
+    why:"2 sticks, repeated n times, is 2 × n — written for short as 2n." },
+  { q:"Which of these means the exact same thing as 5 × y?", opts:["5y","y5","5 + y","y / 5"], a:0,
+    why:"The multiplication sign is simply dropped — the number is written first, then the letter: 5y." }
+];
+let lcI = 0, lcRight = 0;
+function startLearnCheck(){
+  lcI = 0; lcRight = 0;
+  document.getElementById("learnDone").classList.add("hide");
+  document.getElementById("learnCheck").classList.remove("hide");
+  loadLearnCheck();
+}
+function loadLearnCheck(){
+  const item = LEARN_CHECK[lcI];
+  document.getElementById("lcq").textContent = item.q;
+  document.getElementById("lcfb").className = "fb";
+  document.getElementById("lcnext").classList.add("hide");
+  document.getElementById("lcbar").style.width = (lcI/LEARN_CHECK.length*100) + "%";
+  const box = document.getElementById("lcopts");
+  box.innerHTML = "";
+  item.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>{
+      const bs=[...box.children]; bs.forEach(x=>x.disabled=true);
+      bs[item.a].classList.add("right");
+      const fb = document.getElementById("lcfb");
+      if(i===item.a){
+        lcRight++; BTP.addXP(5); BTP.touchStreak();
+        fb.className="fb good show";
+        fb.innerHTML="<b>"+BTP.pick(RIGHT_PHRASES)+"</b> "+item.why+" <span style='opacity:.75'>+5 XP</span>";
+        BTP.toast("+5 XP");
+        nyxLearn.react("happy");
+        const r = fb.getBoundingClientRect();
+        BTP.confetti(r.left+r.width/2, r.top+10);
+        BTP.sound.right();
+      } else {
+        bs[i].classList.add("wrong");
+        fb.className="fb bad show";
+        fb.innerHTML="<b>"+BTP.pick(WRONG_PHRASES)+"</b> "+item.why;
+        nyxLearn.react("sad");
+        BTP.shakeEl(fb);
+        BTP.sound.wrong();
+      }
+      document.getElementById("lcnext").classList.remove("hide");
+    };
+    box.appendChild(b);
+  });
+}
+document.getElementById("lcnext").onclick = ()=>{
+  lcI++;
+  if(lcI >= LEARN_CHECK.length){
+    document.getElementById("lcbar").style.width = "100%";
+    document.getElementById("learnCheck").classList.add("hide");
+    document.getElementById("learnDone").classList.remove("hide");
+    nyxLearn.say(lcRight===LEARN_CHECK.length ? "Perfect. Not even I could trick you." : "Not bad — a little practice and it'll stick.", 3000);
+  } else loadLearnCheck();
+};
+showLearnSlide(0);
+
+/* ---------------------------------------------------------------
+   PATTERNS — explore
+   --------------------------------------------------------------- */
+const nyxExplore = BTP.Mascot("nyxExplore", MASCOT_CFG);
+nyxExplore.say("Drag that stepper — watch the expression keep up.", 3400);
+
+const MAXSTEP = 12;
+const grid = BTP.Grid("patternGrid", 1, MAXSTEP);
+let step = 1;
+let lastExploreRemark = 0;
+
+const EXPLORE_REMARKS = [
+  "Every new square only costs 3 sticks — the first one already gave it a side.",
+  "See how 3w + 1 just keeps working, no matter how big w gets?",
+  "That's the whole point of a letter-number — one rule, endless squares.",
+  "Try the biggest step. Bet the formula still holds."
+];
+function paintPattern(){
+  grid.fillCount(step, "on");
+  const sticks = 3 * step + 1;
+  document.getElementById("stepVal").textContent = step;
+  document.getElementById("squareVal").textContent = step;
+  document.getElementById("stickVal").textContent = sticks;
+  document.getElementById("exprVal").innerHTML =
+    "3 &times; " + step + " + 1 = <b>" + sticks + "</b>";
+  document.getElementById("stepMinus").disabled = step <= 1;
+  document.getElementById("stepPlus").disabled = step >= MAXSTEP;
+  if(step !== lastExploreRemark){
+    lastExploreRemark = step;
+    if(step === MAXSTEP) nyxExplore.say("Max squares! Still 3w + 1 — told you.", 2800);
+    else if(step % 4 === 0) nyxExplore.say(BTP.pick(EXPLORE_REMARKS), 2600);
+  }
+}
+document.getElementById("stepMinus").onclick = ()=>{ if(step > 1){ step--; paintPattern(); } };
+document.getElementById("stepPlus").onclick  = ()=>{ if(step < MAXSTEP){ step++; paintPattern(); } };
+paintPattern();
+
+/* ---------------------------------------------------------------
+   generic mini multiple-choice quiz (Predict It tab)
+   --------------------------------------------------------------- */
+function makeMiniQuiz(QUESTIONS, ids, opts){
+  opts = opts || {};
+  const count = opts.count || Math.min(6, QUESTIONS.length);
+  const xpPer = opts.xp || 6;
+  let quiz = [], qi = 0, qRight = 0;
+
+  function start(){
+    quiz = BTP.shuffle(QUESTIONS).slice(0, count).map(q=>{
+      const right = q.opts[q.a];
+      const shuffled = BTP.shuffle(q.opts);
+      return Object.assign({}, q, { opts: shuffled, a: shuffled.indexOf(right) });
+    });
+    qi = 0; qRight = 0;
+    document.getElementById(ids.done).classList.add("hide");
+    document.getElementById(ids.box).classList.remove("hide");
+    loadQ();
+  }
+  function loadQ(){
+    const q = quiz[qi];
+    if(ids.src) document.getElementById(ids.src).textContent = q.src || "";
+    document.getElementById(ids.q).textContent = q.q;
+    document.getElementById(ids.m).textContent = "Question " + (qi+1) + " of " + quiz.length;
+    document.getElementById(ids.bar).style.width = (qi / quiz.length * 100) + "%";
+    document.getElementById(ids.fb).className = "fb";
+    document.getElementById(ids.next).classList.add("hide");
+    const box = document.getElementById(ids.opts);
+    box.innerHTML = "";
+    q.opts.forEach((o,i)=>{
+      const b = document.createElement("button");
+      b.className = "opt"; b.textContent = o;
+      b.onclick = ()=>answer(i);
+      box.appendChild(b);
+    });
+  }
+  function answer(i){
+    const q = quiz[qi];
+    const bs = [...document.getElementById(ids.opts).children];
+    bs.forEach(b => b.disabled = true);
+    bs[q.a].classList.add("right");
+    const fb = document.getElementById(ids.fb);
+    const correct = i === q.a;
+    if(correct){
+      qRight++; BTP.addXP(xpPer); BTP.touchStreak();
+      fb.className = "fb good show";
+      fb.innerHTML = "<b>Correct.</b> " + q.why + " <span style='opacity:.75'>+" + xpPer + " XP</span>";
+      BTP.toast("+" + xpPer + " XP");
+      BTP.sound.right();
+    } else {
+      bs[i].classList.add("wrong");
+      fb.className = "fb bad show";
+      fb.innerHTML = "<b>Not quite.</b> " + q.why;
+      BTP.sound.wrong();
+    }
+    document.getElementById(ids.next).classList.remove("hide");
+    if(opts.onAnswer) opts.onAnswer(correct, bs[i]);
+  }
+  document.getElementById(ids.next).onclick = ()=>{
+    qi++;
+    if(qi >= quiz.length){
+      document.getElementById(ids.bar).style.width = "100%";
+      document.getElementById(ids.box).classList.add("hide");
+      const d = document.getElementById(ids.done);
+      d.classList.remove("hide");
+      document.getElementById(ids.score).textContent =
+        qRight + " out of " + quiz.length + " — " +
+        (qRight === quiz.length ? "perfect!" : "nice work, try again for full marks.");
+      if(opts.onDone) opts.onDone(qRight, quiz.length);
+    } else loadQ();
+  };
+  document.getElementById(ids.again).onclick = start;
+  return { start };
+}
+
+/* ---------------------------------------------------------------
+   PREDICT IT — practice
+   --------------------------------------------------------------- */
+const nyxPractice = BTP.Mascot("nyxPractice", MASCOT_CFG);
+nyxPractice.say("Predict the pattern before it predicts you.", 3000);
+
+const PRACTICE = [
+  { q:"Squares-in-a-row pattern (3n + 1 sticks). Step 5 needs how many matchsticks?", opts:["16","15","18","13"], a:0,
+    why:"3 × 5 + 1 = 16." },
+  { q:"Same pattern — Step 10 needs how many matchsticks?", opts:["31","30","33","28"], a:0,
+    why:"3 × 10 + 1 = 31." },
+  { q:"Using exactly 22 matchsticks in this pattern (3n + 1 = 22), which step is that?", opts:["7","6","8","22"], a:0,
+    why:"3n + 1 = 22 → 3n = 21 → n = 7." },
+  { q:"Evaluate the expression 7k when k = 4.", opts:["28","11","74","47"], a:0,
+    why:"7k means 7 × k, so 7 × 4 = 28." },
+  { q:"Evaluate the expression 5m + 3 when m = 2.", opts:["13","10","52","25"], a:0,
+    why:"5 × 2 + 3 = 10 + 3 = 13." },
+  { q:"What is the perimeter formula for a regular pentagon with side length a?", opts:["5a","4a","6a","a + 5"], a:0,
+    why:"A regular pentagon has 5 equal sides, so its perimeter is 5 × a." },
+  { q:"Ketaki sells pencils at price c each. If c = ₹50, what is 18c (three days of sales)?", opts:["₹900","₹68","₹18","₹500"], a:0,
+    why:"18c means 18 × c, so 18 × 50 = ₹900." },
+  { q:"A flour mill takes 10 seconds to start, then 8 seconds per kg of grain. Which expression gives the time to grind y kg?", opts:["10 + 8y","10 × 8 × y","(10 + 8) × y","10y + 8"], a:0,
+    why:"A fixed 10 seconds, plus 8 seconds for each of the y kilograms: 10 + 8 × y." },
+  { q:"A rectangle's perimeter, written as l + b + l + b, simplifies to which expression?", opts:["2l + 2b","l + b","4lb","lb"], a:0,
+    why:"Grouping like terms: l + l + b + b = 2l + 2b." }
+];
+const practiceQuiz = makeMiniQuiz(PRACTICE, {
+  q:"prq", m:"prm", opts:"propts", fb:"prfb", next:"prnext", bar:"prbar",
+  box:"prbox", done:"prdone", score:"prscore", again:"pragain"
+}, {
+  count:8, xp:6,
+  onAnswer(correct, btnEl){
+    nyxPractice.react(correct ? "happy" : "sad");
+    if(correct){
+      const r = btnEl.getBoundingClientRect();
+      BTP.confetti(r.left + r.width/2, r.top);
+    } else {
+      BTP.shakeEl(btnEl);
+    }
+  },
+  onDone(right, total){
+    nyxPractice.say(right === total ? "Flawless. Suspiciously flawless." : "Solid round — go again for full marks.", 3000);
+  }
+});
+
+/* ---------------------------------------------------------------
+   CHALLENGE — real Figure-it-Out questions, grouped by section
+   --------------------------------------------------------------- */
+const SECTIONS = [
+  { id:"4.1", title:"4.1–4.2 · Letter-Numbers & Expressions", questions:[
+    { q:"Shabnam is always 3 years older than Aftab: s = a + 3. If Aftab (a) is 23, what is Shabnam's age?",
+      opts:["26","20","29","23"], a:0, why:"Replace a with 23: 23 + 3 = 26.",
+      followUp:{ q:"Using s = a + 3, if Aftab (a) is 15, what is Shabnam's age?", opts:["18","12","15","21"], a:0,
+        why:"Replace a with 15: 15 + 3 = 18." } },
+    { q:"Aftab's age is 3 less than Shabnam's: a = s − 3. If Shabnam's age is 20, what is Aftab's age?",
+      opts:["17","23","20","14"], a:0, why:"Replace s with 20: 20 − 3 = 17.",
+      followUp:{ q:"Using a = s − 3, if Shabnam's age is 30, what is Aftab's age?", opts:["27","33","30","24"], a:0,
+        why:"Replace s with 30: 30 − 3 = 27." } },
+    { q:"Every matchstick L needs 2 sticks. Which expression gives the sticks needed for n Ls?",
+      opts:["2n","n + 2","2 + n","n / 2"], a:0, why:"2 matchsticks, n times over, is 2 × n — written 2n." },
+    { q:"Krithika has 8 notes of ₹100, 4 of ₹20, and z notes of ₹5. What is her total, in rupees?",
+      opts:["880 + 5z","800 + 20 + 5z","84z","8 + 4 + z"], a:0, why:"8×100 + 4×20 + z×5 = 800 + 80 + 5z = 880 + 5z.",
+      followUp:{ q:"Now suppose she has x notes of ₹100, y notes of ₹20, and z notes of ₹5 — what is the total?",
+        opts:["100x + 20y + 5z","125xyz","100 + 20 + 5 + xyz","x + y + z"], a:0,
+        why:"Each kind of note contributes its count times its value: 100x + 20y + 5z." } },
+    { q:"The perimeter of a regular pentagon with side length a is:", opts:["5a","4a","a + 5","5 + a"], a:0,
+      why:"A regular pentagon has 5 equal sides, so its perimeter is 5 × a.",
+      followUp:{ q:"The perimeter of a regular hexagon with side length a is:", opts:["6a","5a","a + 6","36a"], a:0,
+        why:"A regular hexagon has 6 equal sides, so its perimeter is 6 × a." } },
+    { q:"Evaluate: 23 − 10 × 2", opts:["3","26","6","-3"], a:0,
+      why:"Write it as a sum of terms: 23 + (−10 × 2) = 23 + (−20) = 3.",
+      followUp:{ q:"Evaluate: 20 + 8 × (16 − 6)", opts:["100","208","260","28"], a:0,
+        why:"The bracket first: 16 − 6 = 10, then 20 + 8 × 10 = 20 + 80 = 100." } },
+    { q:"Evaluate: 68 − (18 + 13)", opts:["37","63","99","31"], a:0,
+      why:"Solve the bracket first: 18 + 13 = 31, then 68 − 31 = 37." }
+  ]},
+  { id:"4.3", title:"4.3 · Dropping the Multiplication Sign", questions:[
+    { q:"The sequence 4, 8, 12, 16, 20, ... — which expression gives the nth term?", opts:["4n","n + 4","4 + n","n / 4"], a:0,
+      why:"These are multiples of 4, so the nth one is 4 × n, written 4n.",
+      followUp:{ q:"The sequence 3, 6, 9, 12, ... — which expression gives the nth term?", opts:["3n","n + 3","3 + n","n / 3"], a:0,
+        why:"These are multiples of 3, so the nth one is 3n." } },
+    { q:"Find the value of 7k when k = 4.", opts:["28","11","74","47"], a:0, why:"7k means 7 × k, so 7 × 4 = 28.",
+      followUp:{ q:"Find the value of 9k when k = 5.", opts:["45","14","95","54"], a:0, why:"9k means 9 × k, so 9 × 5 = 45." } },
+    { q:"Find the value of 5m + 3 when m = 2.", opts:["13","10","52","25"], a:0, why:"5m means 5 × m, so 5 × 2 + 3 = 10 + 3 = 13.",
+      followUp:{ q:"Find the value of 6m + 4 when m = 3.", opts:["22","18","64","34"], a:0, why:"6 × 3 + 4 = 18 + 4 = 22." } },
+    { q:"Mind the Mistake: someone said that if a = −4, then 10 − a = 6. What is the CORRECT value?",
+      opts:["14","6","-14","-6"], a:0, why:"Subtracting a negative adds: 10 − (−4) = 10 + 4 = 14.",
+      followUp:{ q:"If h = 5 and n = 6, what is the value of h − (3 − n)?", opts:["8","2","-8","4"], a:0,
+        why:"First, 3 − n = 3 − 6 = −3. Then h − (−3) = 5 + 3 = 8." } },
+    { q:"Mind the Mistake: someone said that if d = 6, then 3d = 36. What is the CORRECT value?",
+      opts:["18","36","9","3"], a:0, why:"3d means 3 × d, so 3 × 6 = 18, not 6 × 6." },
+    { q:"Mind the Mistake: someone said that if r = 8, then 2r + 1 = 29. What is the CORRECT value?",
+      opts:["17","29","23","15"], a:0, why:"2r + 1 means (2 × r) + 1, so 2 × 8 + 1 = 16 + 1 = 17.",
+      followUp:{ q:"If s = 7, what is the correct value of 3s − 2?", opts:["19","15","23","17"], a:0,
+        why:"3s − 2 means (3 × s) − 2, so 3 × 7 − 2 = 21 − 2 = 19." } },
+    { q:"Mind the Mistake: someone said that if m = −6, then 3(m + 1) = 19. What is the CORRECT value?",
+      opts:["-15","19","-19","15"], a:0, why:"m + 1 = −6 + 1 = −5, and 3 × (−5) = −15." }
+  ]},
+  { id:"4.4", title:"4.4 · Simplifying Algebraic Expressions", questions:[
+    { q:"5c + 3c + 10c simplifies to:", opts:["18c","18","5 + 3 + 10c","15c"], a:0,
+      why:"Like terms add up: (5 + 3 + 10) × c = 18c.",
+      followUp:{ q:"4d + d + 9d simplifies to:", opts:["14d","14","4 + 1 + 9d","13d"], a:0,
+        why:"(4 + 1 + 9) × d = 14d." } },
+    { q:"6(p + 2) simplifies to:", opts:["6p + 12","6p + 2","6p + 8","p + 12"], a:0,
+      why:"Distribute the 6 across both terms inside the bracket: 6×p + 6×2 = 6p + 12." },
+    { q:"(4x + 3y) − (3x + 4y) simplifies to:", opts:["x − y","x + y","7x + 7y","x − 7y"], a:0,
+      why:"Open the brackets: 4x + 3y − 3x − 4y. Group like terms: (4x−3x) + (3y−4y) = x − y.",
+      followUp:{ q:"Add these two expressions: 8d − 14c + 9 and 16c − (11 + 9d). What's the sum?",
+        opts:["2c − d − 2","2c + d + 2","30c − d + 2","2c − 23d − 2"], a:0,
+        why:"16c − (11 + 9d) = 16c − 11 − 9d. Adding: (8d − 9d) + (−14c + 16c) + (9 − 11) = −d + 2c − 2." } },
+    { q:"7p − p + 5q − 2q simplifies to:", opts:["6p + 3q","7p + 3q","6p + 7q","8p + 3q"], a:0,
+      why:"Group like terms: (7−1)p + (5−2)q = 6p + 3q." },
+    { q:"A shop charges ₹40/chair and ₹75/table upfront, refunding ₹6/chair and ₹10/table on return. For x chairs and y tables, the net amount paid simplifies to:",
+      opts:["34x + 65y","46x + 85y","(40 + 75)x + y","34x − 65y"], a:0,
+      why:"(40x + 75y) − (6x + 10y) = (40−6)x + (75−10)y = 34x + 65y." },
+    { q:"4(2r + 3s + 5) simplifies to:", opts:["8r + 12s + 20","-20 - 8r - 12s","8r + 12s - 20","2r + 3s + 20"], a:0,
+      why:"Distribute the 4 across all three terms: 4×2r + 4×3s + 4×5 = 8r + 12s + 20." },
+    { q:"4(x + y) − y simplifies to:", opts:["4x + 3y","4x + 4y − y","3x + 4y","4x + y"], a:0,
+      why:"Distribute first: 4x + 4y − y, then combine the like y-terms: 4x + (4−1)y = 4x + 3y." }
+  ]},
+  { id:"4.5", title:"4.5 · Patterns and Relationships", questions:[
+    { q:"A number machine's rule is 'two times the first number minus the second' (2a − b). For inputs 8 and 1, what's the output?",
+      opts:["15","9","7","17"], a:0, why:"2 × 8 − 1 = 16 − 1 = 15.",
+      followUp:{ q:"Using the same rule 2a − b, what's the output for inputs 10 and 10?", opts:["10","20","0","30"], a:0,
+        why:"2 × 10 − 10 = 20 − 10 = 10." } },
+    { q:"In Somjit's saree border, Design C appears at every position that's a multiple of 3. Which design appears at position 99?",
+      opts:["Design C","Design A","Design B","None of these"], a:0, why:"99 ÷ 3 = 33 exactly, so 99 is a multiple of 3 — Design C.",
+      followUp:{ q:"Design B appears at positions that are one less than a multiple of 3 (3n − 1). Which design appears at position 122?",
+        opts:["Design B","Design A","Design C","None of these"], a:0,
+        why:"122 = 3×41 − 1, one less than a multiple of 3 — that's Design B." } },
+    { q:"In any 2×2 calendar square with top-left number a, both diagonal sums always equal:",
+      opts:["2a + 8","2a","a + 8","4a"], a:0,
+      why:"a + (a+8) = 2a+8, and (a+1) + (a+7) = 2a+8 too — the diagonals always match." },
+    { q:"A matchstick triangle pattern gives 3, 5, 7, 9, 11... sticks at steps 1, 2, 3, 4, 5. Which expression gives the sticks at step y?",
+      opts:["2y + 1","3y","y + 2","2y − 1"], a:0,
+      why:"3 + 2×(y−1) simplifies to 3 + 2y − 2 = 2y + 1." },
+    { q:"Jowar roti costs ₹30/plate, Pulao ₹20/plate. For x plates of roti and y plates of pulao, the total earned that day is:",
+      opts:["30x + 20y","(30 + 20)(x + y)","20x + 30y","30x − 20y"], a:0,
+      why:"Each roti earns 30 and each pulao earns 20, so total = 30x + 20y." },
+    { q:"p customers bought only champak, q only marigold, r bought both — and every customer got one flag. How many flags were given away?",
+      opts:["p + q + r","p + q + 2r","2 × (p + q + r)","p + q + r + 2"], a:0,
+      why:"Every customer gets exactly one flag, and there are p + q + r customers in total." },
+    { q:"A snail climbs u cm by day and slips d cm by night, for 10 days and nights. How far is it from its starting position?",
+      opts:["10(u − d)","10u − d","u − 10d","10(u + d)"], a:0,
+      why:"Each day-night cycle gains (u − d) cm, repeated 10 times: 10(u − d).",
+      followUp:{ q:"Radha cycles 5 km/day in week 1, adding z km/day extra each following week. How far does she cycle in total over 3 weeks?",
+        opts:["105 + 21z","15 + 3z","35 + 7z","5 + z"], a:0,
+        why:"Week 1: 7×5=35. Week 2: 7×(5+z)=35+7z. Week 3: 7×(5+2z)=35+14z. Total = 105 + 21z." } },
+    { q:"A local train stops at 3 equally-spaced stations, t minutes apart, with a 2-minute stop at each. The time formula is 4t + 6. At t = 4, what's the total travel time?",
+      opts:["22 minutes","16 minutes","20 minutes","18 minutes"], a:0,
+      why:"4 × 4 + 6 = 16 + 6 = 22 minutes." }
+  ]}
+];
+
+const nyxQuiz = BTP.Mascot("nyxQuiz", MASCOT_CFG);
+nyxQuiz.say("Pick a section. Let's see what you've got.", 2600);
+
+const sectionQuiz = BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch04", passPct:0.8, xp:10,
+  onAnswer(correct, btnEl){
+    nyxQuiz.react(correct ? "happy" : "sad");
+    nyxQuiz.say(BTP.pick(correct ? RIGHT_PHRASES : WRONG_PHRASES), 2200);
+    if(correct){
+      const r = btnEl.getBoundingClientRect();
+      BTP.confetti(r.left + r.width/2, r.top);
+    } else {
+      BTP.shakeEl(btnEl);
+    }
+  },
+  onFinish(passed, section){
+    nyxQuiz.react(passed ? "happy" : "idle");
+    nyxQuiz.say(
+      passed
+        ? BTP.pick(["Mastered. Obviously.", "Heh, too easy for you.", "You're basically a letter-number now."])
+        : "So close! Sneak a peek back at " + section.title + " and try me again.",
+      3400
+    );
+  }
+});
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["learn","explore","practice","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "practice" && !document.getElementById("propts").children.length) practiceQuiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+if(location.hash === "#test-quiz") setTimeout(()=>document.querySelector('[data-p="quiz"]').click(), 150);
+if(location.hash === "#test-patterns") setTimeout(()=>document.querySelector('[data-p="explore"]').click(), 150);
+BTP.paintStats();
+</script>
+</body>
+</html>

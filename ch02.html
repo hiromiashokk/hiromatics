@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 2</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .stepper-row{display:flex;align-items:center;gap:18px;margin:14px 0;flex-wrap:wrap}
+  .stepper{display:flex;align-items:center;gap:6px}
+  .stp{width:30px;height:30px;border-radius:8px;background:#16203fdd;border:1px solid var(--line);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;flex:0 0 auto}
+  .stp:active{background:var(--violet)}
+  .stepper .num{font-size:21px;font-weight:700;min-width:26px;text-align:center;font-variant-numeric:tabular-nums}
+  .fp-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+  .schips{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .term-chip{background:#0d142a;border:1.5px solid var(--line);color:var(--ink);padding:11px 18px;
+    border-radius:11px;font-size:15px;font-weight:700;font-family:inherit;font-variant-numeric:tabular-nums}
+  .term-chip.plain{color:var(--dim);cursor:default}
+  .term-chip.calc{border-color:var(--amber);color:var(--amber);cursor:pointer;transition:.15s}
+  .term-chip.calc:hover{background:#2a220d}
+  .term-chip.resolved{background:#123a26;border-color:var(--green);color:#b6ffd8;cursor:default}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 2 · Arithmetic Expressions</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Build It</button>
+    <button class="tab" data-p="simplify">Simplify</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>The distributive property, as area</h2>
+    <p class="lede">
+      Mallesh wrote <b>30 + 5 &times; 4</b> for 30 marbles plus 5 bags of 4. Multiplying a sum works the
+      same way as splitting a rectangle into two blocks and adding their areas: a &times; (b + c) = a&times;b + a&times;c.
+      <b>Tap the − / + buttons below</b> to change the numbers and watch the rectangle split to match.
+    </p>
+
+    <div class="stepper-row">
+      <div>
+        <div class="fp-label">Rows (multiplier)</div>
+        <div class="stepper"><button class="stp" id="mDown">−</button><span class="num" id="mVal">4</span><button class="stp" id="mUp">+</button></div>
+      </div>
+      <div>
+        <div class="fp-label">First block (a)</div>
+        <div class="stepper"><button class="stp" id="aDown">−</button><span class="num" id="aVal">3</span><button class="stp" id="aUp">+</button></div>
+      </div>
+      <div>
+        <div class="fp-label">Second block (b)</div>
+        <div class="stepper"><button class="stp" id="bDown">−</button><span class="num" id="bVal">5</span><button class="stp" id="bUp">+</button></div>
+      </div>
+    </div>
+
+    <div id="gridDist"></div>
+
+    <div class="readout">
+      <div class="card"><div class="k">Expression</div><div class="v frac" id="distExpr">4 × (3 + 5)</div></div>
+      <div class="card"><div class="k">As two products</div><div class="v words" id="distSplit">4×3 + 4×5 = 12 + 20</div></div>
+      <div class="card"><div class="k">Total</div><div class="v" id="distTotal">32</div></div>
+    </div>
+  </section>
+
+  <!-- ============ SIMPLIFY ============ -->
+  <section class="panel hide" id="p-simplify">
+    <h2>Simplify, step by step</h2>
+    <p class="lede">
+      Click the parts that need multiplying, dividing, or a bracket opened <b>first</b> — that's the order-of-operations
+      rule. Plain numbers are already terms and don't need a click.
+    </p>
+
+    <div class="quest">
+      <div class="q" id="sq">Simplify <b>30 + 5 × 4</b></div>
+      <div class="meta" id="smeta"></div>
+    </div>
+
+    <div class="schips" id="schips"></div>
+
+    <div class="bar"><i id="sbar"></i></div>
+    <div class="fb" id="sfb"></div>
+    <button class="btn hide" id="ssumBtn">Add the terms &rarr;</button>
+    <button class="btn hide" id="snext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Mallika's lunch money, Irfan's change, Hira's coins — real problems from the chapter.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 2.1</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 2 — Arithmetic Expressions
+   Explore = distributive-property area model (BTP.Grid).
+   Simplify = click-to-resolve term evaluator (order of operations).
+   Challenge = BTP.setupQuiz.
+   ===================================================================== */
+
+/* ---------------------------------------------------------------
+   EXPLORE — a × (b + c) = a×b + a×c
+   --------------------------------------------------------------- */
+let distM = 4, distA = 3, distB = 5;
+
+function renderDist(){
+  document.getElementById("mVal").textContent = distM;
+  document.getElementById("aVal").textContent = distA;
+  document.getElementById("bVal").textContent = distB;
+
+  const cols = distA + distB;
+  const g = BTP.Grid("gridDist", distM, cols);
+  for(let r=0;r<distM;r++){
+    for(let c=0;c<cols;c++){
+      g.cells[r][c].classList.add(c < distA ? "on" : "on2");
+    }
+  }
+
+  const p1 = distM*distA, p2 = distM*distB, total = distM*cols;
+  document.getElementById("distExpr").textContent = distM + " × (" + distA + " + " + distB + ")";
+  document.getElementById("distSplit").textContent =
+    distM+"×"+distA+" + "+distM+"×"+distB+" = "+p1+" + "+p2;
+  document.getElementById("distTotal").textContent = total;
+}
+document.getElementById("mUp").onclick = ()=>{ distM = Math.min(6, distM+1); renderDist(); };
+document.getElementById("mDown").onclick = ()=>{ distM = Math.max(2, distM-1); renderDist(); };
+document.getElementById("aUp").onclick = ()=>{ if(distA+distB < 10) distA = Math.min(5, distA+1); renderDist(); };
+document.getElementById("aDown").onclick = ()=>{ distA = Math.max(1, distA-1); renderDist(); };
+document.getElementById("bUp").onclick = ()=>{ if(distA+distB < 10) distB = Math.min(5, distB+1); renderDist(); };
+document.getElementById("bDown").onclick = ()=>{ distB = Math.max(1, distB-1); renderDist(); };
+
+/* ---------------------------------------------------------------
+   SIMPLIFY — click the compound terms to resolve them in BODMAS order
+   --------------------------------------------------------------- */
+const SIMPLIFY_SET = [
+  { expr:"30 + 5 × 4", source:"Section 2.2 · Mallesh's marbles",
+    terms:[{text:"30"},{text:"5 × 4",value:20,calc:true}], final:50,
+    why:"30 + (5×4) = 30 + 20 = 50." },
+
+  { expr:"100 − (15 + 56)", source:"Example 5 · Irfan's change",
+    terms:[{text:"100"},{text:"−(15 + 56)",value:-71,calc:true}], final:29,
+    why:"Evaluate the bracket first: 15+56=71, then 100−71=29." },
+
+  { expr:"28 − 7 + 8", source:"Figure it Out 1(a)",
+    terms:[{text:"28"},{text:"−7"},{text:"8"}], final:29,
+    why:"All three are already plain terms — add them in any order: 28−7+8 = 29." },
+
+  { expr:"39 − 2 × 6 + 11", source:"Figure it Out 1(b)",
+    terms:[{text:"39"},{text:"−2 × 6",value:-12,calc:true},{text:"11"}], final:38,
+    why:"39 + (−12) + 11 = 38." },
+
+  { expr:"48 − 10 × 2 + 16 ÷ 2", source:"Figure it Out 1(d)",
+    terms:[{text:"48"},{text:"−10 × 2",value:-20,calc:true},{text:"16 ÷ 2",value:8,calc:true}], final:36,
+    why:"48 + (−20) + 8 = 36." },
+
+  { expr:"6 × 3 − 4 × 8 × 5", source:"Figure it Out 1(e)",
+    terms:[{text:"6 × 3",value:18,calc:true},{text:"−4 × 8 × 5",value:-160,calc:true}], final:-142,
+    why:"18 + (−160) = −142." },
+
+  { expr:"5 × (3 + 2) + 7 × 8 + 3", source:"Section 2.2 · worked example",
+    terms:[{text:"5 × (3 + 2)",value:25,calc:true},{text:"7 × 8",value:56,calc:true},{text:"3"}], final:84,
+    why:"25 + 56 + 3 = 84." },
+
+  { expr:"4 × 5 + 3 × 5", source:"Example 16 · scouts and guides",
+    terms:[{text:"4 × 5",value:20,calc:true},{text:"3 × 5",value:15,calc:true}], final:35,
+    why:"20 + 15 = 35 scouts and guides in all." },
+
+  { expr:"200 − (40 + 3)", source:"Removing Brackets — I",
+    terms:[{text:"200"},{text:"−(40 + 3)",value:-43,calc:true}], final:157,
+    why:"Bracket first: 40+3=43, then 200−43=157." },
+
+  { expr:"28 + (35 − 10)", source:"Example 14 · Hira's coins",
+    terms:[{text:"28"},{text:"+(35 − 10)",value:25,calc:true}], final:53,
+    why:"Bracket first: 35−10=25, then 28+25=53. No sign flip — the bracket isn't preceded by a minus." }
+];
+let simplifyI = 0, chipsState = [];
+
+function renderChips(){
+  const box = document.getElementById("schips");
+  box.innerHTML = "";
+  chipsState.forEach(c=>{
+    const b = document.createElement("button");
+    const cls = c.resolved ? (c.calc ? "resolved" : "plain") : "calc";
+    b.className = "term-chip " + cls;
+    b.textContent = (c.resolved && c.calc) ? ("= " + c.value) : c.text;
+    b.disabled = c.resolved;
+    if(!c.resolved && c.calc){
+      b.onclick = ()=>{ c.resolved = true; renderChips(); checkAllResolved(); };
+    }
+    box.appendChild(b);
+  });
+}
+function checkAllResolved(){
+  const allDone = chipsState.every(c=>c.resolved);
+  document.getElementById("ssumBtn").classList.toggle("hide", !allDone);
+}
+function loadSimplify(){
+  const item = SIMPLIFY_SET[simplifyI];
+  document.getElementById("sq").innerHTML = "Simplify <b>" + item.expr + "</b>";
+  document.getElementById("smeta").textContent = item.source;
+  chipsState = item.terms.map(t=>({text:t.text, value:t.value, calc:!!t.calc, resolved:!t.calc}));
+  renderChips();
+  checkAllResolved();
+  document.getElementById("sfb").className = "fb";
+  document.getElementById("snext").classList.add("hide");
+  document.getElementById("sbar").style.width = (simplifyI/SIMPLIFY_SET.length*100) + "%";
+}
+document.getElementById("ssumBtn").onclick = ()=>{
+  const item = SIMPLIFY_SET[simplifyI];
+  BTP.addXP(8); BTP.touchStreak();
+  const fb = document.getElementById("sfb");
+  fb.className = "fb good show";
+  fb.innerHTML = "<b>Value: " + item.final + ".</b> " + item.why + " <span style='opacity:.75'>+8 XP</span>";
+  BTP.toast("+8 XP");
+  document.getElementById("ssumBtn").classList.add("hide");
+  document.getElementById("snext").classList.remove("hide");
+  document.getElementById("sbar").style.width = ((simplifyI+1)/SIMPLIFY_SET.length*100) + "%";
+};
+document.getElementById("snext").onclick = ()=>{
+  simplifyI = (simplifyI+1) % SIMPLIFY_SET.length;
+  loadSimplify();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"FIGURE IT OUT 1(b)", q:"Simplify: 39 − 2 × 6 + 11",
+    opts:["38","54","27","50"], a:0,
+    why:"Terms are 39, −2×6 (=−12), and 11. 39−12+11 = 38." },
+
+  { src:"FIGURE IT OUT 1(d)", q:"Simplify: 48 − 10 × 2 + 16 ÷ 2",
+    opts:["36","58","20","44"], a:0,
+    why:"Terms: 48, −10×2 (=−20), 16÷2 (=8). 48−20+8 = 36." },
+
+  { src:"FIGURE IT OUT 1(e)", q:"Simplify: 6 × 3 − 4 × 8 × 5",
+    opts:["−142","142","−40","88"], a:0,
+    why:"Terms: 6×3 (=18) and −4×8×5 (=−160). 18−160 = −142." },
+
+  { src:"REMOVING BRACKETS — I", q:"Simplify: 200 − (40 + 3)",
+    opts:["157","163","237","197"], a:0,
+    why:"Removing a bracket after a minus sign flips the signs inside: 200−40−3 = 157." },
+
+  { src:"EXAMPLE 13", q:"Simplify: 500 − (250 − 100)",
+    opts:["350","150","450","250"], a:0,
+    why:"The inner minus flips to a plus: 500−250+100 = 350." },
+
+  { src:"EXAMPLE 14 · Hira's coins", q:"Simplify: 28 + (35 − 10)",
+    opts:["53","3","63","13"], a:0,
+    why:"No sign flip here — the bracket isn't preceded by a minus. 28+35−10 = 53." },
+
+  { src:"EXAMPLE 2 · marbles", q:"Which is greater: 1023 + 125 or 1022 + 128?",
+    opts:["1022 + 128","1023 + 125","They are equal","Cannot tell"], a:0,
+    why:"1023 is only 1 more than 1022, but 128 is 3 more than 125 — so 1022+128 wins by 2." },
+
+  { src:"EXAMPLE 3 · marbles", q:"Which is greater: 113 − 25 or 112 − 24?",
+    opts:["They are equal","113 − 25","112 − 24","Cannot tell"], a:0,
+    why:"113 is 1 more than 112, but 25 is also 1 more than 24 — the extra marble is lost again. They're equal." },
+
+  { src:"SECTION 2.2 · distributive property", q:"Which expression equals 3 × (5 + 8)?",
+    opts:["3×5 + 3×8","3×5 + 8","3 + 5×8","5 + 3×8"], a:0,
+    why:"Multiplying a sum is the same as the sum of the multiples: 3×(5+8) = 3×5 + 3×8." },
+
+  { src:"EXAMPLE 1 · Mallika's lunch", q:"Mallika spends ₹25 on lunch every school day, Monday to Friday. What's the total for the week?",
+    opts:["₹125","₹100","₹150","₹25"], a:0,
+    why:"The expression is 5 × 25 = 125." },
+
+  { src:"FIGURE IT OUT 3(b)", q:"Metro tickets: ₹40 for an adult, ₹20 for a child. What's the cost for 4 adults and 3 children?",
+    opts:["₹220","₹200","₹180","₹240"], a:0,
+    why:"4×40 + 3×20 = 160+60 = 220." },
+
+  { src:"FIGURE IT OUT 3(b)", q:"What's the cost for two groups of 3 adults each, at ₹40 per adult ticket?",
+    opts:["₹240","₹220","₹120","₹180"], a:0,
+    why:"2 × (3×40) = 2×120 = 240." },
+
+  { src:"TERMS IN EXPRESSIONS", q:"What are the terms of the expression 83 − 14?",
+    opts:["83 and −14","83 and 14","−83 and 14","83−14 is a single term"], a:0,
+    why:"Subtracting 14 is the same as adding −14, so the terms are 83 and −14." },
+
+  { src:"FIGURE IT OUT 2 · Melvin's stories", q:"Melvin reads a two-page story every day except Tuesdays and Saturdays. Which expression gives the number of stories in 8 weeks?",
+    opts:["(7 − 2) × 8","7 × 2 × 8","8 × 7","(7 + 2) × 8"], a:0,
+    why:"5 reading days a week (7 minus the 2 skipped days), for 8 weeks: (7−2)×8." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch02", xp:10, count:8 });
+
+/* ---------------------------------------------------------------
+   TABS + GO
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["explore","simplify","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+renderDist();
+loadSimplify();
+BTP.paintStats();
+</script>
+</body>
+</html>

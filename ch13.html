@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 13</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ---- double bar chart, built with plain divs (no library) ---- */
+.chart-wrap{background:#0a0f1f;border:1px solid var(--line);border-radius:14px;padding:14px 14px 30px;margin:14px 0 6px}
+.chart-legend{display:flex;gap:18px;font-size:12.5px;color:var(--dim);margin-bottom:4px}
+.chart-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.chart-plot{position:relative;height:200px;margin:10px 0 4px}
+.chart-gridline{position:absolute;left:30px;right:0;border-top:1px solid var(--line);opacity:.45}
+.chart-gridline b{position:absolute;left:-30px;top:-7px;width:26px;text-align:right;font-size:10px;font-weight:400;color:var(--dim)}
+.chart-bars{position:absolute;left:30px;right:0;top:0;bottom:0;display:flex;align-items:flex-end;justify-content:space-between;gap:3px}
+.chart-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;position:relative}
+.chart-col-bars{display:flex;gap:2px;align-items:flex-end;justify-content:center;width:100%;height:100%}
+.chart-bar{width:42%;border-radius:3px 3px 0 0;min-height:2px;transition:filter .15s,transform .15s}
+.chart-bar.y{background:linear-gradient(180deg,var(--cyan),#2694a8)}
+.chart-bar.w{background:linear-gradient(180deg,var(--violet),#5c4cd6)}
+.chart-col.sel .chart-bar{filter:brightness(1.4);transform:scaleX(1.1)}
+.chart-month{font-size:9.5px;color:var(--dim);position:absolute;bottom:-20px;white-space:nowrap}
+.ref-line{position:absolute;left:0;right:0;height:0;border-top:2px dashed;pointer-events:none}
+.ref-line.dotted{border-top-style:dotted}
+.ref-line span{position:absolute;right:2px;top:-16px;font-size:9.5px;background:#0d142ac9;padding:2px 6px;border-radius:6px;border:1px solid var(--line);white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 5 · Connecting the Dots…</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Onion Chart</button>
+    <button class="tab" data-p="read">Read It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>Onion Economics</h2>
+    <p class="lede">
+      Yahapur and Wahapur both sell onions, but the price swings differently in each town across the year.
+      Tap any month to read its exact prices, then switch on the mean and median lines and watch how they
+      compare to the bars.
+    </p>
+
+    <div class="chart-legend">
+      <span><i style="background:var(--cyan)"></i>Yahapur</span>
+      <span><i style="background:var(--violet)"></i>Wahapur</span>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-plot" id="chartPlot1">
+        <div id="chartGrid1"></div>
+        <div class="chart-bars" id="chartBars1"></div>
+      </div>
+    </div>
+
+    <div class="readout">
+      <div class="card"><div class="k">Month</div><div class="v" id="selMonth">tap a bar</div></div>
+      <div class="card"><div class="k">Yahapur ₹/kg</div><div class="v" id="selY">—</div></div>
+      <div class="card"><div class="k">Wahapur ₹/kg</div><div class="v" id="selW">—</div></div>
+    </div>
+
+    <div class="levels">
+      <div class="lv" id="btnMeanY">Yahapur mean</div>
+      <div class="lv" id="btnMedY">Yahapur median</div>
+      <div class="lv" id="btnMeanW">Wahapur mean</div>
+      <div class="lv" id="btnMedW">Wahapur median</div>
+    </div>
+
+    <div class="readout" style="margin-top:10px">
+      <div class="card"><div class="k">Yahapur — mean / median</div><div class="v words" id="statY">—</div></div>
+      <div class="card"><div class="k">Wahapur — mean / median</div><div class="v words" id="statW">—</div></div>
+    </div>
+  </section>
+
+  <!-- ============ READ IT ============ -->
+  <section class="panel hide" id="p-read">
+    <h2>Read It</h2>
+    <p class="lede">Same chart, now you're the data detective. Answer using what the bars tell you.</p>
+
+    <div class="chart-legend">
+      <span><i style="background:var(--cyan)"></i>Yahapur</span>
+      <span><i style="background:var(--violet)"></i>Wahapur</span>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-plot" id="chartPlot2">
+        <div id="chartGrid2"></div>
+        <div class="chart-bars" id="chartBars2"></div>
+      </div>
+    </div>
+
+    <div class="bar"><i id="rbar"></i></div>
+    <div id="rbox" style="margin-top:14px">
+      <div class="quest"><div class="q" id="rq">…</div><div class="meta" id="rmeta"></div></div>
+      <div class="opts" id="ropts"></div>
+      <div class="fb" id="rfb"></div>
+      <button class="btn hide" id="rnext">Next &rarr;</button>
+    </div>
+
+    <div id="rdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:40px">📊</div>
+      <h2 style="margin:10px 0">Chart read!</h2>
+      <p class="lede" id="rscore"></p>
+      <button class="btn" id="ragain">Try again</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Real Figure-it-Out questions from the chapter — bounces, guavas, races, and more.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 5.2</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 5 — Connecting the Dots… (mean, median, data visualisation)
+   Explore/Read tabs use a hand-built double-bar chart (plain divs).
+   Challenge tab uses BTP.setupQuiz. See shared.js for widget contracts.
+   ===================================================================== */
+
+const MONTHS  = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const YAHAPUR = [25,24,26,28,30,35,39,43,49,56,59,44];
+const WAHAPUR = [19,17,23,30,38,35,42,39,53,60,52,42];
+const SCALE_MAX = 65; // headroom above the ₹60 max
+
+function mean(arr){ return arr.reduce((a,b)=>a+b,0) / arr.length; }
+function median(arr){
+  const s = [...arr].sort((a,b)=>a-b), n = s.length;
+  return n % 2 ? s[(n-1)/2] : (s[n/2-1] + s[n/2]) / 2;
+}
+function pctH(v){ return (v / SCALE_MAX * 100).toFixed(2) + "%"; }
+
+function buildAxis(gridId){
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = "";
+  [0,20,40,60].forEach(v=>{
+    const g = document.createElement("div");
+    g.className = "chart-gridline";
+    g.style.bottom = pctH(v);
+    g.innerHTML = "<b>" + v + "</b>";
+    grid.appendChild(g);
+  });
+}
+
+function buildChart(barsId, onSelect){
+  const root = document.getElementById(barsId);
+  root.innerHTML = "";
+  MONTHS.forEach((m,i)=>{
+    const col = document.createElement("div");
+    col.className = "chart-col";
+    const bw = document.createElement("div");
+    bw.className = "chart-col-bars";
+    const by = document.createElement("div"); by.className = "chart-bar y"; by.style.height = pctH(YAHAPUR[i]);
+    const bv = document.createElement("div"); bv.className = "chart-bar w"; bv.style.height = pctH(WAHAPUR[i]);
+    bw.appendChild(by); bw.appendChild(bv);
+    const lbl = document.createElement("div"); lbl.className = "chart-month"; lbl.textContent = m;
+    col.appendChild(bw); col.appendChild(lbl);
+    col.onclick = ()=>{
+      root.querySelectorAll(".chart-col").forEach(c=>c.classList.remove("sel"));
+      col.classList.add("sel");
+      if(onSelect) onSelect(i);
+    };
+    root.appendChild(col);
+  });
+}
+
+function setRefLine(id, value, color, label, dotted){
+  let el = document.getElementById(id);
+  if(!el){
+    el = document.createElement("div");
+    el.id = id;
+    el.className = "ref-line" + (dotted ? " dotted" : "");
+    document.getElementById("chartBars1").appendChild(el);
+  }
+  el.style.bottom = pctH(value);
+  el.style.borderTopColor = color;
+  el.innerHTML = "<span>" + label + "</span>";
+}
+function removeRefLine(id){ const el = document.getElementById(id); if(el) el.remove(); }
+
+/* ---------------------------------------------------------------
+   EXPLORE — tap a month, toggle mean/median reference lines
+   --------------------------------------------------------------- */
+buildAxis("chartGrid1");
+buildChart("chartBars1", i=>{
+  document.getElementById("selMonth").textContent = MONTHS[i];
+  document.getElementById("selY").textContent = "₹" + YAHAPUR[i];
+  document.getElementById("selW").textContent = "₹" + WAHAPUR[i];
+});
+
+const meanY = mean(YAHAPUR), medY = median(YAHAPUR);
+const meanW = mean(WAHAPUR), medW = median(WAHAPUR);
+document.getElementById("statY").textContent = "₹" + meanY.toFixed(2) + " mean · ₹" + medY.toFixed(1) + " median";
+document.getElementById("statW").textContent = "₹" + meanW.toFixed(2) + " mean · ₹" + medW.toFixed(1) + " median";
+
+const LV_CFG = {
+  btnMeanY: { id:"refMeanY", color:"var(--cyan)",   dotted:false, v:meanY, label:"Yahapur mean ₹"+meanY.toFixed(1) },
+  btnMedY:  { id:"refMedY",  color:"var(--cyan)",   dotted:true,  v:medY,  label:"Yahapur median ₹"+medY.toFixed(1) },
+  btnMeanW: { id:"refMeanW", color:"var(--violet)", dotted:false, v:meanW, label:"Wahapur mean ₹"+meanW.toFixed(1) },
+  btnMedW:  { id:"refMedW",  color:"var(--violet)", dotted:true,  v:medW,  label:"Wahapur median ₹"+medW.toFixed(1) }
+};
+Object.keys(LV_CFG).forEach(btnId=>{
+  const cfg = LV_CFG[btnId];
+  document.getElementById(btnId).onclick = ()=>{
+    const on = document.getElementById(btnId).classList.toggle("on");
+    if(on) setRefLine(cfg.id, cfg.v, cfg.color, cfg.label, cfg.dotted);
+    else removeRefLine(cfg.id);
+  };
+});
+
+/* ---------------------------------------------------------------
+   READ IT — guided practice, sequential MCQ over the same chart
+   --------------------------------------------------------------- */
+buildAxis("chartGrid2");
+buildChart("chartBars2", null);
+
+const READ_Q = [
+  { q:"Which month had the highest onion price in Wahapur?",
+    opts:["October","November","September","December"], a:0,
+    why:"Wahapur's price peaks at ₹60 in October — the tallest violet bar." },
+  { q:"In which month were Yahapur and Wahapur prices exactly equal?",
+    opts:["June","July","August","May"], a:0,
+    why:"Both towns sold onions at ₹35/kg in June — the only month the bars match." },
+  { q:"By how much was Wahapur pricier than Yahapur in October?",
+    opts:["₹4","₹6","₹8","₹2"], a:0,
+    why:"Wahapur was ₹60, Yahapur was ₹56, in October. 60 − 56 = 4." },
+  { q:"What is Yahapur's mean price across the year (nearest rupee)?",
+    opts:["₹38","₹42","₹35","₹44"], a:0,
+    why:"Yahapur's 12 prices add up to ₹458. 458 ÷ 12 ≈ 38.17, which rounds to ₹38." },
+  { q:"What is the median price in Wahapur?",
+    opts:["₹38.5","₹39","₹35","₹42"], a:0,
+    why:"Sorted, the two middle Wahapur prices are 38 and 39. Their average is 38.5." },
+  { q:"For how many months was Yahapur's price higher than Wahapur's?",
+    opts:["6","5","1","12"], a:0,
+    why:"Yahapur was pricier in Jan, Feb, Mar, Aug, Nov, and Dec — 6 months in all." },
+  { q:"Which month shows the biggest price gap between the two towns?",
+    opts:["May","October","November","February"], a:0,
+    why:"In May, Yahapur was ₹30 and Wahapur ₹38 — a gap of ₹8, the largest all year." },
+  { q:"What is the range (max − min) of Wahapur's prices across the year?",
+    opts:["₹43","₹35","₹60","₹17"], a:0,
+    why:"Wahapur's highest price was ₹60 (October) and lowest was ₹17 (February). 60 − 17 = 43." }
+];
+let rqi = 0, rqRight = 0;
+
+function loadRQ(){
+  const item = READ_Q[rqi];
+  document.getElementById("rq").textContent = item.q;
+  document.getElementById("rmeta").textContent = "Question " + (rqi+1) + " of " + READ_Q.length;
+  document.getElementById("rbar").style.width = (rqi / READ_Q.length * 100) + "%";
+  document.getElementById("rfb").className = "fb";
+  document.getElementById("rnext").classList.add("hide");
+  const box = document.getElementById("ropts");
+  box.innerHTML = "";
+  item.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>answerRQ(i);
+    box.appendChild(b);
+  });
+}
+function answerRQ(i){
+  const item = READ_Q[rqi];
+  const bs = [...document.getElementById("ropts").children];
+  bs.forEach(b=>b.disabled = true);
+  bs[item.a].classList.add("right");
+  const fb = document.getElementById("rfb");
+  if(i === item.a){
+    rqRight++; BTP.addXP(6); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Correct.</b> " + item.why + " <span style='opacity:.75'>+6 XP</span>";
+    BTP.toast("+6 XP");
+  } else {
+    bs[i].classList.add("wrong");
+    fb.className = "fb bad show";
+    fb.innerHTML = "<b>Not quite.</b> " + item.why;
+  }
+  document.getElementById("rnext").classList.remove("hide");
+}
+document.getElementById("rnext").onclick = ()=>{
+  rqi++;
+  if(rqi >= READ_Q.length){
+    document.getElementById("rbar").style.width = "100%";
+    document.getElementById("rbox").classList.add("hide");
+    document.getElementById("rdone").classList.remove("hide");
+    document.getElementById("rscore").textContent = rqRight + " out of " + READ_Q.length + " correct.";
+  } else loadRQ();
+};
+document.getElementById("ragain").onclick = ()=>{
+  rqi = 0; rqRight = 0;
+  document.getElementById("rdone").classList.add("hide");
+  document.getElementById("rbox").classList.remove("hide");
+  loadRQ();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — real Figure-it-Out questions from the chapter
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 5.2 · bounces", q:"Shreyas bounces a ball on his bat. His 8 attempts were 6, 2, 9, 5, 4, 6, 3, 5. What's the average number of bounces?",
+    opts:["5","6","4","8"], a:0,
+    why:"Total = 6+2+9+5+4+6+3+5 = 40. Average = 40 ÷ 8 = 5." },
+
+  { src:"SECTION 5.2 · guavas", q:"Shreyas's group of 5 collected 30 guavas in total; Parag's group of 6 also collected 30. Whose group gets a bigger fair-share each?",
+    opts:["Shreyas's group","Parag's group","Both get the same","Cannot tell"], a:0,
+    why:"30 ÷ 5 = 6 guavas each for Shreyas's group, but 30 ÷ 6 = 5 each for Parag's group — same total, different group size." },
+
+  { src:"FIGURE IT OUT · school enrolment", q:"A school's enrolment over 6 years was 1555, 1670, 1750, 2013, 2040, 2126. What's the mean enrolment?",
+    opts:["1859","1750","1900","1820"], a:0,
+    why:"The six numbers add up to 11154. 11154 ÷ 6 = 1859." },
+
+  { src:"FIGURE IT OUT · the 100 m race", q:"Nikhil's race times were 17,18,17,16,19,17,18 s; Sunil's were 20,18,18,17,16,16,17 s. Who ran quicker on average?",
+    opts:["They tied — same average","Nikhil","Sunil","Cannot tell without more data"], a:0,
+    why:"Both sets of times add up to 122 seconds over 7 races, so both averages are 122÷7 ≈ 17.43 s. A surprising tie!" },
+
+  { src:"SECTION 5.2 · know your onions", q:"Yahapur's onion prices totalled ₹458 over the year, Wahapur's totalled ₹450. Whose average monthly price is higher?",
+    opts:["Yahapur's","Wahapur's","They're equal","Cannot tell"], a:0,
+    why:"458 ÷ 12 ≈ 38.17 for Yahapur, 450 ÷ 12 = 37.5 for Wahapur — Yahapur is very slightly costlier on average." },
+
+  { src:"SECTION 5.2 · outliers", q:"Poovizhi's family heights were 170, 173, 165, 118, 175 cm. The 118 cm height belongs to a young child and is far from the rest. What do we call such a value?",
+    opts:["An outlier","The median","The mode","The range"], a:0,
+    why:"A value that significantly deviates from the rest of the data is called an outlier — here it pulls the mean (160.2) well below the median (170)." },
+
+  { src:"SECTION 5.2 · outliers", q:"Because of that outlier in Poovizhi's family, what happened to the mean compared to the median?",
+    opts:["The mean (160.2) fell below the median (170)","The mean rose above the median","Mean and median stayed equal","The median became undefined"], a:0,
+    why:"A low outlier drags the mean down with it, but barely affects the median — the median stayed close to where most of the family's heights are." },
+
+  { src:"SECTION 5.2 · newspaper pages", q:"A newspaper's page counts Mon–Sun were 16, 18, 20, 22, 26, 16, 10. What is the median?",
+    opts:["18","20","16","22"], a:0,
+    why:"Sorted: 10, 16, 16, 18, 20, 22, 26. With 7 values, the middle (4th) one is 18." },
+
+  { src:"FIGURE IT OUT · sumo vs ballet", q:"Average sumo wrestler weight ≈ 240.4 kg; average ballet dancer weight ≈ 42.4 kg. Roughly how many times heavier is a sumo wrestler?",
+    opts:["About 5–6 times","About 2 times","About 10 times","About 3 times"], a:0,
+    why:"240.4 ÷ 42.4 ≈ 5.7 — so roughly 5 to 6 times heavier." },
+
+  { src:"SECTION 5.2 · zero median runs", q:"England scored 407/10 in an innings where extras contributed 19 runs, with 11 players batting. What's the average runs per player (excluding extras)?",
+    opts:["35.27","37.00","38.80","40.70"], a:0,
+    why:"(407 − 19) ÷ 11 = 388 ÷ 11 = 35.27 runs per player." },
+
+  { src:"SECTION 5.2 · zero vs no value", q:"A player scores 57, 13, 0, 84, (did not play), 51, 27 across a series. How many matches should you divide the total by to find the average?",
+    opts:["6 — the matches actually played","7 — the total matches in the series","5 — ignoring the zero too","It cannot be calculated"], a:0,
+    why:"A score of 0 still counts (they played and scored nothing), but a match not played doesn't count at all — so divide by 6, not 7." },
+
+  { src:"FIGURE IT OUT · player points", q:"Player C scored 8, 11, (did not play), 13 in four games. To find C's average points per game, what should you divide the total by?",
+    opts:["3, the games C actually played","4, the total number of games","2","It's impossible to say"], a:0,
+    why:"C only played 3 games (8+11+13 = 32). 32 ÷ 3 ≈ 10.67 points per game — dividing by 4 would understate it." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch13", xp:10, count:8 });
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["explore","read","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+loadRQ();
+</script>
+</body>
+</html>

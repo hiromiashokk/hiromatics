@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 8</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .fracpickers{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
+  .fracpicker{flex:1;min-width:170px;background:#0d142a;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .fp-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;text-align:center}
+  .fp-frac{display:flex;align-items:center;justify-content:center;gap:12px}
+  .stepper{display:flex;align-items:center;gap:6px}
+  .stp{width:30px;height:30px;border-radius:8px;background:#16203fdd;border:1px solid var(--line);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;flex:0 0 auto}
+  .stp:active{background:var(--violet)}
+  .fp-frac span.num{font-size:21px;font-weight:700;min-width:24px;text-align:center;font-variant-numeric:tabular-nums}
+  .fp-bar{font-size:20px;color:var(--dim);font-weight:700}
+  .fp-col-a .fp-label{color:var(--cyan)}
+  .fp-col-b .fp-label{color:var(--violet)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--dim);margin:2px 0 12px}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .sw{width:14px;height:14px;border-radius:4px;display:inline-block}
+  .sw.a{background:linear-gradient(135deg,var(--cyan),#2bb3c8)}
+  .sw.b{background:linear-gradient(135deg,var(--violet),#6a5bff)}
+  .sw.ab{background:linear-gradient(135deg,var(--amber),#e0a83a)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 8 · Working with Fractions</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab" data-p="build">Build It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>The area-model of fraction multiplication</h2>
+    <p class="lede">
+      Aaron's pet tortoise walks <b>2/5 km</b> in an hour. How far in <b>3/4</b> of an hour?
+      Shade a rectangle: rows for one fraction, columns for the other.
+      The <span style="color:var(--amber)">overlap</span> is the product.
+    </p>
+
+    <div class="fracpickers">
+      <div class="fracpicker fp-col-a">
+        <div class="fp-label">Fraction A · shades rows</div>
+        <div class="fp-frac">
+          <div class="stepper"><button class="stp" id="aNumDown">−</button><span class="num" id="aNum">3</span><button class="stp" id="aNumUp">+</button></div>
+          <div class="fp-bar">/</div>
+          <div class="stepper"><button class="stp" id="aDenDown">−</button><span class="num" id="aDen">4</span><button class="stp" id="aDenUp">+</button></div>
+        </div>
+      </div>
+      <div class="fracpicker fp-col-b">
+        <div class="fp-label">Fraction B · shades columns</div>
+        <div class="fp-frac">
+          <div class="stepper"><button class="stp" id="bNumDown">−</button><span class="num" id="bNum">2</span><button class="stp" id="bNumUp">+</button></div>
+          <div class="fp-bar">/</div>
+          <div class="stepper"><button class="stp" id="bDenDown">−</button><span class="num" id="bDen">5</span><button class="stp" id="bDenUp">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span><i class="sw a"></i> Fraction A</span>
+      <span><i class="sw b"></i> Fraction B</span>
+      <span><i class="sw ab"></i> Overlap = product</span>
+    </div>
+
+    <div id="gridExplore"></div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Expression</div>
+        <div class="v frac" id="exExpr">3/4 × 2/5</div>
+      </div>
+      <div class="card">
+        <div class="k">Product (unsimplified)</div>
+        <div class="v frac" id="exProd">6/20</div>
+      </div>
+      <div class="card">
+        <div class="k">Simplest form</div>
+        <div class="v frac" id="exSimp">3/10</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BUILD IT ============ -->
+  <section class="panel hide" id="p-build">
+    <h2>Build It</h2>
+    <p class="lede">I'll name a product from the textbook. Set the two fractions so their overlap matches it, then check.</p>
+
+    <div class="quest">
+      <div class="q" id="bq">Build a product of <b>1/8</b></div>
+      <div class="meta" id="bmeta"></div>
+    </div>
+
+    <div class="fracpickers">
+      <div class="fracpicker fp-col-a">
+        <div class="fp-label">Fraction A · rows</div>
+        <div class="fp-frac">
+          <div class="stepper"><button class="stp" id="cNumDown">−</button><span class="num" id="cNum">1</span><button class="stp" id="cNumUp">+</button></div>
+          <div class="fp-bar">/</div>
+          <div class="stepper"><button class="stp" id="cDenDown">−</button><span class="num" id="cDen">2</span><button class="stp" id="cDenUp">+</button></div>
+        </div>
+      </div>
+      <div class="fracpicker fp-col-b">
+        <div class="fp-label">Fraction B · columns</div>
+        <div class="fp-frac">
+          <div class="stepper"><button class="stp" id="dNumDown">−</button><span class="num" id="dNum">1</span><button class="stp" id="dNumUp">+</button></div>
+          <div class="fp-bar">/</div>
+          <div class="stepper"><button class="stp" id="dDenDown">−</button><span class="num" id="dDen">2</span><button class="stp" id="dDenUp">+</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="gridBuild"></div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Your product</div>
+        <div class="v frac" id="buildProd">1/4</div>
+      </div>
+      <div class="card">
+        <div class="k">Target</div>
+        <div class="v frac" id="buildTarget">1/8</div>
+      </div>
+    </div>
+
+    <div class="bar"><i id="bbar"></i></div>
+    <div class="fb" id="bfb"></div>
+    <button class="btn" id="bcheck">Check</button>
+    <button class="btn hide" id="bnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Aaron, his tortoise, and the rest of the chapter's own word problems.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 8.1</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 8 — Working with Fractions
+   Explore = area-model fraction multiplication (BTP.Grid).
+   Build It = given a target product, adjust two fractions to match it.
+   Challenge = BTP.setupQuiz.
+   ===================================================================== */
+
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a || 1; }
+function simplify(n,d){ const g = gcd(n,d); return [n/g, d/g]; }
+function fracStr(n,d){ return n + "/" + d; }
+
+/* ---------------------------------------------------------------
+   EXPLORE
+   --------------------------------------------------------------- */
+let aNum=3, aDen=4, bNum=2, bDen=5;
+
+function clampFrac(state){
+  state.den = Math.max(2, Math.min(6, state.den));
+  state.num = Math.max(1, Math.min(state.den-1, state.num));
+}
+
+function renderExplore(){
+  document.getElementById("aNum").textContent = aNum;
+  document.getElementById("aDen").textContent = aDen;
+  document.getElementById("bNum").textContent = bNum;
+  document.getElementById("bDen").textContent = bDen;
+
+  const g = BTP.Grid("gridExplore", aDen, bDen);
+  for(let r=0;r<aDen;r++){
+    for(let c=0;c<bDen;c++){
+      const rowOn = r < aNum, colOn = c < bNum;
+      if(rowOn && colOn) g.cells[r][c].classList.add("on-both");
+      else if(rowOn) g.cells[r][c].classList.add("on");
+      else if(colOn) g.cells[r][c].classList.add("on2");
+    }
+  }
+
+  const pNum = aNum*bNum, pDen = aDen*bDen;
+  const [sNum, sDen] = simplify(pNum, pDen);
+  document.getElementById("exExpr").textContent = fracStr(aNum,aDen) + " × " + fracStr(bNum,bDen);
+  document.getElementById("exProd").textContent = fracStr(pNum,pDen);
+  document.getElementById("exSimp").textContent = (sDen===1 ? String(sNum) : fracStr(sNum,sDen));
+}
+
+function wireStepper(numId, denId, get, set){
+  document.getElementById(numId+"Up").onclick = ()=>{ const s=get(); s.num++; clampFrac(s); set(s); renderExplore(); };
+  document.getElementById(numId+"Down").onclick = ()=>{ const s=get(); s.num--; clampFrac(s); set(s); renderExplore(); };
+  document.getElementById(denId+"Up").onclick = ()=>{ const s=get(); s.den++; clampFrac(s); set(s); renderExplore(); };
+  document.getElementById(denId+"Down").onclick = ()=>{ const s=get(); s.den--; clampFrac(s); set(s); renderExplore(); };
+}
+wireStepper("aNum","aDen", ()=>({num:aNum,den:aDen}), s=>{aNum=s.num;aDen=s.den;});
+wireStepper("bNum","bDen", ()=>({num:bNum,den:bDen}), s=>{bNum=s.num;bDen=s.den;});
+
+/* ---------------------------------------------------------------
+   BUILD IT
+   --------------------------------------------------------------- */
+const BUILD_SET = [
+  { tNum:1, tDen:8,  note:"Aaron's tortoise walks 1/4 km in an hour. Build the distance in half an hour." },
+  { tNum:3, tDen:10, note:"The faster tortoise walks 2/5 km/h. Build the distance in 3/4 of an hour." },
+  { tNum:1, tDen:15, note:"Figure it Out 8.1(a): 1/3 × 1/5" },
+  { tNum:1, tDen:12, note:"Figure it Out 8.1(b): 1/4 × 1/3" },
+  { tNum:1, tDen:10, note:"Figure it Out 8.1(c): 1/5 × 1/2" },
+  { tNum:1, tDen:30, note:"Figure it Out 8.1(d): 1/6 × 1/5" },
+  { tNum:8, tDen:15, note:"Figure it Out 8.2(a): 2/3 × 4/5" },
+  { tNum:1, tDen:6,  note:"Figure it Out 8.2(b): 1/4 × 2/3" },
+  { tNum:3, tDen:10, note:"Figure it Out 8.2(c): 3/5 × 1/2" },
+  { tNum:2, tDen:5,  note:"Figure it Out 8.2(d): 4/6 × 3/5" }
+];
+let cNum=1, cDen=2, dNum=1, dDen=2, buildI=0;
+
+function renderBuild(){
+  document.getElementById("cNum").textContent = cNum;
+  document.getElementById("cDen").textContent = cDen;
+  document.getElementById("dNum").textContent = dNum;
+  document.getElementById("dDen").textContent = dDen;
+
+  const g = BTP.Grid("gridBuild", cDen, dDen);
+  for(let r=0;r<cDen;r++){
+    for(let c=0;c<dDen;c++){
+      const rowOn = r < cNum, colOn = c < dNum;
+      if(rowOn && colOn) g.cells[r][c].classList.add("on-both");
+      else if(rowOn) g.cells[r][c].classList.add("on");
+      else if(colOn) g.cells[r][c].classList.add("on2");
+    }
+  }
+  const pNum = cNum*dNum, pDen = cDen*dDen;
+  const [sNum,sDen] = simplify(pNum,pDen);
+  document.getElementById("buildProd").textContent = (sDen===1?String(sNum):fracStr(sNum,sDen));
+}
+wireStepper2();
+function wireStepper2(){
+  document.getElementById("cNumUp").onclick = ()=>{ cNum++; clampAndRenderBuild("c"); };
+  document.getElementById("cNumDown").onclick = ()=>{ cNum--; clampAndRenderBuild("c"); };
+  document.getElementById("cDenUp").onclick = ()=>{ cDen++; clampAndRenderBuild("c"); };
+  document.getElementById("cDenDown").onclick = ()=>{ cDen--; clampAndRenderBuild("c"); };
+  document.getElementById("dNumUp").onclick = ()=>{ dNum++; clampAndRenderBuild("d"); };
+  document.getElementById("dNumDown").onclick = ()=>{ dNum--; clampAndRenderBuild("d"); };
+  document.getElementById("dDenUp").onclick = ()=>{ dDen++; clampAndRenderBuild("d"); };
+  document.getElementById("dDenDown").onclick = ()=>{ dDen--; clampAndRenderBuild("d"); };
+}
+function clampAndRenderBuild(which){
+  if(which==="c"){ cDen=Math.max(2,Math.min(6,cDen)); cNum=Math.max(1,Math.min(cDen-1,cNum)); }
+  else { dDen=Math.max(2,Math.min(6,dDen)); dNum=Math.max(1,Math.min(dDen-1,dNum)); }
+  renderBuild();
+}
+
+function loadBuild(){
+  const b = BUILD_SET[buildI];
+  document.getElementById("bq").innerHTML = "Build a product of <b>" + fracStr(b.tNum,b.tDen) + "</b>";
+  document.getElementById("bmeta").textContent = b.note;
+  document.getElementById("buildTarget").textContent = fracStr(b.tNum,b.tDen);
+  document.getElementById("bfb").className = "fb";
+  document.getElementById("bnext").classList.add("hide");
+  document.getElementById("bbar").style.width = (buildI/BUILD_SET.length*100) + "%";
+  cNum=1; cDen=2; dNum=1; dDen=2;
+  renderBuild();
+}
+
+document.getElementById("bcheck").onclick = ()=>{
+  const b = BUILD_SET[buildI];
+  const pNum = cNum*dNum, pDen = cDen*dDen;
+  const match = pNum*b.tDen === b.tNum*pDen;
+  const fb = document.getElementById("bfb");
+  if(match){
+    BTP.addXP(10); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>That's it.</b> " + fracStr(cNum,cDen) + " × " + fracStr(dNum,dDen) + " = " + fracStr(b.tNum,b.tDen) +
+      " <span style='opacity:.75'>+10 XP</span>";
+    BTP.toast("+10 XP");
+    document.getElementById("bnext").classList.remove("hide");
+    document.getElementById("bbar").style.width = ((buildI+1)/BUILD_SET.length*100) + "%";
+  } else {
+    const cur = pNum/pDen, target = b.tNum/b.tDen;
+    fb.className = "fb bad show";
+    fb.innerHTML = "Not yet — your overlap is " + fracStr(pNum,pDen) + ", target is " + fracStr(b.tNum,b.tDen) +
+      ". " + (cur > target ? "Try smaller numerators or bigger denominators." : "Try bigger numerators or smaller denominators.");
+  }
+};
+document.getElementById("bnext").onclick = ()=>{
+  buildI = (buildI+1) % BUILD_SET.length;
+  loadBuild();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 8.1 · Aaron's walk", q:"Aaron walks 3 km in 1 hour. How far does he walk in 1/5 hour?",
+    opts:["3/5 km","5/3 km","1/15 km","8/5 km"], a:0,
+    why:"1/5 × 3 = 3/5 — dividing 3 km into 5 equal parts." },
+
+  { src:"SECTION 8.1", q:"How far can Aaron walk in 2/5 hour, at 3 km/h?",
+    opts:["6/5 km","2/15 km","5/6 km","3/5 km"], a:0,
+    why:"2/5 × 3 = 6/5 km — twice the distance covered in 1/5 hour (3/5 km)." },
+
+  { src:"SECTION 8.1 · the tortoise", q:"Aaron's tortoise walks 1/4 km in 1 hour. How far in half an hour?",
+    opts:["1/8 km","1/2 km","1/6 km","2/4 km"], a:0,
+    why:"1/2 × 1/4 = 1/8 — split the 1/4 km strip into 2 equal parts." },
+
+  { src:"SECTION 8.1 · Fig 8.1", q:"The tortoise now walks 2/5 km/h. How far in 3/4 hour?",
+    opts:["3/10 km","2/9 km","5/9 km","3/20 km"], a:0,
+    why:"3/4 × 2/5 = 6/20 = 3/10 km — a 5×4 grid where 6 of the 20 squares are double-shaded." },
+
+  { src:"EXAMPLE 1 · grandchildren", q:"A farmer gives 2/3 acre to each of her 5 grandchildren. Total land given?",
+    opts:["10/3 acres","2/15 acres","5/3 acres","15/2 acres"], a:0,
+    why:"5 × 2/3 = 2/3+2/3+2/3+2/3+2/3 = 10/3." },
+
+  { src:"EXAMPLE 2 · internet time", q:"Internet costs ₹8 per hour. What does 1 1/4 hours cost?",
+    opts:["₹10","₹8","₹9","₹12"], a:0,
+    why:"1 1/4 hours = 5/4 hours. 5/4 × 8 = 5 × 2 = ₹10." },
+
+  { src:"FIGURE IT OUT · Tenzin", q:"Tenzin drinks 1/2 glass of milk every day. How much does he drink in a week?",
+    opts:["7/2 glasses","2/7 glasses","7 glasses","1/14 glass"], a:0,
+    why:"7 days × 1/2 glass = 7/2 glasses." },
+
+  { src:"FIGURE IT OUT · water canal", q:"A team builds 1 km of canal in 8 days. Working 5 days a week, how much do they build in a week?",
+    opts:["5/8 km","8/5 km","1/40 km","5 km"], a:0,
+    why:"One day's work is 1/8 km, so 5 days give 5 × 1/8 = 5/8 km." },
+
+  { src:"FIGURE IT OUT · Manju's oil", q:"5 litres of oil is shared equally by 3 families every week. How much does one family get in 4 weeks?",
+    opts:["20/3 litres","5/3 litres","15/4 litres","4/15 litres"], a:0,
+    why:"Each family gets 5/3 litres a week; in 4 weeks that's 4 × 5/3 = 20/3 litres." },
+
+  { src:"FIGURE IT OUT · water tank", q:"A tap fills 7/10 of a tank in 1 hour. How much fills in 3/4 hour?",
+    opts:["21/40", "7/40", "3/10", "21/10"], a:0,
+    why:"3/4 × 7/10 = 21/40 of the tank." },
+
+  { src:"FIGURE IT OUT · rectangle", q:"Find the area of a rectangle with sides 3 3/4 ft and 9 3/5 ft.",
+    opts:["36 sq ft","35 sq ft","34.5 sq ft","37.2 sq ft"], a:0,
+    why:"3 3/4 = 15/4 and 9 3/5 = 48/5. 15/4 × 48/5 = 720/20 = 36 sq ft." },
+
+  { src:"FIGURE IT OUT · saplings", q:"Tsewang plants 4 saplings in a row, each 3/4 m apart. Distance from the first to the last sapling?",
+    opts:["2 1/4 m","3 m","1 1/2 m","2 3/4 m"], a:0,
+    why:"There are 3 gaps between 4 saplings: 3 × 3/4 = 9/4 = 2 1/4 m." },
+
+  { src:"SECTION 8.2 · division", q:"What is 1 ÷ 2/3?",
+    opts:["3/2","2/3","1/6","6"], a:0,
+    why:"Multiply by the reciprocal of 2/3, which is 3/2. So 1 × 3/2 = 3/2." },
+
+  { src:"SECTION 8.2 · dividend & quotient", q:"What is 6 ÷ 1/4?",
+    opts:["24","6/4","3/2","1/24"], a:0,
+    why:"The reciprocal of 1/4 is 4. 6 × 4 = 24 — dividing by a fraction less than 1 gives a bigger answer." },
+
+  { src:"FIGURE IT OUT · Maria's lace", q:"Maria has 8 m of lace and uses 1/4 m per bag. How many bags can she decorate?",
+    opts:["32 bags","2 bags","8 bags","4 bags"], a:0,
+    why:"8 ÷ 1/4 = 8 × 4 = 32 bags." },
+
+  { src:"FIGURE IT OUT · Mira's novel", q:"Mira's novel has 400 pages. She read 1/5 of it yesterday and 3/10 today. How many pages are left?",
+    opts:["200 pages","120 pages","280 pages","80 pages"], a:0,
+    why:"1/5 + 3/10 = 2/10 + 3/10 = 5/10, half the book. Half of 400 pages remain: 200." },
+
+  { src:"FIGURE IT OUT · the car", q:"A car runs 16 km per litre of petrol. How far will it go on 2 3/4 litres?",
+    opts:["44 km","44/16 km","58 km","40 km"], a:0,
+    why:"2 3/4 = 11/4. 16 × 11/4 = 44 km." },
+
+  { src:"FIGURE IT OUT · Mariam's cake", q:"Mariam and her cousins ate 4/5 of a cake. The rest was shared equally among 3 friends. What fraction did each friend get?",
+    opts:["1/15","1/5","4/15","1/20"], a:0,
+    why:"1/5 of the cake was left. Sharing 1/5 among 3 friends: 1/5 ÷ 3 = 1/15 each." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch08", xp:10, count:8 });
+
+/* ---------------------------------------------------------------
+   TABS + GO
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["explore","build","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+renderExplore();
+loadBuild();
+BTP.paintStats();
+</script>
+</body>
+</html>

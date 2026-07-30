@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><span>Hiromatics</span> by Hiromi</div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · pick a chapter</div>
+  </header>
+
+  <div class="panel">
+    <h2>Every chapter, playable</h2>
+    <p class="lede">Fifteen chapters from the Grade 7 book — each one has something to zoom into, drag around, or try
+      before it turns into a quiz straight from the textbook.</p>
+  </div>
+
+  <div class="part-label">Part 1</div>
+  <div class="chapters" id="part1"></div>
+
+  <div class="part-label">Part 2</div>
+  <div class="chapters" id="part2"></div>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+
+const PART1 = [
+  { id:"ch01", file:"ch01.html", title:"Large Numbers Around Us", desc:"Lakhs, crores and how big a lakh really is." },
+  { id:"ch02", file:"ch02.html", title:"Arithmetic Expressions", desc:"Order of operations, brackets, and simplifying." },
+  { id:"ch03", file:"ch03.html", title:"A Peek Beyond the Point", desc:"Zoom into a ruler to read decimals." },
+  { id:"ch04", file:"ch04.html", title:"Expressions Using Letter-Numbers", desc:"Writing patterns and rules with letters." },
+  { id:"ch05", file:"ch05.html", title:"Parallel and Intersecting Lines", desc:"Transversals, angles, and when lines never meet." },
+  { id:"ch06", file:"ch06.html", title:"Number Play", desc:"Patterns, puzzles and playing with digits." },
+  { id:"ch07", file:"ch07.html", title:"A Tale of Three Intersecting Lines", desc:"Triangles: angle sum and the exterior angle." },
+  { id:"ch08", file:"ch08.html", title:"Working with Fractions", desc:"Multiplying and dividing fractions, visually." },
+];
+
+const PART2 = [
+  { id:"ch09", file:"ch09.html", title:"Geometric Twins", desc:"Congruent shapes — same size, same shape." },
+  { id:"ch10", file:"ch10.html", title:"Operations with Integers", desc:"Adding and subtracting on the negative side." },
+  { id:"ch11", file:"ch11.html", title:"Finding Common Ground", desc:"HCF and LCM, and what they're actually for." },
+  { id:"ch12", file:"ch12.html", title:"Another Peek Beyond the Point", desc:"Operations and estimation with decimals." },
+  { id:"ch13", file:"ch13.html", title:"Connecting the Dots...", desc:"Reading data, bar graphs, and averages." },
+  { id:"ch14", file:"ch14.html", title:"Constructions and Tilings", desc:"Symmetry, patterns, and geometric construction." },
+  { id:"ch15", file:"ch15.html", title:"Finding the Unknown", desc:"Simple equations, solved on a balance." },
+];
+
+function card(ch, n){
+  const done = BTP.isDone(ch.id);
+  return '<a class="chapter-card" href="'+ch.file+'">' +
+    (done ? '<span class="done">✓ done</span>' : '') +
+    '<div class="num">'+n+'</div>' +
+    '<div class="title">'+ch.title+'</div>' +
+    '<div class="desc">'+ch.desc+'</div>' +
+  '</a>';
+}
+
+document.getElementById("part1").innerHTML = PART1.map((c,i)=>card(c,i+1)).join("");
+document.getElementById("part2").innerHTML = PART2.map((c,i)=>card(c,i+1)).join("");
+
+BTP.paintStats();
+</script>
+</body>
+</html>

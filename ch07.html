@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 7</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 7 · A Tale of Three Intersecting Lines</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Explore</button>
+    <button class="tab" data-p="practice">Quick Checks</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>Drag the corners</h2>
+    <p class="lede">
+      Drag any vertex of the triangle. Its three interior angles change &mdash; but however you
+      stretch it, they always add up to <b>180&deg;</b>. The dashed line shows the exterior angle
+      at C, which always equals the sum of the other two angles.
+    </p>
+
+    <div class="stage tall" id="stage">
+      <svg id="svg" viewBox="0 0 400 300"></svg>
+      <div class="hint">drag any corner</div>
+    </div>
+
+    <div class="readout">
+      <div class="card"><div class="k">∠A</div><div class="v" id="rA">—</div></div>
+      <div class="card"><div class="k">∠B</div><div class="v" id="rB">—</div></div>
+      <div class="card"><div class="k">∠C</div><div class="v" id="rC">—</div></div>
+      <div class="card"><div class="k">Sum (∠A+∠B+∠C)</div><div class="v" id="rSum">—</div></div>
+      <div class="card"><div class="k">Exterior at C</div><div class="v words" id="rExt">—</div></div>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section class="panel hide" id="p-practice">
+    <h2>Quick Checks</h2>
+    <p class="lede">Work out the missing angle using the angle sum property (and, for the last kind,
+      the exterior angle rule).</p>
+
+    <div class="stage" id="pstage">
+      <svg id="psvg" viewBox="0 0 400 230"></svg>
+    </div>
+
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="quest"><div class="q" id="pq">…</div><div class="meta" id="pmeta"></div></div>
+    <div class="opts" id="popts"></div>
+    <div class="fb" id="pfb"></div>
+    <button class="btn hide" id="pnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Real questions from the chapter &mdash; the triangle inequality and the angle
+      sum property.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">FIGURE IT OUT</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 7 — A Tale of Three Intersecting Lines (triangles)
+   Explore: a draggable triangle with live interior + exterior angles.
+   Practice: quick angle-sum / exterior-angle checks.
+   Challenge: BTP.setupQuiz over real Figure-it-Out / Example content.
+   ===================================================================== */
+
+function mkText(x,y,str,fill,size){
+  const t = BTP.svgEl("text", {x:x, y:y, fill:fill||"#e8edff", "font-size":size||12, "text-anchor":"middle"});
+  t.textContent = str;
+  return t;
+}
+// interior angle at vertex P, between rays P->Q and P->R
+function angleAt(P,Q,R){
+  const a1 = BTP.angleDeg(P.x,P.y,Q.x,Q.y), a2 = BTP.angleDeg(P.x,P.y,R.x,R.y);
+  let d = Math.abs(a1-a2);
+  if(d > 180) d = 360 - d;
+  return d;
+}
+
+/* ---------------------------------------------------------------
+   EXPLORE — draggable triangle
+   --------------------------------------------------------------- */
+let A = {x:90,y:230}, B = {x:330,y:230}, C = {x:230,y:60};
+let elTri, elExtLine, elCircA, elCircB, elCircC,
+    elLabelA, elLabelB, elLabelC, elAngA, elAngB, elAngC, elExtLabel;
+
+function clampX(x){ return Math.max(20, Math.min(380, x)); }
+function clampY(y){ return Math.max(20, Math.min(280, y)); }
+function mkVertex(P){ return BTP.svgEl("circle", {cx:P.x, cy:P.y, r:9, fill:"#8b7bff", stroke:"#fff", "stroke-width":1.5}); }
+
+function buildTriangleSVG(){
+  const svg = document.getElementById("svg");
+  svg.innerHTML = "";
+
+  elTri = BTP.svgEl("polygon", {points:"", fill:"#8b7bff22", stroke:"#8b7bff", "stroke-width":2});
+  svg.appendChild(elTri);
+  elExtLine = BTP.svgEl("line", {stroke:"#ff6b81", "stroke-width":1.6, "stroke-dasharray":"5,4"});
+  svg.appendChild(elExtLine);
+
+  elLabelA = mkText(0,0,"A","#3ddbd9",13); svg.appendChild(elLabelA);
+  elLabelB = mkText(0,0,"B","#3ddbd9",13); svg.appendChild(elLabelB);
+  elLabelC = mkText(0,0,"C","#3ddbd9",13); svg.appendChild(elLabelC);
+  elAngA = mkText(0,0,"","#ffc857",12); svg.appendChild(elAngA);
+  elAngB = mkText(0,0,"","#ffc857",12); svg.appendChild(elAngB);
+  elAngC = mkText(0,0,"","#ffc857",12); svg.appendChild(elAngC);
+  elExtLabel = mkText(0,0,"","#ff6b81",12); svg.appendChild(elExtLabel);
+
+  elCircA = mkVertex(A); elCircB = mkVertex(B); elCircC = mkVertex(C);
+  svg.appendChild(elCircA); svg.appendChild(elCircB); svg.appendChild(elCircC);
+
+  BTP.dragPoint(svg, elCircA, (x,y)=>{ A.x=clampX(x); A.y=clampY(y); render(); });
+  BTP.dragPoint(svg, elCircB, (x,y)=>{ B.x=clampX(x); B.y=clampY(y); render(); });
+  BTP.dragPoint(svg, elCircC, (x,y)=>{ C.x=clampX(x); C.y=clampY(y); render(); });
+
+  render();
+}
+
+function render(){
+  elTri.setAttribute("points", A.x+","+A.y+" "+B.x+","+B.y+" "+C.x+","+C.y);
+  elCircA.setAttribute("cx",A.x); elCircA.setAttribute("cy",A.y);
+  elCircB.setAttribute("cx",B.x); elCircB.setAttribute("cy",B.y);
+  elCircC.setAttribute("cx",C.x); elCircC.setAttribute("cy",C.y);
+
+  const cx = (A.x+B.x+C.x)/3, cy = (A.y+B.y+C.y)/3;
+  function outward(P,dist){
+    const dx=P.x-cx, dy=P.y-cy, len=Math.hypot(dx,dy)||1;
+    return {x:P.x+dx/len*dist, y:P.y+dy/len*dist};
+  }
+  function inward(P,dist){
+    const dx=cx-P.x, dy=cy-P.y, len=Math.hypot(dx,dy)||1;
+    return {x:P.x+dx/len*dist, y:P.y+dy/len*dist};
+  }
+  const la=outward(A,18), lb=outward(B,18), lc=outward(C,18);
+  elLabelA.setAttribute("x",la.x); elLabelA.setAttribute("y",la.y);
+  elLabelB.setAttribute("x",lb.x); elLabelB.setAttribute("y",lb.y);
+  elLabelC.setAttribute("x",lc.x); elLabelC.setAttribute("y",lc.y);
+
+  const angA = angleAt(A,B,C), angB = angleAt(B,A,C), angC = angleAt(C,A,B);
+  const ia=inward(A,26), ib=inward(B,26), ic=inward(C,26);
+  elAngA.setAttribute("x",ia.x); elAngA.setAttribute("y",ia.y); elAngA.textContent = Math.round(angA)+"°";
+  elAngB.setAttribute("x",ib.x); elAngB.setAttribute("y",ib.y); elAngB.textContent = Math.round(angB)+"°";
+  elAngC.setAttribute("x",ic.x); elAngC.setAttribute("y",ic.y); elAngC.textContent = Math.round(angC)+"°";
+
+  // exterior angle at C: extend B->C beyond C
+  const dx=C.x-B.x, dy=C.y-B.y, len=Math.hypot(dx,dy)||1;
+  const D = { x:C.x+dx/len*55, y:C.y+dy/len*55 };
+  elExtLine.setAttribute("x1",C.x); elExtLine.setAttribute("y1",C.y);
+  elExtLine.setAttribute("x2",D.x); elExtLine.setAttribute("y2",D.y);
+  const extC = angleAt(C,D,A);
+  elExtLabel.setAttribute("x", C.x+dx/len*74); elExtLabel.setAttribute("y", C.y+dy/len*74);
+  elExtLabel.textContent = Math.round(extC)+"°";
+
+  document.getElementById("rA").textContent = Math.round(angA)+"°";
+  document.getElementById("rB").textContent = Math.round(angB)+"°";
+  document.getElementById("rC").textContent = Math.round(angC)+"°";
+  document.getElementById("rSum").textContent = Math.round(angA+angB+angC)+"°";
+  document.getElementById("rExt").textContent = Math.round(extC)+"° = ∠A + ∠B (" + Math.round(angA+angB) + "°)";
+}
+
+/* ---------------------------------------------------------------
+   PRACTICE — quick checks, generic triangle icon
+   --------------------------------------------------------------- */
+const PL = {x:60,y:190}, PR = {x:340,y:190}, PT = {x:200,y:40};
+const PRACTICE = [
+  { type:"third", a:50, b:65, opts:["65°","115°","50°","180°"], ans:0,
+    why:"180 − 50 − 65 = 65°." },
+  { type:"third", a:90, b:35, opts:["55°","125°","90°","35°"], ans:0,
+    why:"180 − 90 − 35 = 55°." },
+  { type:"third", a:36, b:72, opts:["72°","108°","36°","144°"], ans:0,
+    why:"180 − 36 − 72 = 72° — this matches the book's own worked answer." },
+  { type:"third", a:150, b:15, opts:["15°","165°","150°","180°"], ans:0,
+    why:"180 − 150 − 15 = 15°." },
+  { type:"third", a:75, b:45, opts:["60°","120°","75°","45°"], ans:0,
+    why:"180 − 75 − 45 = 60°." },
+  { type:"third", a:90, b:30, opts:["60°","120°","30°","90°"], ans:0,
+    why:"180 − 90 − 30 = 60°." },
+  { type:"isosceles", apex:50, opts:["65°","50°","90°","130°"], ans:0,
+    why:"The two base angles are equal and together make 180 − 50 = 130°, so each is 130 ÷ 2 = 65°." },
+  { type:"exterior", a:50, b:60, opts:["110°","70°","180°","50°"], ans:0,
+    why:"The interior angle at the third vertex is 180 − 50 − 60 = 70°. The exterior angle and this interior angle form a straight line, so it's 180 − 70 = 110°." }
+];
+let pIdx = 0;
+
+function drawPracticeTriangle(svg){
+  svg.innerHTML = "";
+  svg.appendChild(BTP.svgEl("polygon", {points:PL.x+","+PL.y+" "+PR.x+","+PR.y+" "+PT.x+","+PT.y,
+    fill:"#8b7bff22", stroke:"#8b7bff", "stroke-width":2}));
+}
+
+function renderPractice(){
+  const q = PRACTICE[pIdx];
+  const svg = document.getElementById("psvg");
+  drawPracticeTriangle(svg);
+
+  if(q.type === "third"){
+    svg.appendChild(mkText(PL.x, PL.y+20, q.a+"°", "#3ddbd9", 14));
+    svg.appendChild(mkText(PR.x, PR.y+20, q.b+"°", "#3ddbd9", 14));
+    svg.appendChild(mkText(PT.x, PT.y-10, "?", "#ffc857", 17));
+    document.getElementById("pq").textContent = "Two angles of a triangle are " + q.a + "° and " + q.b + "°. What is the third?";
+  } else if(q.type === "isosceles"){
+    svg.appendChild(mkText(PT.x, PT.y-10, q.apex+"°", "#3ddbd9", 14));
+    svg.appendChild(mkText(PL.x, PL.y+20, "?", "#ffc857", 17));
+    svg.appendChild(mkText(PR.x, PR.y+20, "?", "#ffc857", 17));
+    // equal-side tick marks
+    const midL={x:(PL.x+PT.x)/2,y:(PL.y+PT.y)/2}, midR={x:(PR.x+PT.x)/2,y:(PR.y+PT.y)/2};
+    svg.appendChild(BTP.svgEl("line",{x1:midL.x-6,y1:midL.y-6,x2:midL.x+6,y2:midL.y+6,stroke:"#3ddc84","stroke-width":2}));
+    svg.appendChild(BTP.svgEl("line",{x1:midR.x-6,y1:midR.y-6,x2:midR.x+6,y2:midR.y+6,stroke:"#3ddc84","stroke-width":2}));
+    document.getElementById("pq").textContent = "This is an isosceles triangle (the two marked sides are equal). The apex angle is " + q.apex + "°. What is each base angle?";
+  } else { // exterior
+    svg.appendChild(mkText(PL.x, PL.y+20, q.a+"°", "#3ddbd9", 14));
+    svg.appendChild(mkText(PR.x, PR.y+20, q.b+"°", "#3ddbd9", 14));
+    const ext = {x:PR.x+55, y:PR.y};
+    svg.appendChild(BTP.svgEl("line",{x1:PR.x,y1:PR.y,x2:ext.x,y2:ext.y,stroke:"#ff6b81","stroke-width":1.6,"stroke-dasharray":"5,4"}));
+    svg.appendChild(mkText(ext.x, ext.y-10, "?", "#ff6b81", 17));
+    document.getElementById("pq").textContent = "In a triangle, two angles are " + q.a + "° and " + q.b + "°. What is the exterior angle at the third vertex (marked ?)?";
+  }
+
+  document.getElementById("pmeta").textContent = "Question " + (pIdx+1) + " of " + PRACTICE.length;
+  document.getElementById("pbar").style.width = (pIdx / PRACTICE.length * 100) + "%";
+  document.getElementById("pfb").className = "fb";
+  document.getElementById("pnext").classList.add("hide");
+
+  const box = document.getElementById("popts");
+  box.innerHTML = "";
+  q.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>answerPractice(i);
+    box.appendChild(b);
+  });
+}
+
+function answerPractice(i){
+  const q = PRACTICE[pIdx];
+  const bs = [...document.getElementById("popts").children];
+  bs.forEach(b=>b.disabled = true);
+  bs[q.ans].classList.add("right");
+  const fb = document.getElementById("pfb");
+  if(i === q.ans){
+    BTP.addXP(5); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Correct.</b> " + q.why + " <span style='opacity:.75'>+5 XP</span>";
+    BTP.toast("+5 XP");
+  } else {
+    bs[i].classList.add("wrong");
+    fb.className = "fb bad show";
+    fb.innerHTML = "<b>Not quite.</b> " + q.why;
+  }
+  document.getElementById("pnext").classList.remove("hide");
+}
+document.getElementById("pnext").onclick = ()=>{
+  pIdx = (pIdx + 1) % PRACTICE.length;
+  renderPractice();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — real Figure-it-Out / worked-example content
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"FIGURE IT OUT", q:"Do the sidelengths 3 cm, 4 cm and 8 cm form a triangle?",
+    opts:["No — 3+4 is less than 8","Yes, any three lengths work","Yes — a right triangle","No — 3+4 equals 8"], a:0,
+    why:"3+4=7, which is less than 8 — the triangle inequality fails, so no triangle exists." },
+
+  { src:"FIGURE IT OUT", q:"Do the sidelengths 2 cm, 3 cm and 6 cm form a triangle?",
+    opts:["No — 2+3 is less than 6","Yes","No — 2+3 equals 6","Cannot say"], a:0,
+    why:"2+3=5, which is less than 6 — the triangle inequality fails." },
+
+  { src:"FIGURE IT OUT", q:"10 km, 10 km and 25 km — can these be the sides of a triangle?",
+    opts:["No","Yes","Only if it's isosceles","Only if it's a right triangle"], a:0,
+    why:"10+10=20, which is less than 25 — the triangle inequality fails, so a triangle does not exist (matches the book's answer key)." },
+
+  { src:"FIGURE IT OUT", q:"Which of these sets CAN be the sidelengths of a triangle?",
+    opts:["3, 4, 6","2, 2, 5","2, 4, 8","10, 20, 35"], a:0,
+    why:"For 3, 4, 6: each length is less than the sum of the other two (3<10, 4<9, 6<7). The rest all fail the triangle inequality." },
+
+  { src:"FIGURE IT OUT", q:"Does an equilateral triangle with sides 50, 50, 50 exist?",
+    opts:["Yes — each side is less than the sum of the other two","No — equal sides break the rule","Only if the sides are under 10 cm","No, equilateral triangles are impossible"], a:0,
+    why:"50 < 50+50 for every side, so the triangle inequality holds. In fact an equilateral triangle exists for any sidelength." },
+
+  { src:"FIGURE IT OUT", q:"Do the lengths 1, 100, 100 form a triangle?",
+    opts:["Yes","No","Only a flat (degenerate) one","Cannot say without a protractor"], a:0,
+    why:"1<100+100, and 100<1+100 — the triangle inequality holds, so a (very thin) triangle exists." },
+
+  { src:"FIGURE IT OUT", q:"Do the lengths 3, 6, 9 form a triangle?",
+    opts:["No — 3+6 equals 9, not less than it","Yes","No — 6+9 is less than 3","Yes, a right triangle"], a:0,
+    why:"3+6=9, which is NOT strictly less than 9 — the triangle inequality needs each side strictly smaller than the sum of the other two." },
+
+  { src:"SECTION 7.2", q:"Two angles of a triangle are 50° and 65°. What is the third?",
+    opts:["65°","115°","50°","180°"], a:0,
+    why:"180 − 50 − 65 = 65°." },
+
+  { src:"FIGURE IT OUT", q:"Two angles of a triangle are 36° and 72°. What is the third? (Hint: draw a line parallel to the base through the top vertex.)",
+    opts:["72°","108°","36°","144°"], a:0,
+    why:"180 − 36 − 72 = 72° — matches the book's worked answer." },
+
+  { src:"MATH TALK", q:"Can a triangle have all three of its angles equal to 70°?",
+    opts:["No — they'd add up to 210°, not 180°","Yes, that's an equilateral triangle","Yes, if the sides are short enough","Only if it's a right triangle"], a:0,
+    why:"70+70+70=210°, but a triangle's angles must add to exactly 180° — so this is impossible." },
+
+  { src:"EXTERIOR ANGLES", q:"In a triangle, ∠A = 50° and ∠B = 60°. What is the exterior angle at C (∠ACD, where D extends side BC)?",
+    opts:["110°","70°","180°","50°"], a:0,
+    why:"∠A+∠B+∠ACB=180°, so ∠ACB=70°. The exterior angle and ∠ACB form a straight line: 180−70=110°." },
+
+  { src:"TRY THIS", q:"In an isosceles triangle, ∠B = ∠C and ∠A = 50°. What is ∠B?",
+    opts:["65°","50°","90°","115°"], a:0,
+    why:"∠B+∠C = 180−50 = 130°, and since ∠B=∠C, each is 130 ÷ 2 = 65°." },
+
+  { src:"ANGLE SUM PROPERTY", q:"What is the sum of the interior angles of any triangle?",
+    opts:["180°","360°","90°","270°"], a:0,
+    why:"This is the angle sum property of triangles — always 180°, however the triangle is shaped." },
+
+  { src:"SECTION 7.5", q:"A triangle has one right angle (90°). What do we call this type of triangle?",
+    opts:["Right-angled triangle","Obtuse-angled triangle","Acute-angled triangle","Equilateral triangle"], a:0,
+    why:"A triangle with one 90° angle is a right-angled (or right) triangle." },
+
+  { src:"SECTION 7.4", q:"An altitude of a triangle is...",
+    opts:["a perpendicular line segment from a vertex to the opposite side","any line segment joining two vertices","a line that bisects an angle","the longest side of the triangle"], a:0,
+    why:"The altitude is the perpendicular dropped from a vertex to (the line containing) the opposite side — it measures the triangle's height from that vertex." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch07", xp:10 });
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["explore","practice","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "practice" && !document.getElementById("popts").children.length) renderPractice();
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+buildTriangleSVG();
+</script>
+</body>
+</html>

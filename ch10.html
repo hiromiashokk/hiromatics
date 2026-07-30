@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 10</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Part 2 · Chapter 2 · Operations with Integers</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab" data-p="find">Find It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>Left of zero, right of zero</h2>
+    <p class="lede">
+      A carrom coin starts at 0. Strike it right and the movement is positive; strike it left and the
+      movement is negative. Drag along the line and watch the position, the direction, and the distance
+      from zero — that distance is called the <b>magnitude</b>.
+    </p>
+
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="zoombar">
+        <button class="zb" id="zin">+</button>
+        <button class="zb" id="zout">&minus;</button>
+      </div>
+      <div class="hint" id="hint">drag to slide &nbsp;·&nbsp; scroll or pinch to zoom in</div>
+    </div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Reading here</div>
+        <div class="v" id="rNum">0</div>
+      </div>
+      <div class="card">
+        <div class="k">Your book says</div>
+        <div class="v words" id="rWords">at zero</div>
+      </div>
+      <div class="card">
+        <div class="k">Magnitude</div>
+        <div class="v frac" id="rMag">0</div>
+      </div>
+    </div>
+
+    <div class="levels">
+      <div class="lv on" id="lv0">tens</div>
+      <div class="lv" id="lv1">ones</div>
+    </div>
+  </section>
+
+  <!-- ============ FIND IT ============ -->
+  <section class="panel hide" id="p-find">
+    <h2>Find It</h2>
+    <p class="lede">I'll name an integer from the chapter — some are negative. Zoom in until the
+      <b>ones</b> marks show up, then <b>tap it</b> on the line.</p>
+
+    <div class="quest">
+      <div class="q" id="fq">Find <b>&minus;7</b></div>
+      <div class="meta" id="fmeta">the carrom coin's second strike, leftward</div>
+    </div>
+
+    <div class="bar"><i id="fbar"></i></div>
+    <div class="fb" id="ffb"></div>
+    <button class="btn hide" id="fnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Straight out of her textbook &mdash; carrom coins, tokens, the mining elevator, Mala's exam.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 2.1</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 10 — Operations with Integers (Ganita Prakash Part 2, Ch 2)
+   Uses BTP.NumberLine on a -30..30 domain (levels: 10, 1) and
+   BTP.setupQuiz for the Challenge tab.
+   ===================================================================== */
+
+const nl = BTP.NumberLine({
+  stage:"stage", canvas:"cv", zin:"zin", zout:"zout", hint:"hint",
+  domainLo:-30, domainHi:30, minSpan:6, maxSpan:60,
+  levels:[
+    { step:10, h:0.55, col:"#e8edff", lw:2   },
+    { step:1,  h:0.32, col:"#3ddbd9", lw:1.5 }
+  ],
+  fmtLabel:(v)=> String(Math.round(v)),
+  showCrosshair:true
+});
+
+let mode = "explore";
+
+/* ---------------------------------------------------------------
+   EXPLORE — read the value at the centre crosshair
+   --------------------------------------------------------------- */
+function liveStep(){
+  return nl.levelAlpha(1) > 0.5 ? 1 : 10;
+}
+
+function paintLevels(){
+  document.getElementById("lv0").classList.toggle("on", nl.levelAlpha(10) > 0.5);
+  document.getElementById("lv1").classList.toggle("on", nl.levelAlpha(1)  > 0.5);
+}
+
+nl.onFrame = function(){
+  paintLevels();
+  if(mode !== "explore") return;
+  const step = liveStep();
+  const v = nl.x2v(document.getElementById("cv").clientWidth/2);
+  const snapped = Math.round(v/step)*step;
+  const mag = Math.abs(snapped);
+  document.getElementById("rNum").textContent = (snapped>0?"+":"") + snapped;
+  document.getElementById("rWords").textContent =
+    snapped === 0 ? "right at zero" :
+    mag + " unit" + (mag===1?"":"s") + " " + (snapped<0?"to the left of zero — negative":"to the right of zero — positive");
+  document.getElementById("rMag").textContent = "|" + snapped + "| = " + mag;
+};
+
+/* ---------------------------------------------------------------
+   FIND IT — real integers and puzzles from the chapter
+   --------------------------------------------------------------- */
+const FIND_SET = [
+  { v:11,  note:"Rakesh's first puzzle: sum 25, difference 11 — the two numbers were 18 and 7 · Section 2.1" },
+  { v:-11, note:"Rakesh's second puzzle: sum 25, difference −11 — swap the pair · Section 2.1" },
+  { v:-7,  note:"the carrom coin's second strike, leftward by 7 units · Section 2.1" },
+  { v:-2,  note:"the coin's final position: 5 + (−7) · Section 2.1, Carrom Coin Integers" },
+  { v:-5,  note:"final position after strikes 1, −2, 3, −4, …, −10 · Try This, Section 2.1" },
+  { v:-18, note:"the additive inverse of 18 · Section 2.1" },
+  { v:12,  note:"the additive inverse of −12 · Section 2.1" },
+  { v:-8,  note:"(−4) × 2, using the token model · Section 2.2" }
+];
+let findI = 0, findTries = 0;
+
+function loadFind(){
+  const f = FIND_SET[findI];
+  nl.clearMarker(); nl.clearGhost();
+  findTries = 0;
+  nl.resetView(-30, 30);
+  document.getElementById("fq").innerHTML = "Find <b>" + (f.v>0?"+":"") + f.v + "</b>";
+  document.getElementById("fmeta").textContent = f.note;
+  document.getElementById("ffb").className = "fb";
+  document.getElementById("fnext").classList.add("hide");
+  document.getElementById("fbar").style.width = (findI / FIND_SET.length * 100) + "%";
+}
+
+function checkFind(v){
+  const f = FIND_SET[findI];
+  const tol = 0.6;
+  const off = Math.abs(v - f.v);
+  const fb  = document.getElementById("ffb");
+
+  if(nl.levelAlpha(1) < 0.5){
+    nl.setMarker({ v:v, state:"idle" });
+    fb.className = "fb bad show";
+    fb.innerHTML = "Zoom in first. You can't be sure of " + f.v + " yet — the <b>ones</b> marks aren't showing.";
+    return;
+  }
+
+  if(off <= tol){
+    nl.setMarker({ v:f.v, state:"right" });
+    const gain = findTries === 0 ? 12 : 6;
+    BTP.addXP(gain); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Got it.</b> " + f.v + " is " + Math.abs(f.v) + " unit" + (Math.abs(f.v)===1?"":"s") +
+                   " " + (f.v<0 ? "to the left" : f.v>0 ? "to the right" : "") + " of zero." +
+                   "  <span style='opacity:.75'>+" + gain + " XP</span>";
+    document.getElementById("fnext").classList.remove("hide");
+    BTP.toast("+" + gain + " XP");
+    document.getElementById("fbar").style.width = ((findI+1) / FIND_SET.length * 100) + "%";
+  } else {
+    findTries++;
+    nl.setMarker({ v:v, state:"wrong" });
+    fb.className = "fb bad show";
+    if(off > 6){
+      fb.innerHTML = "Not quite — you're a long way off, maybe even on the wrong side of zero. Look again.";
+    } else if(off > 2){
+      fb.innerHTML = "Close! You're in the right neighbourhood. Zoom in more to land exactly.";
+    } else {
+      fb.innerHTML = "So close. One more careful tap.";
+      if(findTries >= 3){ nl.setGhost({ v:f.v }); fb.innerHTML += " Here, I'll show you."; }
+    }
+  }
+}
+
+document.getElementById("fnext").onclick = ()=>{
+  findI = (findI + 1) % FIND_SET.length;
+  loadFind();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — questions taken from the chapter itself
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 2.1 · Rakesh's Puzzle", q:"Rakesh says: sum is 25, difference is 11. Which pair works?",
+    opts:["18 and 7","20 and 5","19 and 6","15 and 10"], a:0,
+    why:"18 + 7 = 25 and 18 − 7 = 11 — exactly Rakesh's numbers." },
+
+  { src:"SECTION 2.1 · Carrom Coin Integers", q:"The coin is struck right by 5 units, then left by 7 units. What's its final position?",
+    opts:["−2","2","12","−12"], a:0,
+    why:"P = a + b = 5 + (−7) = −2. The coin ends up 2 units left of zero." },
+
+  { src:"SECTION 2.1 · Token Model", q:"Using tokens, what is (+7) − (+18)?",
+    opts:["−11","11","−25","25"], a:0,
+    why:"You need 11 more zero pairs to remove 18 positives from 7. What's left is 11 negatives: −11." },
+
+  { src:"SECTION 2.2 · Multiplication", q:"Using the token model, what is 4 × (−2)?",
+    opts:["−8","8","−6","6"], a:0,
+    why:"Placing 2 negative tokens into the bag 4 times gives 8 negatives: −8." },
+
+  { src:"SECTION 2.2 · Multiplication", q:"What is (−4) × (−2)?",
+    opts:["8","−8","6","−6"], a:0,
+    why:"Removing 2 negatives from the bag 4 times leaves 8 positives: +8. Debt times debt is a fortune." },
+
+  { src:"SECTION 2.2 · Example 1, Mala's Exam", q:"5 marks per correct answer, −2 per wrong. Mala had 30 correct and 20 wrong out of 50. Her total?",
+    opts:["110","150","130","90"], a:0,
+    why:"30 × 5 + 20 × (−2) = 150 + (−40) = 110." },
+
+  { src:"SECTION 2.2 · Example 2, The Mining Elevator", q:"An elevator descends at 3 m/min from ground level for a full hour (60 min). Where does it end up?",
+    opts:["−180 m","−183 m","−177 m","180 m"], a:0,
+    why:"Speed while descending is −3 m/min. 60 × (−3) = −180, so it's 180 m below the ground." },
+
+  { src:"SECTION 2.2 · Example 2, The Mining Elevator", q:"The same elevator starts 15 m above ground and descends at 3 m/min for 45 minutes. Final position?",
+    opts:["−120 m","−135 m","−105 m","120 m"], a:0,
+    why:"15 + (45 × (−3)) = 15 + (−135) = −120. It ends 120 m below the ground." },
+
+  { src:"SECTION 2.2 · Patterns", q:"Fill in the blanks: −30 × 12 = ___, and 12 × −30 = ___.",
+    opts:["both −360","both 360","−360 and 360","360 and −360"], a:0,
+    why:"Multiplication is commutative for integers, so both orders give the same product: −360." },
+
+  { src:"SECTION 2.2 · Division of Integers", q:"What is (−100) ÷ 25?",
+    opts:["−4","4","−25","25"], a:0,
+    why:"25 × (−4) = −100, so (−100) ÷ 25 = −4." },
+
+  { src:"SECTION 2.2 · Division of Integers", q:"What is (−100) ÷ (−4)?",
+    opts:["25","−25","4","−4"], a:0,
+    why:"(−4) × 25 = −100, so (−100) ÷ (−4) = 25. Debt divided by debt is a fortune." },
+
+  { src:"SECTION 2.2 · Figure It Out", q:"Given 123 × 456 = 56,088, what is (−123) × (−456)?",
+    opts:["56,088","−56,088","112,176","−112,176"], a:0,
+    why:"Brahmagupta's rule: the product of two debts is a fortune. Same magnitude, positive sign: 56,088." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch10", xp:10 });
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+const stage = document.getElementById("stage");
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    mode = t.dataset.p;
+    ["explore","find","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+
+    if(mode === "find"){
+      document.getElementById("p-find").insertBefore(stage, document.querySelector("#p-find .bar"));
+      nl.onTap = checkFind;
+      loadFind();
+    } else if(mode === "explore"){
+      document.getElementById("p-explore").insertBefore(stage, document.querySelector("#p-explore .readout"));
+      nl.onTap = null;
+      nl.clearMarker(); nl.clearGhost();
+    } else {
+      nl.onTap = null;
+    }
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+nl.start();
+</script>
+</body>
+</html>

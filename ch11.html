@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 11</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .stepper-row{display:flex;align-items:center;gap:14px;margin:14px 0;flex-wrap:wrap}
+  .stepper{display:flex;align-items:center;gap:6px}
+  .stp{width:30px;height:30px;border-radius:8px;background:#16203fdd;border:1px solid var(--line);color:var(--ink);font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;flex:0 0 auto}
+  .stp:active{background:var(--violet)}
+  .stepper .num{font-size:21px;font-weight:700;min-width:34px;text-align:center;font-variant-numeric:tabular-nums}
+  .fp-label{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+  .fracpickers{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
+  .fracpicker{flex:1;min-width:170px;background:#0d142a;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .fp-col-a .fp-label{color:var(--cyan)}
+  .fp-col-b .fp-label{color:var(--violet)}
+  .grid-cell.bad{background:#3a1220 !important;border-color:var(--red) !important}
+  .chiprow{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .chip2{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--dim);font-variant-numeric:tabular-nums}
+  .chip2.a{border-color:#2bb3c866}
+  .chip2.b{border-color:#6a5bff66}
+  .chip2.hit{background:linear-gradient(135deg,var(--amber),#e0a83a);color:#241900;border-color:transparent}
+  .numinput{flex:1;background:#0d142a;border:1.5px solid var(--line);color:var(--ink);padding:12px 14px;border-radius:11px;font-size:16px;font-family:inherit;font-variant-numeric:tabular-nums}
+  .numinput:focus{outline:none;border-color:var(--violet)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Part 2 · Chapter 3 · Finding Common Ground</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab" data-p="practice">Practice</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>Tiling Sameeksha's room — HCF</h2>
+    <p class="lede">
+      Sameeksha's room is <b>12 ft &times; 16 ft</b>. She wants the largest square tile that fits with
+      nothing left over. Try different tile sizes and see which ones tile evenly.
+    </p>
+
+    <div class="stepper-row">
+      <div>
+        <div class="fp-label">Tile size (ft)</div>
+        <div class="stepper"><button class="stp" id="tileDown">−</button><span class="num" id="tileVal">4</span><button class="stp" id="tileUp">+</button></div>
+      </div>
+    </div>
+
+    <div id="gridTile"></div>
+
+    <div class="readout">
+      <div class="card"><div class="k">Fits the 12 ft breadth?</div><div class="v words" id="fitB">Yes</div></div>
+      <div class="card"><div class="k">Fits the 16 ft length?</div><div class="v words" id="fitL">Yes</div></div>
+      <div class="card"><div class="k">Tiles needed</div><div class="v" id="tileCount">12</div></div>
+    </div>
+    <p class="lede" id="hcfNote" style="margin-top:8px"></p>
+
+    <h2 style="margin-top:24px">Lining up patterns — LCM</h2>
+    <p class="lede">Anshu's cloth strips are <b>a</b> cm long, Guna's are <b>b</b> cm long. Where do the two
+      repeating patterns first line up exactly?</p>
+
+    <div class="fracpickers">
+      <div class="fracpicker fp-col-a">
+        <div class="fp-label">Anshu's strip (a cm)</div>
+        <div class="stepper"><button class="stp" id="lcmADown">−</button><span class="num" id="lcmA">6</span><button class="stp" id="lcmAUp">+</button></div>
+      </div>
+      <div class="fracpicker fp-col-b">
+        <div class="fp-label">Guna's strip (b cm)</div>
+        <div class="stepper"><button class="stp" id="lcmBDown">−</button><span class="num" id="lcmB">8</span><button class="stp" id="lcmBUp">+</button></div>
+      </div>
+    </div>
+
+    <div class="chiprow" id="chipsA"></div>
+    <div class="chiprow" id="chipsB"></div>
+
+    <div class="readout">
+      <div class="card"><div class="k">Shortest toran both can make</div><div class="v" id="lcmVal">24 cm</div></div>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section class="panel hide" id="p-practice">
+    <h2>Practice</h2>
+    <p class="lede">Find the HCF or LCM using prime factorisation. Type your answer and check.</p>
+
+    <div class="quest">
+      <div class="q" id="pq">Find the HCF of 50 and 60</div>
+      <div class="meta" id="pmeta">Question 1 of 10</div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;margin:14px 0">
+      <input type="number" id="pInput" class="numinput" placeholder="your answer">
+      <button class="btn" id="pcheck" style="margin-top:0">Check</button>
+    </div>
+
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="fb" id="pfb"></div>
+    <button class="btn hide" id="pnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Sameeksha's tiles, Lekhana's rice, Anshu &amp; Guna's torans — straight from the chapter.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 3.1</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 11 — Finding Common Ground (HCF & LCM), Part 2 Ch 3
+   Explore = tiling grid for HCF + repeating-strip chips for LCM.
+   Practice = numeric HCF/LCM drills.
+   Challenge = BTP.setupQuiz.
+   ===================================================================== */
+
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a || 1; }
+function lcmOf(a,b){ return (a*b)/gcd(a,b); }
+
+/* ---------------------------------------------------------------
+   EXPLORE — tiling (HCF)
+   --------------------------------------------------------------- */
+const ROOM_ROWS = 12, ROOM_COLS = 16;
+let tileSize = 4;
+
+function renderTiling(){
+  document.getElementById("tileVal").textContent = tileSize;
+  const g = BTP.Grid("gridTile", ROOM_ROWS, ROOM_COLS);
+  const fitRows = Math.floor(ROOM_ROWS/tileSize)*tileSize;
+  const fitCols = Math.floor(ROOM_COLS/tileSize)*tileSize;
+
+  let blockI = 0;
+  for(let r0=0;r0<fitRows;r0+=tileSize){
+    for(let c0=0;c0<fitCols;c0+=tileSize){
+      const cls = (blockI % 2 === 0) ? "on" : "on2";
+      for(let r=r0;r<r0+tileSize;r++){
+        for(let c=c0;c<c0+tileSize;c++){
+          g.cells[r][c].classList.add(cls);
+        }
+      }
+      blockI++;
+    }
+  }
+  for(let r=0;r<ROOM_ROWS;r++){
+    for(let c=0;c<ROOM_COLS;c++){
+      if(r>=fitRows || c>=fitCols) g.cells[r][c].classList.add("bad");
+    }
+  }
+
+  const fitsB = ROOM_ROWS % tileSize === 0;
+  const fitsL = ROOM_COLS % tileSize === 0;
+  document.getElementById("fitB").textContent = fitsB ? "Yes" : "No — leftover";
+  document.getElementById("fitL").textContent = fitsL ? "Yes" : "No — leftover";
+  document.getElementById("tileCount").textContent =
+    (fitsB && fitsL) ? String((ROOM_ROWS/tileSize)*(ROOM_COLS/tileSize)) : "—";
+
+  const hcf = gcd(ROOM_ROWS, ROOM_COLS);
+  const note = document.getElementById("hcfNote");
+  if(fitsB && fitsL){
+    note.textContent = (tileSize === hcf)
+      ? "This is the largest tile that fits perfectly — the HCF of 12 and 16 is " + hcf + "."
+      : "This fits, but a bigger tile of size " + hcf + " ft (the HCF of 12 and 16) would need fewer tiles.";
+  } else {
+    note.textContent = "Red cells show where a " + tileSize + " ft tile doesn't divide the room evenly.";
+  }
+}
+document.getElementById("tileUp").onclick = ()=>{ tileSize = Math.min(12, tileSize+1); renderTiling(); };
+document.getElementById("tileDown").onclick = ()=>{ tileSize = Math.max(1, tileSize-1); renderTiling(); };
+
+/* ---------------------------------------------------------------
+   EXPLORE — repeating strips (LCM)
+   --------------------------------------------------------------- */
+let lcmA = 6, lcmB = 8;
+
+function renderLCM(){
+  document.getElementById("lcmA").textContent = lcmA;
+  document.getElementById("lcmB").textContent = lcmB;
+  const L = lcmOf(lcmA, lcmB);
+
+  const rowA = document.getElementById("chipsA");
+  const rowB = document.getElementById("chipsB");
+  rowA.innerHTML = ""; rowB.innerHTML = "";
+  for(let v=lcmA; v<=L; v+=lcmA){
+    const d = document.createElement("div");
+    d.className = "chip2 a" + (v===L ? " hit" : "");
+    d.textContent = v;
+    rowA.appendChild(d);
+  }
+  for(let v=lcmB; v<=L; v+=lcmB){
+    const d = document.createElement("div");
+    d.className = "chip2 b" + (v===L ? " hit" : "");
+    d.textContent = v;
+    rowB.appendChild(d);
+  }
+  document.getElementById("lcmVal").textContent = L + " cm";
+}
+document.getElementById("lcmAUp").onclick = ()=>{ lcmA = Math.min(12, lcmA+1); renderLCM(); };
+document.getElementById("lcmADown").onclick = ()=>{ lcmA = Math.max(2, lcmA-1); renderLCM(); };
+document.getElementById("lcmBUp").onclick = ()=>{ lcmB = Math.min(12, lcmB+1); renderLCM(); };
+document.getElementById("lcmBDown").onclick = ()=>{ lcmB = Math.max(2, lcmB-1); renderLCM(); };
+
+/* ---------------------------------------------------------------
+   PRACTICE
+   --------------------------------------------------------------- */
+const PRACTICE_SET = [
+  { q:"Find the HCF of 50 and 60", ans:10, why:"50 = 2 × 5², 60 = 2² × 3 × 5. Common primes: 2¹ × 5¹ = 10." },
+  { q:"Find the HCF of 140 and 275", ans:5, why:"140 = 2² × 5 × 7, 275 = 5² × 11. Only 5 is common, so HCF = 5." },
+  { q:"Find the HCF of 77 and 725", ans:1, why:"77 = 7 × 11, 725 = 5² × 29. No common primes at all — HCF = 1, they're co-prime." },
+  { q:"Find the HCF of 370 and 592", ans:74, why:"370 = 2 × 5 × 37, 592 = 2⁴ × 37. Common: 2¹ × 37¹ = 74." },
+  { q:"Find the HCF of 81 and 243", ans:81, why:"81 = 3⁴, 243 = 3⁵. The smaller power wins: 3⁴ = 81." },
+  { q:"Find the HCF of 24 and 180", ans:12, why:"24 = 2³ × 3, 180 = 2² × 3² × 5. Common: 2² × 3¹ = 12." },
+  { q:"Find the LCM of 30 and 72", ans:360, why:"30 = 2×3×5, 72 = 2³×3². LCM takes the highest powers: 2³×3²×5 = 360." },
+  { q:"Find the LCM of 36 and 54", ans:108, why:"36 = 2²×3², 54 = 2×3³. LCM = 2²×3³ = 108." },
+  { q:"Find the LCM of 222 and 370", ans:1110, why:"222 = 2×3×37, 370 = 2×5×37. LCM = 2×3×5×37 = 1110." },
+  { q:"Find the HCF of 300 and 800", ans:100, why:"300 = 2²×3×5², 800 = 2⁵×5². Common: 2²×5² = 100." }
+];
+let pi = 0;
+
+function loadPractice(){
+  const p = PRACTICE_SET[pi];
+  document.getElementById("pq").textContent = p.q;
+  document.getElementById("pmeta").textContent = "Question " + (pi+1) + " of " + PRACTICE_SET.length;
+  document.getElementById("pInput").value = "";
+  document.getElementById("pfb").className = "fb";
+  document.getElementById("pnext").classList.add("hide");
+  document.getElementById("pbar").style.width = (pi/PRACTICE_SET.length*100) + "%";
+}
+document.getElementById("pcheck").onclick = ()=>{
+  const p = PRACTICE_SET[pi];
+  const val = Number(document.getElementById("pInput").value);
+  const fb = document.getElementById("pfb");
+  if(val === p.ans){
+    BTP.addXP(8); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Correct.</b> " + p.why + " <span style='opacity:.75'>+8 XP</span>";
+    BTP.toast("+8 XP");
+    document.getElementById("pnext").classList.remove("hide");
+    document.getElementById("pbar").style.width = ((pi+1)/PRACTICE_SET.length*100) + "%";
+  } else {
+    fb.className = "fb bad show";
+    fb.innerHTML = "Not quite. " + p.why;
+  }
+};
+document.getElementById("pnext").onclick = ()=>{
+  pi = (pi+1) % PRACTICE_SET.length;
+  loadPractice();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 3.1 · Sameeksha's room", q:"Sameeksha's room is 12 ft by 16 ft. What is the largest square tile (whole-number side) that fits exactly, with none left over?",
+    opts:["4 ft","2 ft","6 ft","8 ft"], a:0,
+    why:"Common factors of 12 and 16 are 1, 2 and 4. The largest — the HCF — is 4 ft." },
+
+  { src:"SECTION 3.1 · Lekhana's rice", q:"Lekhana has 84 kg of rice from one farm and 108 kg from another. Using the fewest equal-weight bags (whole kg), what should each bag weigh?",
+    opts:["12 kg","6 kg","4 kg","24 kg"], a:0,
+    why:"84 = 2²×3×7 and 108 = 2²×3³. Their HCF is 2²×3 = 12 kg." },
+
+  { src:"SECTION 3.2 · Anshu & Guna's torans", q:"Anshu's cloth strips are 6 cm, Guna's are 8 cm. What is the length of the shortest toran they can both make?",
+    opts:["24 cm","48 cm","14 cm","2 cm"], a:0,
+    why:"24 is the LCM of 6 and 8 — the smallest length that is a multiple of both strip sizes." },
+
+  { src:"SECTION 3.2 · Kabamai's gajak", q:"A sweet shop gives free gajak every 7th day, and Kabamai visits every 10th day. If both happen today, after how many more days will they coincide again?",
+    opts:["70 days","17 days","7 days","10 days"], a:0,
+    why:"70 is the LCM of 7 and 10 — the first day common to both repeating patterns." },
+
+  { src:"EXAMPLE 4 · HCF by primes", q:"Using 30 = 2×3×5 and 72 = 2×2×2×3×3, what is their HCF?",
+    opts:["6","2","3","360"], a:0,
+    why:"The common primes are 2 and 3, each appearing only once in 30's factorisation. HCF = 2×3 = 6." },
+
+  { src:"EXAMPLE 7 · LCM by primes", q:"96 = 2⁵×3 and 360 = 2³×3²×5. What is their LCM?",
+    opts:["1440","2160","480","720"], a:0,
+    why:"Take the highest power of each prime present: 2⁵×3²×5 = 32×9×5 = 1440." },
+
+  { src:"FIGURE IT OUT · box of cubes", q:"A box is 12 cm × 18 cm × 36 cm. What is the largest cube (whole cm side) that packs it with no gaps?",
+    opts:["6 cm","9 cm","4 cm","3 cm"], a:0,
+    why:"The HCF of 12, 18 and 36 is 6 — the largest cube side that divides all three dimensions." },
+
+  { src:"FIGURE IT OUT · largest divisor", q:"What is the largest number that perfectly divides both 306 and 36?",
+    opts:["18","36","2","3"], a:0,
+    why:"306 = 2×3²×17 and 36 = 2²×3². The common part is 2×3² = 18." },
+
+  { src:"FIGURE IT OUT · the cowherd's cows", q:"A cowherd's cows split evenly through gates of 3, then of 5, then of 7, on different crossings. If he had fewer than 200 cows, how many did he have?",
+    opts:["105","100","150","210"], a:0,
+    why:"The number of cows must be a common multiple of 3, 5 and 7. Their LCM is 105, and 105 is under 200." },
+
+  { src:"FIGURE IT OUT · LCM of two primes", q:"For two different prime numbers, their LCM is always ___",
+    opts:["greater than both numbers","less than both numbers","equal to their HCF","less than the smaller number"], a:0,
+    why:"Two different primes share no common factor besides 1, so their LCM equals their product — bigger than either prime." },
+
+  { src:"FIGURE IT OUT · dog chasing rabbit", q:"A rabbit has a 150 ft head start. A dog jumps 9 ft each time the rabbit jumps 7 ft, at the same time. How many leaps until the dog catches up?",
+    opts:["75","150","21","17"], a:0,
+    why:"Each round the dog gains 9 − 7 = 2 ft on the rabbit. To close a 150 ft gap: 150 ÷ 2 = 75 leaps." },
+
+  { src:"FIGURE IT OUT · smallest common multiple", q:"What is the smallest number that is a multiple of 1, 2, 3, 4, 5, 6, 8, 9 and 10?",
+    opts:["360","2520","720","180"], a:0,
+    why:"Take the highest prime powers needed: 2³ (for 8), 3² (for 9), 5 (for 10) → 8×9×5 = 360." },
+
+  { src:"FIGURE IT OUT · Fire in the Mountain", q:"When '6' and '9' were called, no one was out (the group split evenly both times). When '10' was called, some children were out. Which could be the total number of children?",
+    opts:["72","90","45","3"], a:0,
+    why:"The total must be a common multiple of 6 and 9 — a multiple of their LCM, 18 — but NOT a multiple of 10. 72 is a multiple of 18 but not of 10." },
+
+  { src:"FIGURE IT OUT · HCF and LCM pair", q:"Which pair of numbers has HCF 1 and LCM 66?",
+    opts:["6 and 11","6 and 12","3 and 22","4 and 16"], a:0,
+    why:"6 and 11 share no common factor (HCF = 1), and 6 × 11 = 66 is their LCM." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch11", xp:10, count:8 });
+
+/* ---------------------------------------------------------------
+   TABS + GO
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["explore","practice","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+renderTiling();
+renderLCM();
+loadPractice();
+BTP.paintStats();
+</script>
+</body>
+</html>

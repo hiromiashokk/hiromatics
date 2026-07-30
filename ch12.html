@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 12</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Part 2 · Chapter 4 · Another Peek Beyond the Point</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab" data-p="find">Find It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>Now do something with the point</h2>
+    <p class="lede">
+      Last time you just read the ruler. This time, take whatever you find and <b>use</b> it &mdash;
+      multiply it by 5 like Arshad totting up the cost of his pens, or split it in half like Neenu
+      sharing her ribbon with Anu.
+    </p>
+
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="zoombar">
+        <button class="zb" id="zin">+</button>
+        <button class="zb" id="zout">&minus;</button>
+      </div>
+      <div class="hint" id="hint">drag to slide &nbsp;·&nbsp; scroll or pinch to zoom in</div>
+    </div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Point on the ruler</div>
+        <div class="v" id="rNum">2.0</div>
+      </div>
+      <div class="card">
+        <div class="k">&times; 5, like Arshad's pens</div>
+        <div class="v words" id="rProd">10.0</div>
+      </div>
+      <div class="card">
+        <div class="k">&divide; 2, like Neenu's ribbon</div>
+        <div class="v frac" id="rQuot">1.0</div>
+      </div>
+    </div>
+
+    <div class="levels">
+      <div class="lv on" id="lv0">units</div>
+      <div class="lv" id="lv1">tenths</div>
+      <div class="lv" id="lv2">hundredths</div>
+      <div class="lv" id="lv3">thousandths</div>
+    </div>
+  </section>
+
+  <!-- ============ FIND IT ============ -->
+  <section class="panel hide" id="p-find">
+    <h2>Find It</h2>
+    <p class="lede">I'll describe a calculation from the chapter. Work it out in your head, then
+      zoom in and <b>tap the answer</b> on the ruler.</p>
+
+    <div class="quest">
+      <div class="q" id="fq">Find <b>6 &times; 4 tenths</b></div>
+      <div class="meta" id="fmeta">Figure it Out, Q1(a) · Section 4.2</div>
+    </div>
+
+    <div class="bar"><i id="fbar"></i></div>
+    <div class="fb" id="ffb"></div>
+    <button class="btn hide" id="fnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Straight out of her textbook &mdash; pens, ribbons, oranges, and a scooter ride to Matheran.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 4.2</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 12 — Another Peek Beyond the Point (Ganita Prakash Part 2, Ch 4)
+   Decimal multiplication & division. Reuses ch03's ruler config
+   (0..10, four decimal levels) but the Explore/Find-It tasks are built
+   around doing arithmetic with the point you find, not just reading it.
+   ===================================================================== */
+const nl = BTP.NumberLine({
+  stage:"stage", canvas:"cv", zin:"zin", zout:"zout", hint:"hint",
+  domainLo:0, domainHi:10, minSpan:0.02, maxSpan:10,
+  levels:[
+    { step:1,     h:0.55, col:"#e8edff", lw:2   },
+    { step:0.1,   h:0.34, col:"#3ddbd9", lw:1.6 },
+    { step:0.01,  h:0.20, col:"#8b7bff", lw:1.2 },
+    { step:0.001, h:0.12, col:"#ffc857", lw:1   }
+  ],
+  fmtLabel:(v, li)=> v.toFixed([0,1,2,3][li]),
+  showCrosshair:true
+});
+
+let mode = "explore";
+
+/* ---------------------------------------------------------------
+   EXPLORE — read the value, then multiply by 5 and halve it,
+   exactly the way Arshad and Neenu did in the chapter.
+   --------------------------------------------------------------- */
+function liveDecimals(){
+  let d = 0;
+  const steps = [1,0.1,0.01,0.001];
+  for(let i=1;i<4;i++) if(nl.levelAlpha(steps[i]) > 0.5) d = i;
+  return d;
+}
+
+function paintLevels(){
+  const steps = [1,0.1,0.01,0.001];
+  for(let i=0;i<4;i++){
+    document.getElementById("lv"+i).classList.toggle("on", nl.levelAlpha(steps[i]) > 0.5);
+  }
+}
+
+// halve a number that is exact to d decimal places, staying exact
+// (dividing by 2 either keeps the same number of decimals or adds one)
+function halveExact(v, d){
+  const intV = Math.round(v * Math.pow(10, d));
+  if(intV % 2 === 0){
+    return (intV / 2 / Math.pow(10, d)).toFixed(d);
+  }
+  return (intV * 5 / Math.pow(10, d+1)).toFixed(d+1);
+}
+
+nl.onFrame = function(){
+  paintLevels();
+  if(mode !== "explore") return;
+  const d = liveDecimals();
+  const v = nl.x2v(document.getElementById("cv").clientWidth/2);
+  const snapped = +(v.toFixed(d));
+  document.getElementById("rNum").textContent  = snapped.toFixed(d);
+  document.getElementById("rProd").textContent = (snapped * 5).toFixed(d);
+  document.getElementById("rQuot").textContent = halveExact(snapped, d);
+};
+
+/* ---------------------------------------------------------------
+   FIND IT — solve a decimal calculation from the chapter, then
+   zoom in and tap where the answer lives on the ruler.
+   --------------------------------------------------------------- */
+const FIND_SET = [
+  { problem:"6 &times; 4 tenths",           v:2.4,   d:1, note:"Figure it Out, Q1(a) · Section 4.2" },
+  { problem:"7 &times; 0.3",                v:2.1,   d:1, note:"Figure it Out, Q1(b) · Section 4.2" },
+  { problem:"9 &times; 5 hundredths",       v:0.45,  d:2, note:"Figure it Out, Q1(c) · Section 4.2" },
+  { problem:"half of 8.9 (the folded sheet)", v:4.45, d:2, note:"a callback to Chapter 3 — now it's a division" },
+  { problem:"1.65 m of cloth per shirt, for 3 shirts", v:4.95, d:2, note:"Figure it Out, Q3 · Section 4.2, Thejus's shirt" },
+  { problem:"a 3.9 m ribbon cut into 10 equal pieces", v:0.39, d:2, note:"Example 6 · Section 4.3, Anuja's ribbon" },
+  { problem:"that same ribbon cut into 100 equal pieces", v:0.039, d:3, note:"Example 6 continued · Section 4.3" },
+  { problem:"0.827 km to school, there and back once", v:1.654, d:3, note:"Example 3 · Section 4.2, Ajay's daily walk" }
+];
+let findI = 0, findTries = 0;
+
+function loadFind(){
+  const f = FIND_SET[findI];
+  nl.clearMarker(); nl.clearGhost();
+  findTries = 0;
+  nl.resetView(0, 10);
+  document.getElementById("fq").innerHTML = "Find <b>" + f.problem + "</b>";
+  document.getElementById("fmeta").textContent = f.note;
+  document.getElementById("ffb").className = "fb";
+  document.getElementById("fnext").classList.add("hide");
+  document.getElementById("fbar").style.width = (findI / FIND_SET.length * 100) + "%";
+}
+
+function checkFind(v){
+  const f = FIND_SET[findI];
+  const tol = f.d === 1 ? 0.03 : f.d === 2 ? 0.004 : 0.0006;
+  const off = Math.abs(v - f.v);
+  const fb  = document.getElementById("ffb");
+
+  const steps = [1,0.1,0.01,0.001];
+  if(nl.levelAlpha(steps[f.d]) < 0.5){
+    nl.setMarker({ v:v, state:"idle" });
+    fb.className = "fb bad show";
+    fb.innerHTML = "Zoom in first. The answer needs the <b>" +
+                   (f.d===1?"tenths":f.d===2?"hundredths":"thousandths") +
+                   "</b> marks to be visible before you can land on it precisely.";
+    return;
+  }
+
+  if(off <= tol){
+    nl.setMarker({ v:f.v, state:"right" });
+    const gain = findTries === 0 ? 12 : 6;
+    BTP.addXP(gain); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Got it.</b> The answer is " + f.v.toFixed(f.d) +
+                   ".  <span style='opacity:.75'>+" + gain + " XP</span>";
+    document.getElementById("fnext").classList.remove("hide");
+    BTP.toast("+" + gain + " XP");
+    document.getElementById("fbar").style.width = ((findI+1) / FIND_SET.length * 100) + "%";
+  } else {
+    findTries++;
+    nl.setMarker({ v:v, state:"wrong" });
+    fb.className = "fb bad show";
+    if(off > 0.5){
+      fb.innerHTML = "Not quite — work the calculation out again, then find " +
+                     Math.floor(f.v) + " or " + (Math.floor(f.v)+1) + " first and zoom in from there.";
+    } else if(off > 0.05){
+      fb.innerHTML = "Close! You're in the right unit. Zoom in more to nail the decimal places.";
+    } else {
+      fb.innerHTML = "So close. Zoom in a little further and try again.";
+      if(findTries >= 3){ nl.setGhost({ v:f.v }); fb.innerHTML += " Here, I'll show you."; }
+    }
+  }
+}
+
+document.getElementById("fnext").onclick = ()=>{
+  findI = (findI + 1) % FIND_SET.length;
+  loadFind();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — decimal multiplication & division word problems,
+   straight from the chapter's Figure It Out and worked examples.
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 4.2 · Figure It Out", q:"Thejus needs 1.65 m of cloth for a shirt. How much cloth for 3 shirts?",
+    opts:["4.95 m","4.85 m","5.95 m","4.65 m"], a:0,
+    why:"1.65 × 3 = 4.95 m." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"Meenu bought 4 notebooks at ₹15.50 each and 3 erasers at ₹2.75 each. Total spent?",
+    opts:["₹70.25","₹68.25","₹72.25","₹65.25"], a:0,
+    why:"4 × 15.50 = 62.00, and 3 × 2.75 = 8.25. Together: 62.00 + 8.25 = 70.25." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"A rupee coin is 1.45 mm thick. What is the height of a stack of 36 coins, in centimetres?",
+    opts:["5.22 cm","52.2 cm","5.02 cm","4.22 cm"], a:0,
+    why:"1.45 × 36 = 52.2 mm, and 52.2 mm = 5.22 cm." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"Oranges cost ₹56.50 per kg. What is the price of 2.250 kg?",
+    opts:["₹127.125","₹117.125","₹127.25","₹125.125"], a:0,
+    why:"56.50 × 2.250 = 127.125 rupees." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"Dwarakanath buys notebooks at ₹23.6 wholesale and sells each at ₹30. His profit selling 50 books in a week?",
+    opts:["₹320","₹300","₹340","₹280"], a:0,
+    why:"Profit per book = 30 − 23.6 = 6.4. For 50 books: 6.4 × 50 = 320." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"Given 18 × 12 = 216, what is 1.8 × 1.2?",
+    opts:["2.16","21.6","0.216","216"], a:0,
+    why:"1.8 has 1 decimal digit, 1.2 has 1 decimal digit — the product needs 1+1 = 2 decimal digits: 2.16." },
+
+  { src:"SECTION 4.2 · Figure It Out", q:"Given 18 × 12 = 216, what is 0.018 × 0.012?",
+    opts:["0.000216","0.00216","0.0216","0.216"], a:0,
+    why:"0.018 has 3 decimal digits, 0.012 has 3 — the product needs 3+3 = 6 decimal digits: 0.000216." },
+
+  { src:"SECTION 4.3 · Figure It Out", q:"Given 756 ÷ 36 = 21, what is 75.6 ÷ 3.6?",
+    opts:["21","2.1","210","0.21"], a:0,
+    why:"Multiply both dividend and divisor by 10 — the quotient doesn't change: 75.6 ÷ 3.6 = 756 ÷ 36 = 21." },
+
+  { src:"SECTION 4.3 · Figure It Out", q:"Given 756 ÷ 36 = 21, what is 7.56 ÷ 0.36?",
+    opts:["21","2.1","210","75.6"], a:0,
+    why:"Multiply both dividend and divisor by 100 to clear the decimals: 756 ÷ 36 = 21." },
+
+  { src:"SECTION 4.3 · Example 6, Anuja's Ribbon", q:"A 3.9 m ribbon is cut into 100 equal pieces. Length of each piece?",
+    opts:["0.039 m","0.39 m","0.0039 m","3.9 m"], a:0,
+    why:"3.9 ÷ 100 = 0.039 m — move the decimal point two places left." },
+
+  { src:"SECTION 4.3 · Example 10", q:"A shopkeeper packs 9.5 kg of sugar equally into 4 bags. Weight of each bag?",
+    opts:["2.375 kg","2.35 kg","2.475 kg","2.5 kg"], a:0,
+    why:"9.5 ÷ 4 = 2.375 kg, using long division that regroups all the way to thousandths." },
+
+  { src:"SECTION 4.3 · Example 12, Ravi's Scooter Ride", q:"Ravi rode 126 km to Matheran in 2.5 hours. His average speed?",
+    opts:["50.4 km/h","46.8 km/h","54 km/h","50.04 km/h"], a:0,
+    why:"126 ÷ 2.5 = 50.4 km per hour." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch12", xp:10 });
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+const stage = document.getElementById("stage");
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    mode = t.dataset.p;
+    ["explore","find","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+
+    if(mode === "find"){
+      document.getElementById("p-find").insertBefore(stage, document.querySelector("#p-find .bar"));
+      nl.onTap = checkFind;
+      loadFind();
+    } else if(mode === "explore"){
+      document.getElementById("p-explore").insertBefore(stage, document.querySelector("#p-explore .readout"));
+      nl.onTap = null;
+      nl.clearMarker(); nl.clearGhost();
+    } else {
+      nl.onTap = null;
+    }
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+nl.start();
+</script>
+</body>
+</html>

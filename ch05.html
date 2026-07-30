@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 5</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ---- chapter-5-only: tiny diagram stage + angle pulse for the Learn tab ---- */
+.ch5-diagram{background:#0d142a;border:1px solid var(--line);border-radius:12px;margin:14px 0;overflow:hidden}
+.ch5-diagram svg{width:100%;height:150px;display:block}
+.pulse-angle{animation:ch5Pulse 1.4s ease-in-out infinite}
+@keyframes ch5Pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 5 · Parallel and Intersecting Lines</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Explore</button>
+    <button class="tab" data-p="practice">Angle Match</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <div class="mascot-row">
+      <div id="suzuLearn"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Let's cross some lines</h2>
+        <p class="lede" style="margin:0">A quick story about crossing lines, then a couple of checks.</p>
+      </div>
+    </div>
+
+    <!-- slide 0: intersecting lines, linear pair -->
+    <div class="learn-slide on" id="slide0">
+      <p class="lede">Two straight paths cross in the park. Right where they meet, <b>four angles</b> pop up around the point — let's call them a, b, c, d, going around.</p>
+      <div class="ch5-diagram"><svg id="ldg0" viewBox="0 0 300 150"></svg></div>
+      <p class="lede">∠a and ∠b sit side by side on the <em>same straight line</em> — together they always make <b>180°</b>. That pairing has a name: a <b>linear pair</b>.</p>
+    </div>
+
+    <!-- slide 1: vertically opposite + perpendicular -->
+    <div class="learn-slide" id="slide1">
+      <p class="lede">Look across the crossing point instead of beside it: ∠a and ∠c sit <b>directly opposite</b> each other. They're always exactly equal — we call them <b>vertically opposite angles</b>.</p>
+      <div class="ch5-diagram"><svg id="ldg1" viewBox="0 0 300 150"></svg></div>
+      <p class="lede">If all four angles happen to be equal, each one must be <b>90°</b> — then the two lines are called <b>perpendicular</b>.</p>
+    </div>
+
+    <!-- slide 2: transversal + corresponding angles -->
+    <div class="learn-slide" id="slide2">
+      <p class="lede">Now let one line cross <b>two</b> parallel lines at once. That crossing line is called a <b>transversal</b>, and it makes <b>eight</b> angles in total.</p>
+      <div class="ch5-diagram"><svg id="ldg2" viewBox="0 0 300 150"></svg></div>
+      <p class="lede">The two glowing angles sit in the <em>exact same spot</em> at each crossing — they're called <b>corresponding angles</b>, and because the lines are parallel, they're always equal.</p>
+    </div>
+
+    <!-- slide 3: alternate + co-interior recap -->
+    <div class="learn-slide" id="slide3">
+      <p class="lede">There's one more pair worth knowing: <b>alternate angles</b> sit on opposite sides of the transversal, between the two lines — also always equal.</p>
+      <div class="ch5-diagram"><svg id="ldg3" viewBox="0 0 300 150"></svg></div>
+      <p class="lede">And angles on the <em>same side</em>, both between the lines (co-interior angles), always add up to <b>180°</b>. Ready for a couple of quick checks?</p>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <!-- quick-check questions -->
+    <div id="learnCheck" class="hide">
+      <div class="quest" id="lcq-wrap">
+        <div class="q" id="lcq">…</div>
+      </div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide" style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🌟</div>
+      <h2 style="margin:10px 0">Nice — you've got the idea</h2>
+      <p class="lede">Head to <b>Explore</b> to swing the transversal yourself, or <b>Angle Match</b> to practice.</p>
+    </div>
+  </section>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row">
+      <div id="suzuExplore"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Swing the transversal</h2>
+        <p class="lede" style="margin:0">
+          Lines <b>l</b> and <b>m</b> are parallel. Drag the violet point to swing the transversal <b>t</b>
+          across them. Watch the eight angles it makes &mdash; however you rotate it, the same pairs always
+          stay equal (or add to 180&deg;), because <b>l</b> and <b>m</b> never stop being parallel.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage tall" id="stage">
+      <svg id="svg" viewBox="0 0 400 300"></svg>
+      <div class="hint">drag the violet point</div>
+    </div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Corresponding angles</div>
+        <div class="v" id="rCorr" style="font-size:20px">—</div>
+      </div>
+      <div class="card">
+        <div class="k">Alternate interior angles</div>
+        <div class="v" id="rAlt" style="font-size:20px">—</div>
+      </div>
+      <div class="card">
+        <div class="k">Co-interior (allied) angles</div>
+        <div class="v" id="rCo" style="font-size:20px">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRACTICE ============ -->
+  <section class="panel hide" id="p-practice">
+    <div class="mascot-row">
+      <div id="suzuPractice"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Angle Match</h2>
+        <p class="lede" style="margin:0">One angle is marked. Use what you know about parallel lines and a transversal to
+          work out the angle marked <b>?</b>.</p>
+      </div>
+    </div>
+
+    <div class="stage" id="pstage">
+      <svg id="psvg" viewBox="0 0 400 230"></svg>
+    </div>
+
+    <div class="bar"><i id="pbar"></i></div>
+    <div class="quest"><div class="q" id="pq">…</div><div class="meta" id="pmeta"></div></div>
+    <div class="opts" id="popts"></div>
+    <div class="fb" id="pfb"></div>
+    <button class="btn hide" id="pnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <div class="mascot-row">
+      <div id="suzuQuiz"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
+
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 5 — Parallel and Intersecting Lines
+   Learn: a short story (crossing lines -> perpendicular -> transversal ->
+     corresponding/alternate/co-interior) with tiny animated SVG diagrams.
+   Explore: a draggable transversal across two fixed parallel lines.
+   Angle Match: static angle-match questions (custom mini-quiz).
+   Challenge: BTP.setupSectionQuiz over real chapter sections.
+   Suzu (the mascot) gets her own instance per tab, since a mascot mounted
+   in one hidden tab's DOM can't animate while another tab is showing.
+   ===================================================================== */
+const SUZU_CFG = { color:"#fff3f6", accent:"#ff6b81", accent2:"#c23", earStyle:"bow" };
+
+/* ---------------------------------------------------------------
+   SHARED GEOMETRY HELPERS
+   The transversal always makes the SAME acute-side angle "phi" with
+   both parallel lines (that's what "parallel" guarantees) — so every
+   angle relationship falls out of one number, phi.
+   --------------------------------------------------------------- */
+function mkText(x,y,str,fill,size){
+  const t = BTP.svgEl("text", {x:x, y:y, fill:fill||"#e8edff", "font-size":size||12, "text-anchor":"middle"});
+  t.textContent = str;
+  return t;
+}
+
+// geom for a transversal through (pivotX, l1y) at angle phi (degrees, 0-180, measured downward)
+function computeGeom(phi, g){
+  const rad = phi * Math.PI/180;
+  const vx = Math.cos(rad), vy = Math.sin(rad);
+  const t2 = (g.l2y - g.l1y) / vy;
+  const P2 = { x: g.pivotX + t2*vx, y: g.l2y };
+  const tTop = (g.topY - g.l1y) / vy, tBot = (g.botY - g.l1y) / vy;
+  const top = { x: g.pivotX + tTop*vx, y: g.topY };
+  const bot = { x: g.pivotX + tBot*vx, y: g.botY };
+  return { P1:{x:g.pivotX,y:g.l1y}, P2, top, bot };
+}
+// the 4 wedges around a crossing, indices 0-3 at P1, 4-7 at P2 (same pattern at both)
+function wedgeVal(idx, phi){
+  const local = idx % 4;
+  return (local === 0 || local === 2) ? phi : (180 - phi);
+}
+function wedgePos(idx, phi, geom, r){
+  const local = idx % 4;
+  const wedges = [ {a:0,b:phi}, {a:phi,b:180}, {a:180,b:phi+180}, {a:phi+180,b:360} ];
+  const w = wedges[local];
+  const mid = (w.a + w.b) / 2 * Math.PI/180;
+  const c = idx < 4 ? geom.P1 : geom.P2;
+  return { x: c.x + r*Math.cos(mid), y: c.y + r*Math.sin(mid) };
+}
+function drawLinesAndTransversal(svg, geom, g){
+  svg.appendChild(BTP.svgEl("line",{x1:20,y1:g.l1y,x2:380,y2:g.l1y,stroke:"#8fa0cc","stroke-width":2}));
+  svg.appendChild(BTP.svgEl("line",{x1:20,y1:g.l2y,x2:380,y2:g.l2y,stroke:"#8fa0cc","stroke-width":2}));
+  svg.appendChild(BTP.svgEl("path",{d:"M328 "+(g.l1y-6)+" L338 "+g.l1y+" L328 "+(g.l1y+6), stroke:"#3ddbd9","stroke-width":2, fill:"none"}));
+  svg.appendChild(BTP.svgEl("path",{d:"M328 "+(g.l2y-6)+" L338 "+g.l2y+" L328 "+(g.l2y+6), stroke:"#3ddbd9","stroke-width":2, fill:"none"}));
+  svg.appendChild(mkText(345, g.l1y-8, "l", "#8fa0cc", 13));
+  svg.appendChild(mkText(345, g.l2y-8, "m", "#8fa0cc", 13));
+  svg.appendChild(BTP.svgEl("line",{x1:geom.top.x,y1:geom.top.y,x2:geom.bot.x,y2:geom.bot.y,stroke:"#ffc857","stroke-width":2}));
+  svg.appendChild(BTP.svgEl("circle",{cx:geom.P1.x,cy:geom.P1.y,r:3,fill:"#ffc857"}));
+  svg.appendChild(BTP.svgEl("circle",{cx:geom.P2.x,cy:geom.P2.y,r:3,fill:"#ffc857"}));
+}
+
+/* ---------------------------------------------------------------
+   EXPLORE
+   --------------------------------------------------------------- */
+const EGEOM = { pivotX:130, l1y:90, l2y:210, topY:20, botY:280 };
+let D = { x:230, y:150 };
+let exTrans, exP2dot, exAngTexts = [], exDpt;
+
+function buildExploreSVG(){
+  const svg = document.getElementById("svg");
+  svg.innerHTML = "";
+  const geom0 = computeGeom(BTP.angleDeg(EGEOM.pivotX, EGEOM.l1y, D.x, D.y), EGEOM);
+  drawLinesAndTransversal(svg, geom0, EGEOM);
+  // grab live refs to the elements we just drew (last two children before we add more)
+  const kids = svg.children;
+  exTrans = kids[6];
+  exP2dot = kids[8];
+
+  exAngTexts = [];
+  for(let i=0;i<8;i++){
+    const t = mkText(0,0,"","",11);
+    svg.appendChild(t);
+    exAngTexts.push(t);
+  }
+
+  exDpt = BTP.svgEl("circle",{cx:D.x,cy:D.y,r:8,fill:"#8b7bff",stroke:"#fff","stroke-width":1.5});
+  svg.appendChild(exDpt);
+  BTP.dragPoint(svg, exDpt, (x,y)=>{
+    D.x = Math.max(30, Math.min(370, x));
+    D.y = Math.max(100, Math.min(200, y));
+    exDpt.setAttribute("cx", D.x); exDpt.setAttribute("cy", D.y);
+    updateExplore();
+  });
+
+  updateExplore();
+}
+
+let exLastPhi = null;
+function updateExplore(){
+  const phi = BTP.angleDeg(EGEOM.pivotX, EGEOM.l1y, D.x, D.y);
+  const geom = computeGeom(phi, EGEOM);
+  exTrans.setAttribute("x1", geom.top.x); exTrans.setAttribute("y1", geom.top.y);
+  exTrans.setAttribute("x2", geom.bot.x); exTrans.setAttribute("y2", geom.bot.y);
+  exP2dot.setAttribute("cx", geom.P2.x); exP2dot.setAttribute("cy", geom.P2.y);
+
+  for(let i=0;i<8;i++){
+    const val = wedgeVal(i, phi);
+    const pos = wedgePos(i, phi, geom, 30);
+    const t = exAngTexts[i];
+    t.setAttribute("x", pos.x); t.setAttribute("y", pos.y);
+    t.setAttribute("fill", i<4 ? "#3ddbd9" : "#ffc857");
+    t.textContent = Math.round(val) + "°";
+  }
+
+  const corr = Math.round(phi);
+  const coA = Math.round(phi), coB = Math.round(180-phi);
+  document.getElementById("rCorr").textContent = corr + "° = " + corr + "°";
+  document.getElementById("rAlt").textContent  = corr + "° = " + corr + "°";
+  document.getElementById("rCo").textContent   = coA + "° + " + coB + "° = 180°";
+  exLastPhi = phi;
+}
+
+// A mascot lives in the Explore panel too — it narrates every so often as
+// the transversal swings, rather than reacting to right/wrong (there's no
+// quiz here, just free exploration).
+const suzuExplore = BTP.Mascot("suzuExplore", SUZU_CFG);
+suzuExplore.say("Hi, I'm Suzu! Drag the violet point and watch the angles dance.", 3600);
+const EXPLORE_LINES = [
+  "See how the two glowing cyan angles at the top always match the amber ones below? That's corresponding angles.",
+  "However you swing it, l and m stay parallel — so those equal pairs never break.",
+  "Try swinging t until it stands straight up. What happens to the angles then?",
+  "Co-interior angles are cozy — the pair on the same side always adds up to 180°.",
+  "Alternate angles sit on opposite sides of t, between the lines — always equal too.",
+  "No matter the angle, there are only ever 4 different measures among all eight."
+];
+setInterval(()=>{
+  const mode = document.querySelector(".tab.on") && document.querySelector(".tab.on").dataset.p;
+  if(mode !== "explore") return;
+  suzuExplore.say(BTP.pick(EXPLORE_LINES), 3800);
+}, 5200);
+
+/* ---------------------------------------------------------------
+   PRACTICE — "Angle Match"
+   --------------------------------------------------------------- */
+const PGEOM = { pivotX:110, l1y:60, l2y:170, topY:15, botY:215 };
+const PRACTICE = [
+  { phi:70,  giveIdx:0, targetIdx:4, opts:["70°","110°","35°","140°"], a:0,
+    why:"∠ at the marked spots sit in the <b>same position</b> at each crossing — since l ∥ m, corresponding angles are always equal." },
+  { phi:55,  giveIdx:0, targetIdx:6, opts:["55°","125°","90°","27°"], a:0,
+    why:"These two sit between the parallel lines, on <b>opposite sides</b> of the transversal — alternate interior angles, always equal." },
+  { phi:100, giveIdx:0, targetIdx:7, opts:["80°","100°","60°","90°"], a:0,
+    why:"These two are <b>co-interior (allied)</b> angles — same side of the transversal, between the lines — they always add to 180°. 180 − 100 = 80." },
+  { phi:48,  giveIdx:0, targetIdx:2, opts:["48°","132°","90°","24°"], a:0,
+    why:"These two are <b>vertically opposite</b> — the same pair of crossing lines, opposite corners — so they're equal." },
+  { phi:63,  giveIdx:0, targetIdx:1, opts:["117°","63°","90°","153°"], a:0,
+    why:"These two form a <b>linear pair</b> along line l — together they make a straight angle, 180°. 180 − 63 = 117." },
+  { phi:125, giveIdx:1, targetIdx:6, opts:["125°","55°","90°","150°"], a:0,
+    why:"These are co-interior angles on the other side of the transversal — they too add to 180°. 180 − 55 = 125." }
+];
+let pIdx = 0;
+
+function renderPractice(){
+  const q = PRACTICE[pIdx];
+  const geom = computeGeom(q.phi, PGEOM);
+  const svg = document.getElementById("psvg");
+  svg.innerHTML = "";
+  drawLinesAndTransversal(svg, geom, PGEOM);
+
+  const giveVal = wedgeVal(q.giveIdx, q.phi);
+  const givePos = wedgePos(q.giveIdx, q.phi, geom, 26);
+  const targetPos = wedgePos(q.targetIdx, q.phi, geom, 26);
+  svg.appendChild(mkText(givePos.x, givePos.y, Math.round(giveVal)+"°", "#3ddbd9", 13));
+  svg.appendChild(mkText(targetPos.x, targetPos.y, "?", "#ffc857", 16));
+
+  document.getElementById("pq").textContent = "One angle measures " + Math.round(giveVal) + "°. What is the angle marked with a ? in the diagram?";
+  document.getElementById("pmeta").textContent = "Question " + (pIdx+1) + " of " + PRACTICE.length;
+  document.getElementById("pbar").style.width = (pIdx / PRACTICE.length * 100) + "%";
+  document.getElementById("pfb").className = "fb";
+  document.getElementById("pnext").classList.add("hide");
+
+  const box = document.getElementById("popts");
+  box.innerHTML = "";
+  q.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>answerPractice(i);
+    box.appendChild(b);
+  });
+}
+
+const suzuPractice = BTP.Mascot("suzuPractice", SUZU_CFG);
+suzuPractice.say("Let's find that missing angle together!", 2600);
+const RIGHT_LINES = ["Wonderful! You found it.", "Yes! Such careful thinking.", "That's exactly it!", "Lovely work!", "You've got a real eye for angles."];
+const WRONG_LINES  = ["Almost — let's peek at why, together.", "So close, sweetie — one more look.", "Good try — this one's a little tricky.", "Not quite, but you're getting warmer."];
+
+function answerPractice(i){
+  const q = PRACTICE[pIdx];
+  const bs = [...document.getElementById("popts").children];
+  bs.forEach(b=>b.disabled = true);
+  bs[q.a].classList.add("right");
+  const fb = document.getElementById("pfb");
+  if(i === q.a){
+    BTP.addXP(5); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Correct.</b> " + q.why + " <span style='opacity:.75'>+5 XP</span>";
+    BTP.toast("+5 XP");
+    suzuPractice.react("happy");
+    suzuPractice.say(BTP.pick(RIGHT_LINES), 2200);
+    const r = fb.getBoundingClientRect();
+    BTP.confetti(r.left + r.width/2, r.top + 10);
+  } else {
+    bs[i].classList.add("wrong");
+    fb.className = "fb bad show";
+    fb.innerHTML = "<b>Not quite.</b> " + q.why;
+    suzuPractice.react("sad");
+    suzuPractice.say(BTP.pick(WRONG_LINES), 2200);
+    BTP.shakeEl(fb);
+  }
+  document.getElementById("pnext").classList.remove("hide");
+}
+document.getElementById("pnext").onclick = ()=>{
+  pIdx = (pIdx + 1) % PRACTICE.length;
+  renderPractice();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — one quiz per group of textbook sections, real
+   Figure-it-Out / worked-example content from the chapter.
+   --------------------------------------------------------------- */
+const SECTIONS = [
+  { id:"5.1", title:"5.1–5.2 · Crossing & Perpendicular Lines", questions:[
+    { q:"Two lines cross, making four angles a, b, c, d in order around the point. If ∠a = 110°, what is ∠b, right next to it on the same straight line?",
+      opts:["70°","110°","55°","180°"], a:0,
+      why:"∠a and ∠b sit side by side on a straight line — a linear pair — so they add up to 180°. 180 − 110 = 70°.",
+      followUp:{ q:"If ∠a = 95°, what is ∠b?", opts:["85°","95°","47.5°","180°"], a:0,
+        why:"Linear pairs always add to 180°. 180 − 95 = 85°." } },
+    { q:"In the same figure, ∠c sits directly opposite ∠a, across the crossing point. What is ∠c?",
+      opts:["110°","70°","90°","180°"], a:0,
+      why:"∠a and ∠c are vertically opposite angles — always equal. So ∠c = ∠a = 110°.",
+      followUp:{ q:"If ∠a = 65°, what is ∠c, the angle vertically opposite it?", opts:["65°","115°","32.5°","180°"], a:0,
+        why:"Vertically opposite angles are always equal: ∠c = ∠a = 65°." } },
+    { q:"Two lines intersect so that all four angles formed are exactly equal. What must each angle measure?",
+      opts:["90°","45°","60°","180°"], a:0,
+      why:"Four equal angles around a point must add to 360°, so each one is 360 ÷ 4 = 90°." },
+    { q:"What do we call a pair of lines that intersect at right angles?",
+      opts:["Perpendicular lines","Parallel lines","Transversal lines","Alternate lines"], a:0,
+      why:"Lines crossing at exactly 90° are called perpendicular lines." },
+    { q:"When two lines intersect, how many pairs of vertically opposite angles are formed?",
+      opts:["2","4","1","8"], a:0,
+      why:"Four angles form two pairs of vertically opposite angles: (∠a, ∠c) and (∠b, ∠d).",
+      followUp:{ q:"When two lines intersect, how many linear pairs (adjacent angles along a line) can you find in total?", opts:["4","2","8","1"], a:0,
+        why:"Going around the point, each angle pairs with its neighbour — that's 4 linear pairs: a-b, b-c, c-d, d-a." } },
+    { q:"Can two straight lines intersect at more than one point?",
+      opts:["No — never","Yes, always twice","Only if they're curved","Only perpendicular lines can"], a:0,
+      why:"Two distinct straight lines can cross at most once — that single crossing spot is 'the' point of intersection." }
+  ]},
+  { id:"5.3", title:"5.3–5.4 · Parallel Lines & Paper Folding", questions:[
+    { q:"Which best describes parallel lines?",
+      opts:["Lines on the same plane that never meet, however far extended","Lines that cross at right angles","Any two lines that look straight","Lines that meet at exactly one point"], a:0,
+      why:"Parallel lines lie on the same plane and stay the same distance apart forever — they never meet." },
+    { q:"On a square sheet of paper, how do the opposite edges relate to each other?",
+      opts:["They are parallel","They are perpendicular","They intersect","They are equal but not related"], a:0,
+      why:"Opposite edges of a square never meet, however far extended — that makes them parallel.",
+      followUp:{ q:"On the same square sheet, how do the adjacent edges (like the top and left edges) relate to each other?", opts:["They are perpendicular","They are parallel","They never meet","They overlap"], a:0,
+        why:"Adjacent edges meet at a corner and form a right angle — that makes them perpendicular." } },
+    { q:"Fold a square sheet of paper in half horizontally. Counting the two original edges and the new crease, how many parallel lines do you now see?",
+      opts:["3","2","4","1"], a:0,
+      why:"The top edge, the new fold crease, and the bottom edge are all parallel to each other — 3 lines.",
+      followUp:{ q:"Fold it in half horizontally once more (a second fold). How many parallel lines do you see in total now?", opts:["5","4","6","3"], a:0,
+        why:"Each new horizontal fold adds one more parallel crease — after two folds you have 5 parallel lines in total." } },
+    { q:"A line drawn on a tabletop and a line drawn on a blackboard never meet. Are they necessarily parallel?",
+      opts:["No — they must lie on the same plane to be called parallel","Yes, since they never meet","Yes, because both are straight lines","Only if they are the same length"], a:0,
+      why:"Parallel lines must lie on the same flat plane. Lines on two different surfaces might never meet but still aren't 'parallel' in the geometric sense." },
+    { q:"In mathematical diagrams, how do we mark that two lines belong to the same parallel set?",
+      opts:["With matching arrow marks (like > or >>) on each line","By colouring them the same","By making them the same length","By writing 'parallel' next to each"], a:0,
+      why:"A single arrowhead marks one parallel set; a second set of parallel lines gets double arrowheads, and so on." },
+    { q:"Which pair of edges on a picture-frame rectangle would you expect to be parallel?",
+      opts:["The top and bottom edges","The top and left edges","Any two edges chosen at random","None of the edges"], a:0,
+      why:"In a rectangle, each edge is parallel to the one directly opposite it — top with bottom, left with right." }
+  ]},
+  { id:"5.5", title:"5.5 · Transversals", questions:[
+    { q:"A line that crosses two other lines is given a special name. What is it called?",
+      opts:["A transversal","A perpendicular","A diagonal","A bisector"], a:0,
+      why:"A line crossing a pair of other lines is called a transversal." },
+    { q:"When a transversal crosses two lines, how many angles are formed in total?",
+      opts:["8","4","6","2"], a:0,
+      why:"Each crossing makes 4 angles, and there are 2 crossings, so 4 × 2 = 8 angles in total.",
+      followUp:{ q:"Any single transversal crossing a pair of lines always creates how many angles at each crossing point?", opts:["4","8","2","6"], a:0,
+        why:"Two lines crossing always make 4 angles at that one point — and a transversal has two such crossings, for 8 total." } },
+    { q:"Is it possible for all eight angles formed by a transversal to have different measurements?",
+      opts:["No — vertically opposite pairs are always equal","Yes, if the lines are not parallel","Yes, if the transversal is perpendicular","Only if the two lines are curved"], a:0,
+      why:"Each crossing has 2 pairs of vertically opposite angles that must be equal, so at most 4 different measures are possible among the 8." },
+    { q:"What is the maximum number of distinct angle measures you can find among the eight angles a transversal creates?",
+      opts:["4","8","2","6"], a:0,
+      why:"The eight angles come in four vertically-opposite pairs, and each pair is equal — so at most 4 distinct values.",
+      followUp:{ q:"If one of the eight angles measures 72°, at least how many of the other seven angles must ALSO measure exactly 72°?", opts:["At least 1 (its vertically opposite partner)","All seven of them","None of the others","Exactly 3 others"], a:0,
+        why:"Every angle has exactly one vertically-opposite partner that must equal it — so at least one other angle is also 72°." } },
+    { q:"∠1 and ∠3 in a transversal diagram are vertically opposite. If ∠1 = 118°, what is ∠3?",
+      opts:["118°","62°","90°","180°"], a:0,
+      why:"Vertically opposite angles are always equal, so ∠3 = ∠1 = 118°.",
+      followUp:{ q:"∠5 and ∠7 are vertically opposite. If ∠5 = 84°, what is ∠7?", opts:["84°","96°","42°","180°"], a:0,
+        why:"Vertically opposite angles are equal, so ∠7 = ∠5 = 84°." } }
+  ]},
+  { id:"5.6", title:"5.6 & 5.8 · Corresponding & Alternate Angles", questions:[
+    { q:"Parallel lines l and m are cut by transversal t. ∠6 = 135°. Its corresponding angle, ∠2, measures:",
+      opts:["135°","45°","90°","180°"], a:0,
+      why:"Corresponding angles formed by a transversal on parallel lines are always equal, so ∠2 = ∠6 = 135°.",
+      followUp:{ q:"Parallel lines l and m are cut by transversal t. ∠6 = 110°. Its corresponding angle, ∠2, measures:", opts:["110°","70°","90°","180°"], a:0,
+        why:"Corresponding angles are equal on parallel lines: ∠2 = ∠6 = 110°." } },
+    { q:"In the same figure, ∠5 is the linear pair of ∠6 (they sit side by side on line m). If ∠6 = 135°, what is ∠5?",
+      opts:["45°","135°","90°","315°"], a:0,
+      why:"∠5 and ∠6 sit on a straight line together, so they add to 180°. 180 − 135 = 45°.",
+      followUp:{ q:"If ∠6 = 100°, what is its linear pair ∠5?", opts:["80°","100°","20°","280°"], a:0,
+        why:"Linear pairs sum to 180°: 180 − 100 = 80°." } },
+    { q:"Parallel lines l and m are cut by transversal t. ∠3 = 50°. ∠3 and ∠6 are called interior angles (both between the lines). What is ∠6?",
+      opts:["130°","50°","90°","180°"], a:0,
+      why:"∠2 (linear pair of ∠3) is 130°, and ∠2 corresponds to ∠6 on the parallel line — so ∠6 = 130°. Interior angles on the same side of a transversal always add to 180°: 50 + 130 = 180.",
+      followUp:{ q:"Parallel lines l and m are cut by transversal t. ∠3 = 72°. What is ∠6, the interior angle on the same side?", opts:["108°","72°","18°","180°"], a:0,
+        why:"Interior angles on the same side of the transversal always add up to 180°. 180 − 72 = 108°." } },
+    { q:"In a transversal figure, ∠f = 120°. Its alternate angle ∠d is found by first taking the corresponding angle of ∠f (∠b), then the vertically-opposite angle of ∠b. What is ∠d?",
+      opts:["120°","60°","90°","180°"], a:0,
+      why:"∠b = ∠f = 120° (corresponding), and ∠d = ∠b = 120° (vertically opposite) — so ∠f = ∠d always. Alternate angles are equal.",
+      followUp:{ q:"If ∠f = 95°, what is its alternate angle ∠d?", opts:["95°","85°","47.5°","180°"], a:0,
+        why:"Alternate angles formed by a transversal on parallel lines are always equal: ∠d = ∠f = 95°." } },
+    { q:"Lines l and m are cut by transversal t. ∠a = 120° and ∠f = 70°. ∠b (linear pair of ∠a) corresponds to ∠f. Are l and m parallel?",
+      opts:["No — ∠b = 60° which doesn't equal ∠f = 70°","Yes, since 120+70 is close to 180","Yes, all crossing lines are parallel","Cannot be decided without a protractor"], a:0,
+      why:"∠b = 180 − 120 = 60°. Corresponding angles must be equal for lines to be parallel, and 60° ≠ 70°, so l and m are NOT parallel.",
+      followUp:{ q:"Lines l and m are cut by transversal t. ∠a = 100° and ∠f = 80°. ∠b (linear pair of ∠a) corresponds to ∠f. Are l and m parallel this time?", opts:["Yes — ∠b = 80° which equals ∠f","No — corresponding angles never match","Cannot be decided","Yes, but only because both are acute"], a:0,
+        why:"∠b = 180 − 100 = 80°, which equals ∠f = 80° — since corresponding angles ARE equal here, l and m must be parallel." } },
+    { q:"What are angles called that sit on the same side of a transversal, both between the two lines?",
+      opts:["Co-interior (allied) angles","Corresponding angles","Vertically opposite angles","Alternate angles"], a:0,
+      why:"Angles on the same side of the transversal, both between the parallel lines, are co-interior (allied) angles — they always add to 180°." }
+  ]},
+  { id:"5.7", title:"5.7 & 5.9 · Drawing Parallel Lines & Illusions", questions:[
+    { q:"Using a ruler and set square, you draw two lines both perpendicular to line l. What angle does each new line make with l?",
+      opts:["90°","45°","60°","180°"], a:0,
+      why:"A set square's right angle guarantees each new line meets l at exactly 90°." },
+    { q:"Both new lines meet l at 90° — treating l as the transversal, what can you say about these two corresponding angles?",
+      opts:["They are equal, so the two new lines must be parallel","They are different, so the lines cross somewhere","They can't be compared","They prove the lines are perpendicular to each other"], a:0,
+      why:"Since both corresponding angles measure 90°, they're equal — and equal corresponding angles mean the two new lines are parallel to each other." },
+    { q:"Equality of corresponding angles formed by a transversal is exactly what's needed to guarantee two lines are parallel. In proof language, this condition is:",
+      opts:["Both necessary and sufficient","Necessary but not sufficient","Sufficient but not necessary","Neither necessary nor sufficient"], a:0,
+      why:"The textbook states equal corresponding angles is both necessary AND sufficient for a pair of lines to be parallel — it works in both directions.",
+      followUp:{ q:"If a transversal crosses two lines and the corresponding angles are NOT equal, what can you conclude?", opts:["The two lines are not parallel","The two lines must be perpendicular","Nothing can be concluded","The transversal is not straight"], a:0,
+        why:"Equal corresponding angles is necessary for parallel lines — so unequal corresponding angles means the lines are definitely not parallel." } },
+    { q:"To fold a line through point A parallel to crease l using paper folding: first fold a perpendicular to l through A (call it t). What should you fold next?",
+      opts:["A line perpendicular to t, through A","A line perpendicular to l, through a different point","A diagonal fold anywhere on the paper","Fold l exactly onto itself"], a:0,
+      why:"Folding a second perpendicular — this time to t, through A — creates a line parallel to l, since both l and the new line are perpendicular to the same line t." },
+    { q:"Why does folding two lines both perpendicular to the same line t guarantee they're parallel to each other?",
+      opts:["Because they both meet t at equal (90°) corresponding angles","Because perpendicular lines are always parallel to each other","Because folding always creates parallel creases","Because t is a diagonal"], a:0,
+      why:"Both lines cross t making 90° corresponding angles — equal corresponding angles mean the lines must be parallel." },
+    { q:"Some pictures with converging or radiating straight lines create an illusion that straight, evenly-spaced lines are bent or not parallel. What's really going on?",
+      opts:["The lines are actually straight and parallel — the crossing background lines trick your eye","The lines are genuinely curved","The illusion means the lines are perpendicular","Illusions only happen with curved lines"], a:0,
+      why:"These 'parallel illusions' use straight, truly parallel lines — background patterns of angled or radiating lines trick your eye into seeing them as bent." }
+  ]}
+];
+
+// A mascot lives in the Challenge panel too — Suzu's Explore/Practice
+// instances live in other tabs' DOM and can't animate while hidden, so
+// this is a fresh, independent instance for here.
+const suzuQuiz = BTP.Mascot("suzuQuiz", SUZU_CFG);
+suzuQuiz.say("Pick a section and let's find those angles!", 2600);
+
+const QRIGHT_LINES = ["Yes! Exactly right.", "Wonderful thinking!", "You've got it!", "Beautifully reasoned!", "That's the one!"];
+const QWRONG_LINES  = ["So close! Let's see why, gently.", "Nice try — every mistake teaches us something.", "Almost — just one small step off.", "Good thinking — let's look closer together."];
+
+const sectionQuiz = BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch05", passPct:0.8, xp:10,
+  onAnswer(correct, btnEl){
+    suzuQuiz.react(correct ? "happy" : "sad");
+    suzuQuiz.say(BTP.pick(correct ? QRIGHT_LINES : QWRONG_LINES), 2200);
+    if(correct){
+      const r = btnEl.getBoundingClientRect();
+      BTP.confetti(r.left + r.width/2, r.top);
+    } else {
+      BTP.shakeEl(btnEl);
+    }
+  },
+  onFinish(passed, section){
+    suzuQuiz.react(passed ? "happy" : "idle");
+    suzuQuiz.say(
+      passed
+        ? BTP.pick(["You mastered it!", "Beautiful work — well done!", "You're a lines-and-angles star!"])
+        : "So close! A gentle look back at " + section.title + " and you'll have it — try again whenever you're ready.",
+      3400
+    );
+  }
+});
+
+/* ---------------------------------------------------------------
+   LEARN — a short animated walkthrough before the practice tabs.
+   Builds four tiny SVG diagrams (crossing lines, perpendicular,
+   transversal + corresponding angles, alternate angles) reusing the
+   same wedge geometry as Explore/Angle Match, then a 3-question
+   comprehension check with the same right/wrong treatment as the
+   rest of the chapter.
+   --------------------------------------------------------------- */
+function buildCrossDiagram(svgId, phi, labels, highlightIdxs){
+  const svg = document.getElementById(svgId);
+  svg.innerHTML = "";
+  const cx = 150, cy = 75, len = 65;
+  const geom = { P1:{x:cx,y:cy} };
+  svg.appendChild(BTP.svgEl("line",{x1:30,y1:cy,x2:270,y2:cy,stroke:"#8fa0cc","stroke-width":2}));
+  const rad = phi*Math.PI/180;
+  svg.appendChild(BTP.svgEl("line",{
+    x1:cx-len*Math.cos(rad), y1:cy-len*Math.sin(rad),
+    x2:cx+len*Math.cos(rad), y2:cy+len*Math.sin(rad),
+    stroke:"#ffc857","stroke-width":2
+  }));
+  svg.appendChild(BTP.svgEl("circle",{cx:cx,cy:cy,r:3.5,fill:"#fff"}));
+  for(let i=0;i<4;i++){
+    const val = wedgeVal(i, phi);
+    const pos = wedgePos(i, phi, geom, 42);
+    const hi = highlightIdxs.indexOf(i) !== -1;
+    const t = mkText(pos.x, pos.y, labels[i]+" "+Math.round(val)+"°", hi ? "#ff6b81" : "#8fa0cc", 12);
+    if(hi) t.classList.add("pulse-angle");
+    svg.appendChild(t);
+  }
+}
+const LGEOM = { pivotX:150, l1y:48, l2y:108, topY:12, botY:142 };
+function buildTransDiagram(svgId, phi, highlightIdxs){
+  const svg = document.getElementById(svgId);
+  svg.innerHTML = "";
+  const geom = computeGeom(phi, LGEOM);
+  drawLinesAndTransversal(svg, geom, LGEOM);
+  for(let i=0;i<8;i++){
+    const val = wedgeVal(i, phi);
+    const pos = wedgePos(i, phi, geom, 28);
+    const hi = highlightIdxs.indexOf(i) !== -1;
+    const t = mkText(pos.x, pos.y, Math.round(val)+"°", hi ? "#ff6b81" : (i<4 ? "#3ddbd9" : "#ffc857"), 11);
+    if(hi) t.classList.add("pulse-angle");
+    svg.appendChild(t);
+  }
+}
+
+const LEARN_SLIDES = ["slide0","slide1","slide2","slide3"];
+let learnI = 0;
+function paintLearnDots(){
+  document.getElementById("learnDots").innerHTML = LEARN_SLIDES.map((_,i)=>
+    '<div class="learn-dot'+(i===learnI?' on':'')+'"></div>').join("");
+}
+function showLearnSlide(i){
+  learnI = i;
+  LEARN_SLIDES.forEach((id,idx)=>document.getElementById(id).classList.toggle("on", idx===i));
+  paintLearnDots();
+  document.getElementById("learnNext").textContent = (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
+  if(i === 0){ buildCrossDiagram("ldg0", 62, ["a","b","c","d"], [0,1]); suzuLearn.say("Watch the four angles where these lines cross...", 3000); }
+  if(i === 1){ buildCrossDiagram("ldg1", 62, ["a","b","c","d"], [0,2]); }
+  if(i === 2){ buildTransDiagram("ldg2", 60, [0,4]); }
+  if(i === 3){ buildTransDiagram("ldg3", 60, [2,6]); suzuLearn.say("Got it? Let's find out!", 2200); }
+}
+document.getElementById("learnNext").onclick = ()=>{
+  if(learnI < LEARN_SLIDES.length-1){
+    showLearnSlide(learnI+1);
+  } else {
+    document.getElementById("learnSlideNav").classList.add("hide");
+    startLearnCheck();
+  }
+};
+
+const suzuLearn = BTP.Mascot("suzuLearn", SUZU_CFG);
+suzuLearn.say("Hi! I'm Suzu. Let's cross some lines together.", 3200);
+
+const LEARN_CHECK = [
+  { q:"Two lines cross and form angles a, b, c, d in order around the point. ∠a and ∠b sit next to each other on a straight line. What do we call this pair?",
+    opts:["A linear pair","Vertically opposite angles","Corresponding angles","Alternate angles"], a:0,
+    why:"Adjacent angles that together make a straight line always add to 180° — that pair is called a linear pair." },
+  { q:"∠a and ∠c sit directly opposite each other where the lines cross, and they're always equal. What are they called?",
+    opts:["Vertically opposite angles","A linear pair","Corresponding angles","Co-interior angles"], a:0,
+    why:"Angles opposite each other at a crossing are vertically opposite angles — always equal, no matter the tilt." },
+  { q:"A transversal crosses two parallel lines. The angle in the very same position at each crossing is called a ___ angle.",
+    opts:["corresponding","alternate","vertical","linear"], a:0,
+    why:"Same relative position at each crossing = corresponding angle — and on parallel lines, these are always equal." }
+];
+let lcI = 0, lcRight = 0;
+function startLearnCheck(){
+  lcI = 0; lcRight = 0;
+  document.getElementById("learnDone").classList.add("hide");
+  document.getElementById("learnCheck").classList.remove("hide");
+  loadLearnCheck();
+}
+function loadLearnCheck(){
+  const item = LEARN_CHECK[lcI];
+  document.getElementById("lcq").textContent = item.q;
+  document.getElementById("lcfb").className = "fb";
+  document.getElementById("lcnext").classList.add("hide");
+  document.getElementById("lcbar").style.width = (lcI/LEARN_CHECK.length*100) + "%";
+  const box = document.getElementById("lcopts");
+  box.innerHTML = "";
+  item.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>{
+      const bs=[...box.children]; bs.forEach(x=>x.disabled=true);
+      bs[item.a].classList.add("right");
+      const fb = document.getElementById("lcfb");
+      if(i===item.a){
+        lcRight++; BTP.addXP(5); BTP.touchStreak();
+        fb.className="fb good show";
+        fb.innerHTML="<b>"+BTP.pick(QRIGHT_LINES)+"</b> "+item.why+" <span style='opacity:.75'>+5 XP</span>";
+        BTP.toast("+5 XP");
+        suzuLearn.react("happy");
+        const r = fb.getBoundingClientRect();
+        BTP.confetti(r.left+r.width/2, r.top+10);
+      } else {
+        bs[i].classList.add("wrong");
+        fb.className="fb bad show";
+        fb.innerHTML="<b>"+BTP.pick(QWRONG_LINES)+"</b> "+item.why;
+        suzuLearn.react("sad");
+        BTP.shakeEl(fb);
+      }
+      document.getElementById("lcnext").classList.remove("hide");
+    };
+    box.appendChild(b);
+  });
+}
+document.getElementById("lcnext").onclick = ()=>{
+  lcI++;
+  if(lcI >= LEARN_CHECK.length){
+    document.getElementById("lcbar").style.width = "100%";
+    document.getElementById("learnCheck").classList.add("hide");
+    document.getElementById("learnDone").classList.remove("hide");
+    suzuLearn.say(lcRight===LEARN_CHECK.length ? "Perfect! You're ready." : "Good try — a little more practice will help.", 3000);
+  } else loadLearnCheck();
+};
+showLearnSlide(0);
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+const stage = document.getElementById("stage");
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["learn","explore","practice","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "practice" && !document.getElementById("popts").children.length) renderPractice();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+buildExploreSVG();
+</script>
+</body>
+</html>

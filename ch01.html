@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 1</title>
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Chapter 1 · Large Numbers Around Us</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab" data-p="find">Find It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel" id="p-explore">
+    <h2>How big is a lakh?</h2>
+    <p class="lede">
+      Estu had only tasted 3 varieties of rice. His country grows about <b>one lakh</b>.
+      Zoom out from a single one, all the way to one lakh, and watch the place values stack up —
+      ones, tens, hundreds, thousands, ten-thousands, and finally the lakh itself.
+    </p>
+
+    <div class="stage" id="stage">
+      <canvas id="cv"></canvas>
+      <div class="zoombar">
+        <button class="zb" id="zin">+</button>
+        <button class="zb" id="zout">&minus;</button>
+      </div>
+      <div class="hint" id="hint">drag to slide &nbsp;·&nbsp; scroll or pinch to zoom in</div>
+    </div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Reading here</div>
+        <div class="v" id="rNum">0</div>
+      </div>
+      <div class="card">
+        <div class="k">Your book says</div>
+        <div class="v words" id="rWords">zero</div>
+      </div>
+      <div class="card">
+        <div class="k">As place values</div>
+        <div class="v frac" id="rSum">0</div>
+      </div>
+    </div>
+
+    <div class="levels">
+      <div class="lv on" id="lv0">lakh</div>
+      <div class="lv" id="lv1">10-thousand</div>
+      <div class="lv" id="lv2">thousand</div>
+      <div class="lv" id="lv3">hundred</div>
+      <div class="lv" id="lv4">ten</div>
+      <div class="lv" id="lv5">one</div>
+    </div>
+  </section>
+
+  <!-- ============ FIND IT ============ -->
+  <section class="panel hide" id="p-find">
+    <h2>Find It</h2>
+    <p class="lede">I'll name a real number from the chapter. Zoom in until you can see it, then <b>tap it</b>
+      on the line. Wide zoom only gets you close — you have to zoom deep to be exact.</p>
+
+    <div class="quest">
+      <div class="q" id="fq">Find <b>75,000</b></div>
+      <div class="meta" id="fmeta">Chintamani's population, 2011 census</div>
+    </div>
+
+    <div class="bar"><i id="fbar"></i></div>
+    <div class="fb" id="ffb"></div>
+    <button class="btn hide" id="fnext">Next &rarr;</button>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Straight out of her textbook &mdash; lakhs, crores, kirtanas and blue whales.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">SECTION 1.1</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 1 — Large Numbers Around Us
+   Uses BTP.NumberLine on a 0..1,00,000 domain (6 levels: 1, 10, 100,
+   1000, 10000, 1,00,000) and BTP.setupQuiz for the Challenge tab.
+   ===================================================================== */
+
+const STEPS = [100000, 10000, 1000, 100, 10, 1];
+const STEP_NAME = {100000:"lakh", 10000:"ten-thousand", 1000:"thousand", 100:"hundred", 10:"ten", 1:"one"};
+
+const nl = BTP.NumberLine({
+  stage:"stage", canvas:"cv", zin:"zin", zout:"zout", hint:"hint",
+  domainLo:0, domainHi:100000, minSpan:20, maxSpan:100000, initialSpan:19000,
+  levels:[
+    { step:100000, h:0.60, col:"#e8edff", lw:2.4 },
+    { step:10000,  h:0.52, col:"#3ddbd9", lw:2   },
+    { step:1000,   h:0.42, col:"#8b7bff", lw:1.6 },
+    { step:100,    h:0.32, col:"#ffc857", lw:1.3 },
+    { step:10,     h:0.22, col:"#3ddc84", lw:1.1 },
+    { step:1,      h:0.14, col:"#ff6b81", lw:1   }
+  ],
+  fmtLabel:(v)=> BTP.indianCommas(v),
+  showCrosshair:true
+});
+
+let mode = "explore";
+
+/* ---------------------------------------------------------------
+   EXPLORE — read the value at the centre crosshair, rounded to
+   whatever place value is currently visible.
+   --------------------------------------------------------------- */
+function liveStep(){
+  let step = STEPS[0];
+  for(let i=1;i<STEPS.length;i++) if(nl.levelAlpha(STEPS[i]) > 0.5) step = STEPS[i];
+  return step;
+}
+
+function asPlaces(v){
+  if(v <= 0) return "0";
+  if(v >= 100000) return BTP.indianCommas(100000);
+  const places = [10000,1000,100,10,1];
+  const parts = [];
+  let rem = v;
+  places.forEach(p=>{
+    const d = Math.floor(rem/p);
+    rem -= d*p;
+    if(d>0) parts.push(BTP.indianCommas(d*p));
+  });
+  return parts.length ? parts.join(' <span style="opacity:.6">+</span> ') : "0";
+}
+
+function paintLevels(){
+  for(let i=0;i<STEPS.length;i++){
+    document.getElementById("lv"+i).classList.toggle("on", nl.levelAlpha(STEPS[i]) > 0.5);
+  }
+}
+
+nl.onFrame = function(){
+  paintLevels();
+  if(mode !== "explore") return;
+  const step = liveStep();
+  const v = nl.x2v(document.getElementById("cv").clientWidth/2);
+  const snapped = Math.round(v/step)*step;
+  document.getElementById("rNum").textContent   = BTP.indianCommas(snapped);
+  document.getElementById("rWords").textContent = BTP.numberName(snapped);
+  document.getElementById("rSum").innerHTML     = asPlaces(snapped);
+};
+
+/* ---------------------------------------------------------------
+   FIND IT — real facts and numbers from the chapter
+   --------------------------------------------------------------- */
+const FIND_SET = [
+  { v:75000, step:1000,  note:"Chintamani's population, 2011 census · Section 1.1" },
+  { v:99998, step:1,     note:"one of the boxes just before one lakh · Section 1.1" },
+  { v:45830, step:10,    note:"the comma example · Section 1.1, Reading and Writing Numbers" },
+  { v:8300,  step:100,   note:"one of Creative Chitti's numbers · Section 1.2" },
+  { v:40629, step:1,     note:"another of Creative Chitti's numbers · Section 1.2" },
+  { v:92100, step:100,   note:"Systematic Sippy's target · Section 1.2" },
+  { v:97600, step:100,   note:"a Handy Hundreds target · Section 1.2" },
+  { v:80000, step:10000, note:"about how many hairs are on your head · Section 1.1" }
+];
+let findI = 0, findTries = 0;
+
+function loadFind(){
+  const f = FIND_SET[findI];
+  nl.clearMarker(); nl.clearGhost();
+  findTries = 0;
+  nl.resetView(0, 100000);
+  document.getElementById("fq").innerHTML = "Find <b>" + BTP.indianCommas(f.v) + "</b>";
+  document.getElementById("fmeta").textContent = f.note;
+  document.getElementById("ffb").className = "fb";
+  document.getElementById("fnext").classList.add("hide");
+  document.getElementById("fbar").style.width = (findI / FIND_SET.length * 100) + "%";
+}
+
+function checkFind(v){
+  const f = FIND_SET[findI];
+  const tol = Math.max(f.step * 0.4, 1);
+  const off = Math.abs(v - f.v);
+  const fb  = document.getElementById("ffb");
+
+  if(nl.levelAlpha(f.step) < 0.5){
+    nl.setMarker({ v:v, state:"idle" });
+    fb.className = "fb bad show";
+    fb.innerHTML = "Zoom in first. You can't pin down " + BTP.indianCommas(f.v) +
+                   " precisely yet — the <b>" + STEP_NAME[f.step] +
+                   "s</b> marks aren't showing. Zoom in and look again.";
+    return;
+  }
+
+  if(off <= tol){
+    nl.setMarker({ v:f.v, state:"right" });
+    const gain = findTries === 0 ? 12 : 6;
+    BTP.addXP(gain); BTP.touchStreak();
+    fb.className = "fb good show";
+    fb.innerHTML = "<b>Got it.</b> " + BTP.indianCommas(f.v) + " is " + BTP.numberName(f.v) +
+                   ".  <span style='opacity:.75'>+" + gain + " XP</span>";
+    document.getElementById("fnext").classList.remove("hide");
+    BTP.toast("+" + gain + " XP");
+    document.getElementById("fbar").style.width = ((findI+1) / FIND_SET.length * 100) + "%";
+  } else {
+    findTries++;
+    nl.setMarker({ v:v, state:"wrong" });
+    fb.className = "fb bad show";
+    if(off > f.step * 20){
+      fb.innerHTML = "Not quite — you're a long way off. Zoom out, find the right neighbourhood, then zoom in slowly.";
+    } else if(off > f.step * 3){
+      fb.innerHTML = "Close-ish! Zoom in more so the <b>" + STEP_NAME[f.step] + "s</b> marks are easy to count.";
+    } else {
+      fb.innerHTML = "So close. Zoom in one more notch and try again.";
+      if(findTries >= 3){ nl.setGhost({ v:f.v }); fb.innerHTML += " Here, I'll show you."; }
+    }
+  }
+}
+
+document.getElementById("fnext").onclick = ()=>{
+  findI = (findI + 1) % FIND_SET.length;
+  loadFind();
+};
+
+/* ---------------------------------------------------------------
+   CHALLENGE — questions taken from the chapter itself
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"SECTION 1.1", q:"The largest 5-digit number is 99,999. What is the smallest 6-digit number?",
+    opts:["1,00,000","10,000","99,999","10,00,000"], a:0,
+    why:"Add 1 to 99,999 and every digit carries over. 1,00,000 is read as 'one lakh'." },
+
+  { src:"SECTION 1.1 · Chintamani", q:"According to the 2011 Census, Chintamani's population was about 75,000. How much less than one lakh is that?",
+    opts:["25,000","15,000","35,000","75,000"], a:0,
+    why:"1,00,000 − 75,000 = 25,000." },
+
+  { src:"SECTION 1.1 · Chintamani", q:"Chintamani's estimated population in 2024 is 1,06,000. How much more than one lakh is that?",
+    opts:["6,000","16,000","1,06,000","60,000"], a:0,
+    why:"1,06,000 − 1,00,000 = 6,000." },
+
+  { src:"SECTION 1.1 · Chintamani", q:"By how much did Chintamani's population increase, from 75,000 in 2011 to 1,06,000 in 2024?",
+    opts:["31,000","6,000","25,000","1,81,000"], a:0,
+    why:"1,06,000 − 75,000 = 31,000." },
+
+  { src:"SECTION 1.1 · Reading and Writing Numbers", q:"How do you write 27,30,000 in words?",
+    opts:["Twenty seven lakh thirty thousand","Two crore seventy lakh thirty thousand","Twenty seven lakh three thousand","Two lakh seventy three thousand"], a:0,
+    why:"27,30,000 splits as 27 lakh and 30 thousand — twenty seven lakh thirty thousand." },
+
+  { src:"SECTION 1.1 · Reading and Writing Numbers", q:"What number is 'one lakh twenty three thousand four hundred and fifty six'?",
+    opts:["1,23,456","12,3456","1,32,456","10,23,456"], a:0,
+    why:"1 lakh + 23 thousand + 456 = 1,23,456, written with the comma before the ten-thousands place." },
+
+  { src:"SECTION 1.3 · Of Crores and Crores", q:"1 crore, written in numbers, is 1 followed by how many zeroes?",
+    opts:["7","5","6","9"], a:0,
+    why:"1 crore = 1,00,00,000 — a 1 followed by 7 zeroes. (1 lakh has 5.)" },
+
+  { src:"SECTION 1.6 · Figure It Out", q:"How many lakhs make a billion?",
+    opts:["10,000 lakh","1,000 lakh","100 lakh","1,00,000 lakh"], a:0,
+    why:"1 billion = 1,00,00,00,000. Dividing by 1,00,000 (one lakh) gives 10,000 lakh." },
+
+  { src:"SECTION 1.3 · Figure It Out", q:"Compare: 500 lakhs ___ 5 million.",
+    opts:["500 lakh > 5 million","500 lakh < 5 million","500 lakh = 5 million","can't compare"], a:0,
+    why:"500 lakh = 5,00,00,000. 5 million = 50,00,000. 5,00,00,000 is bigger, so 500 lakh > 5 million." },
+
+  { src:"SECTION 1.5 · Fascinating Facts", q:"1250 × 380 is the number of kirtanas Purandaradasa is said to have composed. What is that number?",
+    opts:["4,75,000","47,500","4,50,000","3,75,000"], a:0,
+    why:"1250 × 380 = 4,75,000 — legend says he composed this many kirtanas." },
+
+  { src:"SECTION 1.5 · Fascinating Facts", q:"10,50,00,000 ÷ 700 gives roughly how many kilograms an adult blue whale can weigh?",
+    opts:["1,50,000","15,000","1,05,000","10,500"], a:0,
+    why:"10,50,00,000 ÷ 700 = 1,50,000 kg — more than the largest known land animal!" },
+
+  { src:"SECTION 1.3 · Figure It Out", q:"A thousand lakh has how many zeroes?",
+    opts:["8","5","6","7"], a:0,
+    why:"A thousand lakh = 1000 × 1,00,000 = 10,00,00,000 — a 1 followed by 8 zeroes (that's 10 crore)." }
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch01", xp:10 });
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+const stage = document.getElementById("stage");
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    mode = t.dataset.p;
+    ["explore","find","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+
+    if(mode === "find"){
+      document.getElementById("p-find").insertBefore(stage, document.querySelector("#p-find .bar"));
+      nl.onTap = checkFind;
+      loadFind();
+    } else if(mode === "explore"){
+      document.getElementById("p-explore").insertBefore(stage, document.querySelector("#p-explore .readout"));
+      nl.onTap = null;
+      nl.clearMarker(); nl.clearGhost();
+    } else {
+      nl.onTap = null;
+    }
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+BTP.paintStats();
+nl.start();
+</script>
+</body>
+</html>
