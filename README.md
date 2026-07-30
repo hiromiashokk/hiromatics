@@ -29,4 +29,4 @@ Hiromatics is a browser-based interactive learning site created by Hiromi for Gr
 
 ## License
 
-This repository does not include a formal license file. Add one if you intend to share or publish the project.
+This project is licensed under the MIT License. See `LICENSE` for details.
