@@ -85,6 +85,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -168,24 +169,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Straight out of her textbook &mdash; lakhs, crores, kirtanas and blue whales.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz01"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 1.1</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -336,56 +341,112 @@ document.getElementById("fnext").onclick = ()=>{
 /* ---------------------------------------------------------------
    CHALLENGE — questions taken from the chapter itself
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 1.1", q:"The largest 5-digit number is 99,999. What is the smallest 6-digit number?",
-    opts:["1,00,000","10,000","99,999","10,00,000"], a:0,
-    why:"Add 1 to 99,999 and every digit carries over. 1,00,000 is read as 'one lakh'." },
-
-  { src:"SECTION 1.1 · Chintamani", q:"According to the 2011 Census, Chintamani's population was about 75,000. How much less than one lakh is that?",
-    opts:["25,000","15,000","35,000","75,000"], a:0,
-    why:"1,00,000 − 75,000 = 25,000." },
-
-  { src:"SECTION 1.1 · Chintamani", q:"Chintamani's estimated population in 2024 is 1,06,000. How much more than one lakh is that?",
-    opts:["6,000","16,000","1,06,000","60,000"], a:0,
-    why:"1,06,000 − 1,00,000 = 6,000." },
-
-  { src:"SECTION 1.1 · Chintamani", q:"By how much did Chintamani's population increase, from 75,000 in 2011 to 1,06,000 in 2024?",
-    opts:["31,000","6,000","25,000","1,81,000"], a:0,
-    why:"1,06,000 − 75,000 = 31,000." },
-
-  { src:"SECTION 1.1 · Reading and Writing Numbers", q:"How do you write 27,30,000 in words?",
-    opts:["Twenty seven lakh thirty thousand","Two crore seventy lakh thirty thousand","Twenty seven lakh three thousand","Two lakh seventy three thousand"], a:0,
-    why:"27,30,000 splits as 27 lakh and 30 thousand — twenty seven lakh thirty thousand." },
-
-  { src:"SECTION 1.1 · Reading and Writing Numbers", q:"What number is 'one lakh twenty three thousand four hundred and fifty six'?",
-    opts:["1,23,456","12,3456","1,32,456","10,23,456"], a:0,
-    why:"1 lakh + 23 thousand + 456 = 1,23,456, written with the comma before the ten-thousands place." },
-
-  { src:"SECTION 1.3 · Of Crores and Crores", q:"1 crore, written in numbers, is 1 followed by how many zeroes?",
-    opts:["7","5","6","9"], a:0,
-    why:"1 crore = 1,00,00,000 — a 1 followed by 7 zeroes. (1 lakh has 5.)" },
-
-  { src:"SECTION 1.6 · Figure It Out", q:"How many lakhs make a billion?",
-    opts:["10,000 lakh","1,000 lakh","100 lakh","1,00,000 lakh"], a:0,
-    why:"1 billion = 1,00,00,00,000. Dividing by 1,00,000 (one lakh) gives 10,000 lakh." },
-
-  { src:"SECTION 1.3 · Figure It Out", q:"Compare: 500 lakhs ___ 5 million.",
-    opts:["500 lakh > 5 million","500 lakh < 5 million","500 lakh = 5 million","can't compare"], a:0,
-    why:"500 lakh = 5,00,00,000. 5 million = 50,00,000. 5,00,00,000 is bigger, so 500 lakh > 5 million." },
-
-  { src:"SECTION 1.5 · Fascinating Facts", q:"1250 × 380 is the number of kirtanas Purandaradasa is said to have composed. What is that number?",
-    opts:["4,75,000","47,500","4,50,000","3,75,000"], a:0,
-    why:"1250 × 380 = 4,75,000 — legend says he composed this many kirtanas." },
-
-  { src:"SECTION 1.5 · Fascinating Facts", q:"10,50,00,000 ÷ 700 gives roughly how many kilograms an adult blue whale can weigh?",
-    opts:["1,50,000","15,000","1,05,000","10,500"], a:0,
-    why:"10,50,00,000 ÷ 700 = 1,50,000 kg — more than the largest known land animal!" },
-
-  { src:"SECTION 1.3 · Figure It Out", q:"A thousand lakh has how many zeroes?",
-    opts:["8","5","6","7"], a:0,
-    why:"A thousand lakh = 1000 × 1,00,000 = 10,00,00,000 — a 1 followed by 8 zeroes (that's 10 crore)." }
+const SECTIONS = [
+  {
+    id: "1.1",
+    title: "1.1 · A Lakh Varieties!",
+    questions: [
+      { q:"The largest 5-digit number is 99,999. What is the smallest 6-digit number? 🌾",
+        opts:["1,00,000","10,000","99,999","10,00,000"], a:0,
+        why:"Add 1 to 99,999 and every digit carries over to give 1,00,000.",
+        followUp:{ q:"1,00,000 is read as… 🗣️",
+          opts:["one lakh","one crore","ten thousand","one million"], a:0,
+          why:"1,00,000 is one lakh in the Indian system." } },
+      { q:"Chintamani's population was about 75,000. How much less than one lakh is that? 📉",
+        opts:["25,000","15,000","35,000","75,000"], a:0,
+        why:"1,00,000 − 75,000 = 25,000.",
+        followUp:{ q:"One lakh minus 75,000 equals… ➖",
+          opts:["25,000","35,000","5,000","15,000"], a:0,
+          why:"100000 − 75000 = 25000." } },
+      { q:"How do you write 27,30,000 in words? 📝",
+        opts:["Twenty seven lakh thirty thousand","Two crore seventy lakh thirty thousand","Twenty seven lakh three thousand","Two lakh seventy three thousand"], a:0,
+        why:"27,30,000 splits as 27 lakh and 30 thousand.",
+        followUp:{ q:"In 27,30,000 the '27' stands for how many… 🔢",
+          opts:["lakhs","thousands","crores","hundreds"], a:0,
+          why:"The 27 sits in the lakh places, so 27 lakh." } },
+      { q:"What number is 'one lakh twenty three thousand four hundred and fifty six'? 🔢",
+        opts:["1,23,456","12,3456","1,32,456","10,23,456"], a:0,
+        why:"1 lakh + 23 thousand + 456 = 1,23,456.",
+        followUp:{ q:"How many digits does one lakh have? 🔢",
+          opts:["6","5","7","4"], a:0,
+          why:"1,00,000 has 6 digits (a 1 and five zeros)." } },
+      { q:"Chintamani grew from 75,000 (2011) to 1,06,000 (2024). By how much? 📈",
+        opts:["31,000","6,000","25,000","1,81,000"], a:0,
+        why:"1,06,000 − 75,000 = 31,000.",
+        followUp:{ q:"1,06,000 is how much MORE than one lakh? 📈",
+          opts:["6,000","16,000","60,000","1,000"], a:0,
+          why:"1,06,000 − 1,00,000 = 6,000." } }
+    ]
+  },
+  {
+    id: "1.3",
+    title: "1.3 · Of Crores and Crores!",
+    questions: [
+      { q:"1 crore, written in numbers, is 1 followed by how many zeroes? 0️⃣",
+        opts:["7","5","6","9"], a:0,
+        why:"1 crore = 1,00,00,000 — a 1 followed by 7 zeroes.",
+        followUp:{ q:"1 crore equals how many lakhs? 🔢",
+          opts:["100","10","1000","50"], a:0,
+          why:"1 crore = 100 lakh = 1,00,00,000." } },
+      { q:"A thousand lakh has how many zeroes? 🔟",
+        opts:["8","5","6","7"], a:0,
+        why:"1000 × 1,00,000 = 10,00,00,000 — a 1 followed by 8 zeroes (10 crore).",
+        followUp:{ q:"A thousand lakh is the same as… 🔢",
+          opts:["10 crore","1 crore","100 crore","1 lakh"], a:0,
+          why:"10,00,00,000 is 10 crore." } },
+      { q:"How many lakhs make a billion? 🌍",
+        opts:["10,000 lakh","1,000 lakh","100 lakh","1,00,000 lakh"], a:0,
+        why:"1 billion = 1,00,00,00,000; dividing by one lakh gives 10,000 lakh.",
+        followUp:{ q:"1 billion is a 1 followed by how many zeroes? 0️⃣",
+          opts:["9","7","6","12"], a:0,
+          why:"A billion is 1,00,00,00,000 — nine zeroes." } },
+      { q:"Compare: 500 lakh ___ 5 million. ⚖️",
+        opts:["500 lakh > 5 million","500 lakh < 5 million","500 lakh = 5 million","can't compare"], a:0,
+        why:"500 lakh = 5,00,00,000 and 5 million = 50,00,000, so 500 lakh is bigger.",
+        followUp:{ q:"500 lakh written in digits is… 🔢",
+          opts:["5,00,00,000","50,00,000","5,00,000","5,00,00,00,000"], a:0,
+          why:"500 × 1,00,000 = 5,00,00,000." } },
+      { q:"Legend says Purandaradasa composed 1250 × 380 kirtanas. What is that number? 🎵",
+        opts:["4,75,000","47,500","4,50,000","3,75,000"], a:0,
+        why:"1250 × 380 = 4,75,000.",
+        followUp:{ q:"Which is bigger, 1 crore or 1 lakh? 🔢",
+          opts:["1 crore","1 lakh","they are equal","depends"], a:0,
+          why:"1 crore = 100 lakh, so a crore is much bigger." } }
+    ]
+  },
+  {
+    id: "1.4",
+    title: "1.4 · Exact and Approximate Values",
+    questions: [
+      { q:"Rounded to the nearest lakh, 4,75,000 is about… 🎯",
+        opts:["5,00,000","4,00,000","4,50,000","5,50,000"], a:0,
+        why:"75,000 is more than half a lakh, so it rounds up to 5,00,000.",
+        followUp:{ q:"When rounding, you look at the… 🎯",
+          opts:["next digit down","first digit","last zero","colour"], a:0,
+          why:"The following digit decides whether you round up or down." } },
+      { q:"A census population like 'about 75,000' is an example of… 🐋",
+        opts:["an approximate value","an exact value","a wrong value","a fraction"], a:0,
+        why:"Census figures are estimates rounded to convenient numbers — approximate values.",
+        followUp:{ q:"The exact number of students in your class (say 32) is… ✅",
+          opts:["an exact value","an approximate value","an estimate","a guess"], a:0,
+          why:"A direct count gives an exact value." } },
+      { q:"To estimate 3,178 × 21 quickly, round to… 🧮",
+        opts:["3,000 × 20 = 60,000","3,178 × 21 exactly","4,000 × 30","3,000 × 100"], a:0,
+        why:"Rounding to 3,000 and 20 gives a fast estimate of 60,000.",
+        followUp:{ q:"Rounding before multiplying makes mental math… 🧠",
+          opts:["easier","harder","impossible","exact"], a:0,
+          why:"Nicer round numbers are quicker to multiply in your head." } },
+      { q:"A plane flies at about 10,000 m. Divided by 40, the lower estimate is… ✈️",
+        opts:["250","400","25","2500"], a:0,
+        why:"10,000 ÷ 40 = 250.",
+        followUp:{ q:"Dividing a rounded number gives you an… 🧮",
+          opts:["estimate","exact answer","fraction","remainder"], a:0,
+          why:"Using rounded inputs produces an estimate, not an exact figure." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch01", xp:10 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch01", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz01", "pirate") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -404,14 +465,15 @@ document.querySelectorAll(".tab").forEach(t=>{
       document.getElementById("p-find").insertBefore(stage, document.querySelector("#p-find .bar"));
       nl.onTap = checkFind;
       loadFind();
+      nl.resize();
     } else if(mode === "explore"){
       document.getElementById("p-explore").insertBefore(stage, document.querySelector("#p-explore .readout"));
       nl.onTap = null;
       nl.clearMarker(); nl.clearGhost();
+      nl.resize();
     } else {
       nl.onTap = null;
     }
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

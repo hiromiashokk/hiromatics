@@ -95,6 +95,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -173,24 +174,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Mallika's lunch money, Irfan's change, Hira's coins — real problems from the chapter.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz02"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 2.1</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -332,64 +337,118 @@ document.getElementById("snext").onclick = ()=>{
 /* ---------------------------------------------------------------
    CHALLENGE
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"FIGURE IT OUT 1(b)", q:"Simplify: 39 − 2 × 6 + 11",
-    opts:["38","54","27","50"], a:0,
-    why:"Terms are 39, −2×6 (=−12), and 11. 39−12+11 = 38." },
-
-  { src:"FIGURE IT OUT 1(d)", q:"Simplify: 48 − 10 × 2 + 16 ÷ 2",
-    opts:["36","58","20","44"], a:0,
-    why:"Terms: 48, −10×2 (=−20), 16÷2 (=8). 48−20+8 = 36." },
-
-  { src:"FIGURE IT OUT 1(e)", q:"Simplify: 6 × 3 − 4 × 8 × 5",
-    opts:["−142","142","−40","88"], a:0,
-    why:"Terms: 6×3 (=18) and −4×8×5 (=−160). 18−160 = −142." },
-
-  { src:"REMOVING BRACKETS — I", q:"Simplify: 200 − (40 + 3)",
-    opts:["157","163","237","197"], a:0,
-    why:"Removing a bracket after a minus sign flips the signs inside: 200−40−3 = 157." },
-
-  { src:"EXAMPLE 13", q:"Simplify: 500 − (250 − 100)",
-    opts:["350","150","450","250"], a:0,
-    why:"The inner minus flips to a plus: 500−250+100 = 350." },
-
-  { src:"EXAMPLE 14 · Hira's coins", q:"Simplify: 28 + (35 − 10)",
-    opts:["53","3","63","13"], a:0,
-    why:"No sign flip here — the bracket isn't preceded by a minus. 28+35−10 = 53." },
-
-  { src:"EXAMPLE 2 · marbles", q:"Which is greater: 1023 + 125 or 1022 + 128?",
-    opts:["1022 + 128","1023 + 125","They are equal","Cannot tell"], a:0,
-    why:"1023 is only 1 more than 1022, but 128 is 3 more than 125 — so 1022+128 wins by 2." },
-
-  { src:"EXAMPLE 3 · marbles", q:"Which is greater: 113 − 25 or 112 − 24?",
-    opts:["They are equal","113 − 25","112 − 24","Cannot tell"], a:0,
-    why:"113 is 1 more than 112, but 25 is also 1 more than 24 — the extra marble is lost again. They're equal." },
-
-  { src:"SECTION 2.2 · distributive property", q:"Which expression equals 3 × (5 + 8)?",
-    opts:["3×5 + 3×8","3×5 + 8","3 + 5×8","5 + 3×8"], a:0,
-    why:"Multiplying a sum is the same as the sum of the multiples: 3×(5+8) = 3×5 + 3×8." },
-
-  { src:"EXAMPLE 1 · Mallika's lunch", q:"Mallika spends ₹25 on lunch every school day, Monday to Friday. What's the total for the week?",
-    opts:["₹125","₹100","₹150","₹25"], a:0,
-    why:"The expression is 5 × 25 = 125." },
-
-  { src:"FIGURE IT OUT 3(b)", q:"Metro tickets: ₹40 for an adult, ₹20 for a child. What's the cost for 4 adults and 3 children?",
-    opts:["₹220","₹200","₹180","₹240"], a:0,
-    why:"4×40 + 3×20 = 160+60 = 220." },
-
-  { src:"FIGURE IT OUT 3(b)", q:"What's the cost for two groups of 3 adults each, at ₹40 per adult ticket?",
-    opts:["₹240","₹220","₹120","₹180"], a:0,
-    why:"2 × (3×40) = 2×120 = 240." },
-
-  { src:"TERMS IN EXPRESSIONS", q:"What are the terms of the expression 83 − 14?",
-    opts:["83 and −14","83 and 14","−83 and 14","83−14 is a single term"], a:0,
-    why:"Subtracting 14 is the same as adding −14, so the terms are 83 and −14." },
-
-  { src:"FIGURE IT OUT 2 · Melvin's stories", q:"Melvin reads a two-page story every day except Tuesdays and Saturdays. Which expression gives the number of stories in 8 weeks?",
-    opts:["(7 − 2) × 8","7 × 2 × 8","8 × 7","(7 + 2) × 8"], a:0,
-    why:"5 reading days a week (7 minus the 2 skipped days), for 8 weeks: (7−2)×8." }
+const SECTIONS = [
+  {
+    id: "2.1",
+    title: "2.1 · Simple Expressions",
+    questions: [
+      { q:"Simplify: 39 − 2 × 6 + 11 🧮",
+        opts:["38","54","27","50"], a:0,
+        why:"Terms are 39, −2×6 (=−12) and 11. 39−12+11 = 38.",
+        followUp:{ q:"In 39 − 2 × 6 + 11, which do you do first? ✖️",
+          opts:["the multiplication 2×6","the subtraction","the addition","left to right"], a:0,
+          why:"Multiplication is done before addition and subtraction." } },
+      { q:"Simplify: 48 − 10 × 2 + 16 ÷ 2 ➗",
+        opts:["36","58","20","44"], a:0,
+        why:"Terms: 48, −10×2 (=−20) and 16÷2 (=8). 48−20+8 = 36.",
+        followUp:{ q:"× and ÷ are always done before… ➕",
+          opts:["+ and −","brackets","nothing","the last term"], a:0,
+          why:"Multiplication and division come before addition and subtraction." } },
+      { q:"Simplify: 6 × 3 − 4 × 8 × 5 ➖",
+        opts:["−142","142","−40","88"], a:0,
+        why:"Terms: 6×3 (=18) and −4×8×5 (=−160). 18−160 = −142.",
+        followUp:{ q:"The two terms of 6×3 − 4×8×5 are 18 and… 🔢",
+          opts:["−160","160","−40","−18"], a:0,
+          why:"−4×8×5 = −160." } },
+      { q:"What are the terms of the expression 83 − 14? 🔢",
+        opts:["83 and −14","83 and 14","−83 and 14","83−14 is one term"], a:0,
+        why:"Subtracting 14 is the same as adding −14, so the terms are 83 and −14.",
+        followUp:{ q:"Subtracting 14 is the same as adding… ➖",
+          opts:["−14","14","41","−41"], a:0,
+          why:"Subtraction becomes adding the inverse, −14." } },
+      { q:"Evaluate 30 + 5 × 4 (the marbles problem) 🔴",
+        opts:["50","140","35","90"], a:0,
+        why:"Multiply first: 5×4 = 20, then 30+20 = 50.",
+        followUp:{ q:"Doing 5 × 4 first gives… ✖️",
+          opts:["20","9","54","45"], a:0,
+          why:"5 × 4 = 20, then add 30." } }
+    ]
+  },
+  {
+    id: "2.2",
+    title: "2.2 · Brackets in Expressions",
+    questions: [
+      { q:"Simplify: 200 − (40 + 3) 🧾",
+        opts:["157","163","237","197"], a:0,
+        why:"A minus before a bracket flips the signs inside: 200−40−3 = 157.",
+        followUp:{ q:"A minus sign before a bracket makes you… ➖",
+          opts:["flip the signs inside","keep the signs","add first","ignore the bracket"], a:0,
+          why:"Every sign inside the bracket is flipped." } },
+      { q:"Simplify: 500 − (250 − 100) 💰",
+        opts:["350","150","450","250"], a:0,
+        why:"The inner −100 becomes +100: 500−250+100 = 350.",
+        followUp:{ q:"Inside 500 − (250 − 100), the −100 becomes… ➕",
+          opts:["+100","−100","0","−200"], a:0,
+          why:"The outer minus flips −100 to +100." } },
+      { q:"Simplify: 28 + (35 − 10) 🪙",
+        opts:["53","3","63","13"], a:0,
+        why:"No sign flip here — the bracket follows a plus. 28+35−10 = 53.",
+        followUp:{ q:"Is there a sign flip in 28 + (35 − 10)? 🤔",
+          opts:["No — the bracket follows a plus","Yes, flip everything","Yes, flip the 35","Cannot tell"], a:0,
+          why:"Only a leading minus flips signs; a plus leaves them as-is." } },
+      { q:"Irfan pays ₹100 for items costing (30 + 41). His change is 100 − (30 + 41) = ? 💵",
+        opts:["29","39","19","71"], a:0,
+        why:"Evaluate the bracket first: 30+41 = 71, then 100−71 = 29.",
+        followUp:{ q:"The value inside (30 + 41) is… 🧾",
+          opts:["71","61","81","70"], a:0,
+          why:"30 + 41 = 71." } },
+      { q:"Brackets tell you to evaluate what first? ⏹️",
+        opts:["the expression inside them","the last term","the first number","nothing special"], a:0,
+        why:"Whatever is inside the brackets is worked out before the rest.",
+        followUp:{ q:"Brackets in maths work like… 📖",
+          opts:["punctuation in language","decoration","optional extras","a full stop only"], a:0,
+          why:"They remove confusion, just as punctuation does in a sentence." } }
+    ]
+  },
+  {
+    id: "2.3",
+    title: "2.3 · Comparing Expressions",
+    questions: [
+      { q:"Which is greater: 1023 + 125 or 1022 + 128? ⚖️",
+        opts:["1022 + 128","1023 + 125","They are equal","Cannot tell"], a:0,
+        why:"1023 is 1 more than 1022, but 128 is 3 more than 125 — so 1022+128 wins by 2.",
+        followUp:{ q:"By how much does 1022 + 128 beat 1023 + 125? 🔢",
+          opts:["2","1","3","0"], a:0,
+          why:"It gains 3 but loses 1, a net of +2." } },
+      { q:"Which is greater: 113 − 25 or 112 − 24? 🟰",
+        opts:["They are equal","113 − 25","112 − 24","Cannot tell"], a:0,
+        why:"113 is 1 more than 112, but 25 is also 1 more than 24 — the extra cancels. They're equal.",
+        followUp:{ q:"The extra 1 on each side… ↔️",
+          opts:["cancels out","doubles","adds up","cannot be compared"], a:0,
+          why:"Adding 1 and subtracting 1 leaves the value unchanged." } },
+      { q:"Which expression equals 3 × (5 + 8)? ✖️",
+        opts:["3×5 + 3×8","3×5 + 8","3 + 5×8","5 + 3×8"], a:0,
+        why:"Multiplying a sum equals the sum of the multiples: 3×(5+8) = 3×5 + 3×8.",
+        followUp:{ q:"This spreading of a multiply over a sum is the… 📐",
+          opts:["distributive property","commutative property","identity property","order property"], a:0,
+          why:"It is the distributive property of multiplication over addition." } },
+      { q:"A quick way to do 6 × 21 is 6 × (20 + 1) = ? ⚡",
+        opts:["126","120","121","132"], a:0,
+        why:"6×20 + 6×1 = 120 + 6 = 126.",
+        followUp:{ q:"6 × 20 equals… ✖️",
+          opts:["120","126","260","112"], a:0,
+          why:"6 × 20 = 120, then add 6×1." } },
+      { q:"Metro tickets: ₹40 adult, ₹20 child. Cost for 4 adults and 3 children? 🚇",
+        opts:["₹220","₹200","₹180","₹240"], a:0,
+        why:"4×40 + 3×20 = 160 + 60 = 220.",
+        followUp:{ q:"The child part, 3 × 20, comes to… 🎟️",
+          opts:["60","50","23","320"], a:0,
+          why:"3 × 20 = 60." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch02", xp:10, count:8 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch02", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz02", "spark") });
 
 /* ---------------------------------------------------------------
    TABS + GO
@@ -402,7 +461,6 @@ document.querySelectorAll(".tab").forEach(t=>{
     ["learn","explore","simplify","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

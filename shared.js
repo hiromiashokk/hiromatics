@@ -302,6 +302,7 @@ BTP.setupQuiz = function(QUESTIONS, opts){
    Required markup inside the Learn <section class="panel">:
      <div class="learn-slide on" id="lsld0">…</div>  (lsld1, lsld2, …)
      <div class="learn-nav" id="learnSlideNav">
+       <button class="btn ghost" id="learnBack">&larr; Back</button>
        <div class="learn-dots" id="learnDots"></div>
        <button class="btn" id="learnNext">Next &rarr;</button>
      </div>
@@ -345,7 +346,9 @@ BTP.setupLearn = function(opts){
     dots();
     const nx = el("learnNext");
     if(nx) nx.textContent = (i===n-1) ? "Let's check! \u2192" : "Next \u2192";
-    if(m && say[i]) m.say(say[i], 3200);
+    const bk = el("learnBack");
+    if(bk) bk.disabled = (i === 0);
+    if(m && say[i]) m.say(say[i]);
     if(m) m.react(i===n-1 ? "happy" : "idle");
   }
   const nextBtn = el("learnNext");
@@ -354,6 +357,10 @@ BTP.setupLearn = function(opts){
     const nav = el("learnSlideNav");
     if(nav) nav.classList.add("hide");
     if(CHECK.length) startCheck(); else finish();
+  };
+  const backBtn = el("learnBack");
+  if(backBtn) backBtn.onclick = ()=>{
+    if(cur > 0) show(cur - 1);
   };
 
   function startCheck(){
@@ -451,6 +458,10 @@ BTP.setupSectionQuiz = function(SECTIONS, opts){
   const chapterId = opts.chapterId || "chapter";
   const passPct = opts.passPct || 0.8;
   const xpPer = opts.xp || 10;
+  const qMascot = opts.mascot || null;
+  const SEC_OK  = ["Yes! Exactly right.", "Nailed it.", "Great work!", "Boom!"];
+  const SEC_NO  = ["Not quite — check the idea.", "Close! Look again.", "Almost there."];
+  const SEC_WIN = ["You mastered it!", "Amazing work!", "Section champion!"];
 
   const SCORE_KEY = "btp.sections.v1";
   function loadScores(){
@@ -548,6 +559,16 @@ BTP.setupSectionQuiz = function(SECTIONS, opts){
       }
     }
     document.getElementById("qnext").classList.remove("hide");
+    if(qMascot){
+      qMascot.react(correct ? "happy" : "sad");
+      qMascot.say(BTP.pick(correct ? SEC_OK : SEC_NO), 2200);
+      if(correct){
+        const r = bs[i].getBoundingClientRect();
+        BTP.confetti(r.left + r.width/2, r.top);
+      } else {
+        BTP.shakeEl(bs[i]);
+      }
+    }
     if(opts.onAnswer) opts.onAnswer(correct, bs[i]);
   }
 
@@ -583,6 +604,14 @@ BTP.setupSectionQuiz = function(SECTIONS, opts){
 
     const allPassed = SECTIONS.every(s=>{ const b = getBest(s.id); return b && b.passed; });
     if(allPassed) BTP.markDone(chapterId);
+    if(qMascot){
+      qMascot.react(passed ? "happy" : "idle");
+      qMascot.say(
+        passed ? BTP.pick(SEC_WIN)
+               : "So close! Review " + curSection.title +
+                 " and try again whenever you're ready.",
+        3400);
+    }
     if(opts.onFinish) opts.onFinish(passed, curSection);
   }
 

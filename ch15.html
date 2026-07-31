@@ -75,6 +75,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -146,24 +147,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Straight out of the chapter's weighing scale, matchsticks, and money puzzles.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz15"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 7.1</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -358,48 +363,136 @@ const practiceQuiz = makeMiniQuiz(PRACTICE, {
 /* ---------------------------------------------------------------
    CHALLENGE — real Figure-it-Out & worked-example questions
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 7.1 · unknown weights", q:"Two bread slices weigh 2 each; a fried egg is e. The scale reads 2+2+2 = e+e (Fig. 7.6). What is e?",
-    opts:["3","4","6","2"], a:0, why:"6 = e + e, so 2e = 6 and e = 3." },
-
-  { src:"SECTION 7.1 · matchsticks", q:"A matchstick triangle-chain has 2n+1 sticks at position n. Jasmine used exactly 99 sticks. Which position is that?",
-    opts:["49","50","48","99"], a:0, why:"2n + 1 = 99, so 2n = 98 and n = 49." },
-
-  { src:"SECTION 7.2 · trial and error", q:"Solving 2n + 1 = 99 by trial: at n = 49, LHS = 99 exactly. What was LHS at n = 50?",
-    opts:["101","99","100","98"], a:0, why:"2 × 50 + 1 = 101 — a bit too high, which is how the book zeroes in on n = 49." },
-
-  { src:"FIGURE IT OUT 7.2", q:"Solve: 3x − 10 = 35", opts:["15","45","8.33","25"], a:0,
-    why:"Add 10: 3x = 45. Divide by 3: x = 15." },
-
-  { src:"FIGURE IT OUT 7.2", q:"Solve: 3u − 7 = 2u + 3", opts:["10","4","-10","2"], a:0,
-    why:"Subtract 2u from both sides: u − 7 = 3, so u = 10." },
-
-  { src:"FIGURE IT OUT 7.2", q:"Solve: u/15 = 6", opts:["90","9","2.5","21"], a:0,
-    why:"Multiply both sides by 15: u = 6 × 15 = 90." },
-
-  { src:"FIGURE IT OUT 7.2 · the brick", q:"The weight of a brick is 1 kg more than half its own weight. How heavy is the brick?",
-    opts:["2 kg","1 kg","3 kg","4 kg"], a:0, why:"w = 1 + w/2, so w/2 = 1, giving w = 2 kg." },
-
-  { src:"FIGURE IT OUT 7.2", q:"One quarter of a number, increased by 9, equals the number itself. What is the number?",
-    opts:["12","36","9","4"], a:0, why:"n/4 + 9 = n, so 9 = 3n/4, giving n = 12." },
-
-  { src:"FIGURE IT OUT 7.3 · the taxi", q:"A taxi charges a fixed ₹800 plus ₹20 per km. A ride costs ₹2200. How many km were travelled?",
-    opts:["70","110","90","60"], a:0, why:"800 + 20x = 2200, so 20x = 1400 and x = 70 km." },
-
-  { src:"FIGURE IT OUT 7.3", q:"The sum of two numbers is 76. One number is three times the other. What are the numbers?",
-    opts:["19 and 57","38 and 38","20 and 56","25 and 51"], a:0,
-    why:"x + 3x = 76, so 4x = 76 and x = 19; the other is 3 × 19 = 57." },
-
-  { src:"SECTION 7.4 · Bhāskarāchārya, 1150 CE", q:"One man has ₹300 and 6 horses; another has 10 horses and a ₹100 debt. Equally rich: 300 + 6x = 10x − 100. What is the price of one horse, x?",
-    opts:["₹100","₹400","₹40","₹25"], a:0, why:"400 + 6x = 10x, so 400 = 4x and x = ₹100." },
-
-  { src:"SECTION 7.2 · Madhubanti's party", q:"Snacks cost ₹25 a plate plus a ₹50 delivery fee, out of a ₹500 budget for 5 family members plus friends. How many friends can she invite?",
-    opts:["13","18","20","8"], a:0, why:"25p + 50 = 500 gives p = 18 people total; minus 5 family members leaves 13 friends." },
-
-  { src:"IT'S PUZZLE TIME · a magic trick", q:"Think of a number. Double it. Add 10. Halve the result. Subtract your original number. Add 3. What do you always get?",
-    opts:["8","5","10","3"], a:0, why:"(2x + 10)/2 − x + 3 = (x + 5) − x + 3 = 8, no matter what x was." }
+const SECTIONS = [
+  {
+    id: "7.1",
+    title: "7.1 · Find the Unknowns",
+    questions: [
+      { q:"Two bread slices weigh 2 each; a fried egg weighs e. The scale balances: 2+2+2 = e+e. What is e? 🍳",
+        opts:["3","4","6","2"], a:0,
+        why:"6 = e + e means 2e = 6, so e = 3.",
+        followUp:{ q:"If 2e = 6, then e = … 🍳",
+          opts:["3","4","12","6"], a:0,
+          why:"Divide both sides by 2: e = 6 ÷ 2 = 3." } },
+      { q:"A matchstick triangle-chain uses 2n+1 sticks at position n. Jasmine used exactly 99 sticks. Which position is that? 🔥",
+        opts:["49","50","48","99"], a:0,
+        why:"2n + 1 = 99, so 2n = 98 and n = 49.",
+        followUp:{ q:"From 2n = 98, the value of n is… 🔥",
+          opts:["49","98","96","47"], a:0,
+          why:"Divide by 2: n = 98 ÷ 2 = 49." } },
+      { q:"An equation behaves most like a… ⚖️",
+        opts:["balanced weighing scale","one-way arrow","broken see-saw","random number"], a:0,
+        why:"Both sides of an equation are equal, like a balanced scale.",
+        followUp:{ q:"To keep a scale (and equation) balanced, both sides must stay… ⚖️",
+          opts:["equal","heavier on the left","empty","different"], a:0,
+          why:"The two sides must remain equal." } },
+      { q:"In the expression x + 5, the letter x is called a… 🔤",
+        opts:["variable","constant","total","unit"], a:0,
+        why:"A letter standing for an unknown number is a variable.",
+        followUp:{ q:"In x + 5, the number 5 is a… 🔢",
+          opts:["constant","variable","unknown","guess"], a:0,
+          why:"5 doesn't change, so it's a constant." } },
+      { q:"Two apples plus a 3-kg weight balance a 7-kg weight. How heavy is each apple? 🍎",
+        opts:["2 kg","3 kg","4 kg","5 kg"], a:0,
+        why:"2a + 3 = 7, so 2a = 4 and a = 2 kg.",
+        followUp:{ q:"From 2a = 4, each apple weighs… 🍎",
+          opts:["2 kg","4 kg","1 kg","8 kg"], a:0,
+          why:"a = 4 ÷ 2 = 2 kg." } },
+      { q:"A number tripled equals 27. What is the number? 🔢",
+        opts:["9","24","81","30"], a:0,
+        why:"3n = 27, so n = 27 ÷ 3 = 9.",
+        followUp:{ q:"'Tripled' means multiplied by… 🔢",
+          opts:["3","2","27","9"], a:0,
+          why:"To triple is to multiply by 3." } }
+    ]
+  },
+  {
+    id: "7.2",
+    title: "7.2 · Solving Equations Systematically",
+    questions: [
+      { q:"Solve: 3x − 10 = 35 ➕",
+        opts:["15","45","25","8"], a:0,
+        why:"Add 10 to both sides: 3x = 45. Divide by 3: x = 15.",
+        followUp:{ q:"After adding 10, the equation 3x = 45 gives x = … ➗",
+          opts:["15","45","135","5"], a:0,
+          why:"x = 45 ÷ 3 = 15." } },
+      { q:"Solve: 3u − 7 = 2u + 3 🔀",
+        opts:["10","4","−10","2"], a:0,
+        why:"Subtract 2u from both sides: u − 7 = 3, so u = 10.",
+        followUp:{ q:"After subtracting 2u, you get u − 7 = 3, so u = … 🔀",
+          opts:["10","3","−4","7"], a:0,
+          why:"Add 7: u = 3 + 7 = 10." } },
+      { q:"To keep an equation true while solving, you must… ⚖️",
+        opts:["do the same to both sides","only change the left side","add to just one side","guess randomly"], a:0,
+        why:"Both sides must change the same way to stay equal.",
+        followUp:{ q:"Changing only one side of an equation makes it… ⚖️",
+          opts:["unbalanced (untrue)","still balanced","simpler","solved"], a:0,
+          why:"It breaks the balance, so the equation is no longer true." } },
+      { q:"A brick weighs 1 kg more than half its own weight. How heavy is the brick? 🧱",
+        opts:["2 kg","1 kg","3 kg","4 kg"], a:0,
+        why:"w = 1 + w/2, so w/2 = 1, giving w = 2 kg.",
+        followUp:{ q:"From w/2 = 1, the brick's weight w is… 🧱",
+          opts:["2 kg","0.5 kg","1 kg","4 kg"], a:0,
+          why:"Multiply both sides by 2: w = 2 kg." } },
+      { q:"A taxi charges a fixed ₹800 plus ₹20 per km. A ride costs ₹2200. How far was it? 🚕",
+        opts:["70 km","110 km","90 km","60 km"], a:0,
+        why:"800 + 20x = 2200, so 20x = 1400 and x = 70 km.",
+        followUp:{ q:"From 20x = 1400, the distance x is… 🚕",
+          opts:["70 km","1400 km","140 km","20 km"], a:0,
+          why:"x = 1400 ÷ 20 = 70 km." } },
+      { q:"The sum of two numbers is 76 and one is three times the other. The smaller number is… 🔢",
+        opts:["19","38","25","57"], a:0,
+        why:"x + 3x = 76, so 4x = 76 and x = 19.",
+        followUp:{ q:"If the smaller number is 19, the larger (three times it) is… 🔢",
+          opts:["57","38","76","22"], a:0,
+          why:"3 × 19 = 57." } }
+    ]
+  },
+  {
+    id: "7.4",
+    title: "7.4 · A Pinch of History",
+    questions: [
+      { q:"Bhāskarāchārya (1150 CE): 300 + 6x = 10x − 100 for horses. What is the price of one horse, x? 🐎",
+        opts:["₹100","₹400","₹40","₹25"], a:0,
+        why:"400 + 6x = 10x, so 400 = 4x and x = ₹100.",
+        followUp:{ q:"From 400 = 4x, the price x is… 🐎",
+          opts:["₹100","₹400","₹1600","₹40"], a:0,
+          why:"x = 400 ÷ 4 = ₹100." } },
+      { q:"A trick: think of a number, double it, add 10, halve it, subtract the original, add 3. You always get… ✨",
+        opts:["8","5","10","3"], a:0,
+        why:"(2x + 10)/2 − x + 3 = (x + 5) − x + 3 = 8, whatever x was.",
+        followUp:{ q:"Simplify (2x + 10)/2 before the last steps. It equals… ✨",
+          opts:["x + 5","2x + 5","x + 10","2x"], a:0,
+          why:"Dividing each term by 2 gives x + 5." } },
+      { q:"Long ago, before symbols like x, mathematicians wrote equations using… 📜",
+        opts:["words (in full sentences)","emojis","only pictures","calculators"], a:0,
+        why:"Early algebra was 'rhetorical' — written out in words; symbols came later.",
+        followUp:{ q:"The short symbols we now use for unknowns came… 📜",
+          opts:["later than word-equations","before words","from emojis","never"], a:0,
+          why:"Symbolic notation developed after rhetorical algebra." } },
+      { q:"One quarter of a number, increased by 9, equals the number itself. What is the number? 🔢",
+        opts:["12","36","9","4"], a:0,
+        why:"n/4 + 9 = n, so 9 = 3n/4, giving n = 12.",
+        followUp:{ q:"From 9 = 3n/4, the number n is… 🔢",
+          opts:["12","3","27","36"], a:0,
+          why:"Multiply both sides by 4/3: n = 12." } },
+      { q:"Snacks cost ₹25 a plate plus a ₹50 delivery fee, all within a ₹500 budget. How many plates? 🍽️",
+        opts:["18","20","22","10"], a:0,
+        why:"25p + 50 = 500, so 25p = 450 and p = 18 plates.",
+        followUp:{ q:"From 25p = 450, the number of plates p is… 🍽️",
+          opts:["18","450","25","20"], a:0,
+          why:"p = 450 ÷ 25 = 18." } },
+      { q:"The English word 'algebra' comes from the title of a famous book by… 📚",
+        opts:["al-Khwārizmī","Pythagoras","Euclid","Newton"], a:0,
+        why:"It comes from 'al-jabr' in al-Khwārizmī's 9th-century book.",
+        followUp:{ q:"'Algebra' comes from the Arabic word… 📚",
+          opts:["al-jabr","al-noor","al-adad","al-hisab"], a:0,
+          why:"'Al-jabr' means restoring/balancing — the root of 'algebra'." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch15", xp:10, count:8 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch15", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz15", "shadow") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -413,7 +506,6 @@ document.querySelectorAll(".tab").forEach(t=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("propts").children.length) practiceQuiz.start();
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

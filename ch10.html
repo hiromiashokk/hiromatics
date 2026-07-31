@@ -79,6 +79,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -158,24 +159,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Straight out of her textbook &mdash; carrom coins, tokens, the mining elevator, Mala's exam.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz10"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 2.1</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -301,58 +306,96 @@ document.getElementById("fnext").onclick = ()=>{
 };
 
 /* ---------------------------------------------------------------
-   CHALLENGE — questions taken from the chapter itself
+   CHALLENGE — one quiz per textbook section (need 80% to master).
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 2.1 · Rakesh's Puzzle", q:"Rakesh says: sum is 25, difference is 11. Which pair works?",
-    opts:["18 and 7","20 and 5","19 and 6","15 and 10"], a:0,
-    why:"18 + 7 = 25 and 18 − 7 = 11 — exactly Rakesh's numbers." },
-
-  { src:"SECTION 2.1 · Carrom Coin Integers", q:"The coin is struck right by 5 units, then left by 7 units. What's its final position?",
-    opts:["−2","2","12","−12"], a:0,
-    why:"P = a + b = 5 + (−7) = −2. The coin ends up 2 units left of zero." },
-
-  { src:"SECTION 2.1 · Token Model", q:"Using tokens, what is (+7) − (+18)?",
-    opts:["−11","11","−25","25"], a:0,
-    why:"You need 11 more zero pairs to remove 18 positives from 7. What's left is 11 negatives: −11." },
-
-  { src:"SECTION 2.2 · Multiplication", q:"Using the token model, what is 4 × (−2)?",
-    opts:["−8","8","−6","6"], a:0,
-    why:"Placing 2 negative tokens into the bag 4 times gives 8 negatives: −8." },
-
-  { src:"SECTION 2.2 · Multiplication", q:"What is (−4) × (−2)?",
-    opts:["8","−8","6","−6"], a:0,
-    why:"Removing 2 negatives from the bag 4 times leaves 8 positives: +8. Debt times debt is a fortune." },
-
-  { src:"SECTION 2.2 · Example 1, Mala's Exam", q:"5 marks per correct answer, −2 per wrong. Mala had 30 correct and 20 wrong out of 50. Her total?",
-    opts:["110","150","130","90"], a:0,
-    why:"30 × 5 + 20 × (−2) = 150 + (−40) = 110." },
-
-  { src:"SECTION 2.2 · Example 2, The Mining Elevator", q:"An elevator descends at 3 m/min from ground level for a full hour (60 min). Where does it end up?",
-    opts:["−180 m","−183 m","−177 m","180 m"], a:0,
-    why:"Speed while descending is −3 m/min. 60 × (−3) = −180, so it's 180 m below the ground." },
-
-  { src:"SECTION 2.2 · Example 2, The Mining Elevator", q:"The same elevator starts 15 m above ground and descends at 3 m/min for 45 minutes. Final position?",
-    opts:["−120 m","−135 m","−105 m","120 m"], a:0,
-    why:"15 + (45 × (−3)) = 15 + (−135) = −120. It ends 120 m below the ground." },
-
-  { src:"SECTION 2.2 · Patterns", q:"Fill in the blanks: −30 × 12 = ___, and 12 × −30 = ___.",
-    opts:["both −360","both 360","−360 and 360","360 and −360"], a:0,
-    why:"Multiplication is commutative for integers, so both orders give the same product: −360." },
-
-  { src:"SECTION 2.2 · Division of Integers", q:"What is (−100) ÷ 25?",
-    opts:["−4","4","−25","25"], a:0,
-    why:"25 × (−4) = −100, so (−100) ÷ 25 = −4." },
-
-  { src:"SECTION 2.2 · Division of Integers", q:"What is (−100) ÷ (−4)?",
-    opts:["25","−25","4","−4"], a:0,
-    why:"(−4) × 25 = −100, so (−100) ÷ (−4) = 25. Debt divided by debt is a fortune." },
-
-  { src:"SECTION 2.2 · Figure It Out", q:"Given 123 × 456 = 56,088, what is (−123) × (−456)?",
-    opts:["56,088","−56,088","112,176","−112,176"], a:0,
-    why:"Brahmagupta's rule: the product of two debts is a fortune. Same magnitude, positive sign: 56,088." }
+const SECTIONS = [
+  {
+    id: "2.1",
+    title: "2.1 · A Quick Recap of Integers",
+    questions: [
+      { q:"Rakesh says: two numbers have sum 25 and difference 11. Which pair works? 🔢",
+        opts:["18 and 7","20 and 5","19 and 6","15 and 10"], a:0,
+        why:"18 + 7 = 25 and 18 − 7 = 11 — exactly Rakesh's numbers.",
+        followUp:{ q:"Two numbers have sum 20 and difference 4. Which pair works? 🔢",
+          opts:["12 and 8","14 and 6","11 and 9","13 and 7"], a:0,
+          why:"12 + 8 = 20 and 12 − 8 = 4." } },
+      { q:"A carrom coin is struck 5 units right, then 7 units left. Where does it stop? 🪙",
+        opts:["−2","2","12","−12"], a:0,
+        why:"5 + (−7) = −2. The coin ends up 2 units left of zero.",
+        followUp:{ q:"Start at 0, move 3 left, then 8 right. Final position? 🪙",
+          opts:["+5","−5","+11","−11"], a:0,
+          why:"0 + (−3) + 8 = 5, so it lands 5 units right of zero." } },
+      { q:"What is the additive inverse (opposite) of 18? ➕",
+        opts:["−18","18","0","1/18"], a:0,
+        why:"A number and its additive inverse add to 0: 18 + (−18) = 0.",
+        followUp:{ q:"What is the additive inverse of −12? ➖",
+          opts:["12","−12","0","−1/12"], a:0,
+          why:"−12 + 12 = 0, so the inverse of −12 is 12." } },
+      { q:"On the number line, what is 3 + (−5)? 🌡️",
+        opts:["−2","8","2","−8"], a:0,
+        why:"Start at 3, step 5 to the left → −2. Like gaining 3 then losing 5.",
+        followUp:{ q:"What is (−4) + (−3)? 🌡️",
+          opts:["−7","7","−1","1"], a:0,
+          why:"Both are negative, so you slide further left: −7." } },
+      { q:"Subtracting a negative: what is 4 − (−2)? ➖",
+        opts:["6","2","−6","−2"], a:0,
+        why:"Subtracting a negative is the same as adding: 4 + 2 = 6.",
+        followUp:{ q:"What is (−5) − (−8)? ➖",
+          opts:["3","−13","−3","13"], a:0,
+          why:"(−5) − (−8) = (−5) + 8 = 3." } },
+      { q:"Which of these integers is the GREATEST? 📉",
+        opts:["−2","−7","−10","−15"], a:0,
+        why:"On the number line the rightmost value is biggest. −2 is closest to zero, so it's the greatest.",
+        followUp:{ q:"Which of these integers is the SMALLEST? 📉",
+          opts:["−9","0","3","−1"], a:0,
+          why:"The leftmost value is smallest: −9." } }
+    ]
+  },
+  {
+    id: "2.2",
+    title: "2.2 · Multiplication of Integers",
+    questions: [
+      { q:"Using the token model, what is 4 × (−2)? 🔴",
+        opts:["−8","8","−6","6"], a:0,
+        why:"Putting 2 negative tokens in the bag 4 times gives 8 negatives: −8.",
+        followUp:{ q:"What is 3 × (−5)? 🔴",
+          opts:["−15","15","−8","8"], a:0,
+          why:"A positive times a negative is negative: 3 × (−5) = −15." } },
+      { q:"What is (−4) × (−2)? 🤝",
+        opts:["8","−8","6","−6"], a:0,
+        why:"Removing 2 negatives 4 times leaves 8 positives: +8. A debt times a debt is a fortune.",
+        followUp:{ q:"What is (−6) × (−3)? 🤝",
+          opts:["18","−18","9","−9"], a:0,
+          why:"Two negatives multiply to a positive: (−6) × (−3) = 18." } },
+      { q:"Mala scores +5 per correct and −2 per wrong. With 30 correct and 20 wrong, her total? 📝",
+        opts:["110","150","130","90"], a:0,
+        why:"30 × 5 + 20 × (−2) = 150 + (−40) = 110.",
+        followUp:{ q:"Same scoring: 10 correct and 5 wrong. Total marks? 📝",
+          opts:["40","50","45","60"], a:0,
+          why:"10 × 5 + 5 × (−2) = 50 − 10 = 40." } },
+      { q:"A mine elevator descends 3 m every minute from ground level for 60 minutes. Final depth? ⛏️",
+        opts:["−180 m","−183 m","−177 m","180 m"], a:0,
+        why:"Descending speed is −3 m/min. 60 × (−3) = −180 → 180 m below ground.",
+        followUp:{ q:"The same elevator descends 3 m/min for 20 minutes. Final depth? ⛏️",
+          opts:["−60 m","−63 m","−57 m","60 m"], a:0,
+          why:"20 × (−3) = −60, so 60 m below ground." } },
+      { q:"What is (−100) ÷ 25? ➗",
+        opts:["−4","4","−25","25"], a:0,
+        why:"25 × (−4) = −100, so (−100) ÷ 25 = −4.",
+        followUp:{ q:"What is (−48) ÷ 6? ➗",
+          opts:["−8","8","−6","6"], a:0,
+          why:"6 × (−8) = −48, so (−48) ÷ 6 = −8." } },
+      { q:"Given 123 × 456 = 56,088, what is (−123) × (−456)? 💰",
+        opts:["56,088","−56,088","112,176","−112,176"], a:0,
+        why:"Two negatives make a positive with the same magnitude: 56,088.",
+        followUp:{ q:"What is (−100) ÷ (−4)? 💰",
+          opts:["25","−25","4","−4"], a:0,
+          why:"(−4) × 25 = −100, so (−100) ÷ (−4) = 25 — debt over debt is a fortune." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch10", xp:10 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch10", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz10", "ocean") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -378,7 +421,6 @@ document.querySelectorAll(".tab").forEach(t=>{
     } else {
       nl.onTap = null;
     }
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

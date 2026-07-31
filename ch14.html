@@ -120,6 +120,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next →</button>
     </div>
@@ -180,25 +181,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Real questions from the chapter — which shapes tile, the
-      angle-at-a-vertex test, and the basic constructions.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz14"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">FIGURE IT OUT</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -295,56 +299,94 @@ document.querySelectorAll(".shape-btn").forEach(b=>{
 /* ---------------------------------------------------------------
    CHALLENGE — tiling + construction questions
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"TILINGS", q:"Which of these regular shapes does NOT tile the plane on its own?",
-    opts:["Regular pentagon","Square","Equilateral triangle","Regular hexagon"], a:0,
-    why:"A regular pentagon's angle is 108°, and 360 ÷ 108 is not a whole number — copies leave a 36° gap. Squares, triangles and hexagons all tile." },
-
-  { src:"TILINGS", q:"What is the interior angle of a regular hexagon?",
-    opts:["120°","108°","135°","90°"], a:0,
-    why:"(6−2) × 180 ÷ 6 = 720 ÷ 6 = 120°. Three hexagons (3 × 120° = 360°) meet at a point." },
-
-  { src:"TILINGS", q:"Why do squares tile the plane perfectly?",
-    opts:["Four 90° corners meet at a point (4 × 90° = 360°)","Because they have four equal sides","Because 90° is a right angle","Squares actually leave tiny gaps"], a:0,
-    why:"Tiling works when the angles meeting at a vertex total 360°. Four square corners give 4 × 90° = 360°." },
-
-  { src:"TILINGS", q:"How many equilateral triangles meet at a single point in a triangular tiling?",
-    opts:["6","3","4","5"], a:0,
-    why:"Each corner is 60°, and 360 ÷ 60 = 6 — so six triangles fit exactly around every vertex." },
-
-  { src:"FIGURE IT OUT", q:"The angles meeting at a vertex of a tiling must add up to exactly…",
-    opts:["360°","180°","270°","90°"], a:0,
-    why:"A full turn around a point is 360°. If the tile angles meeting there sum to 360°, there is no gap and no overlap." },
-
-  { src:"TILINGS", q:"A regular pentagon has an interior angle of 108°. What happens when you fit copies around a point?",
-    opts:["Three fit and leave a 36° gap","Four fit exactly","They overlap straight away","Five fit exactly"], a:0,
-    why:"3 × 108° = 324°, which is 36° short of 360°, so a gap is left — a regular pentagon cannot tile by itself." },
-
-  { src:"MATH TALK", q:"A tiling that uses just ONE kind of regular polygon is called a…",
-    opts:["Regular tiling","Semi-regular tiling","Random tiling","Broken tiling"], a:0,
-    why:"A regular tiling uses one regular polygon. Only the triangle, square and hexagon can form one." },
-
-  { src:"CONSTRUCTIONS", q:"To copy an angle exactly, the most reliable tools are…",
-    opts:["A compass and a ruler (straightedge)","A protractor and scissors","Only a protractor","A set square alone"], a:0,
-    why:"Classic constructions copy an angle using arcs drawn with a compass and lines drawn with a straightedge — no measuring needed." },
-
-  { src:"CONSTRUCTIONS", q:"You can construct a unique triangle when you are given…",
-    opts:["The lengths of all three sides","Only one side length","Only one angle","The perimeter alone"], a:0,
-    why:"Three side lengths (SSS) fix a triangle's shape and size completely, as long as they satisfy the triangle inequality." },
-
-  { src:"CONSTRUCTIONS", q:"A line that cuts a segment into two equal halves at a right angle is its…",
-    opts:["Perpendicular bisector","Angle bisector","Median","Tangent"], a:0,
-    why:"The perpendicular bisector passes through the midpoint of a segment and meets it at 90°." },
-
-  { src:"TILINGS", q:"Which combination can meet at a point in a semi-regular tiling (angles summing to 360°)?",
-    opts:["Two hexagons and two triangles (120+120+60+60)","Three pentagons","Two squares and a hexagon","Five triangles"], a:0,
-    why:"120 + 120 + 60 + 60 = 360°, so hexagons and triangles can share a vertex. The others do not total 360°." },
-
-  { src:"FIGURE IT OUT", q:"A shape tiles the plane if copies of it cover it with…",
-    opts:["No gaps and no overlaps","Small gaps only","Some overlaps only","Gaps and overlaps both allowed"], a:0,
-    why:"A tiling (tessellation) must cover the plane completely — every point is covered exactly once, so no gaps and no overlaps." },
+const SECTIONS = [
+  {
+    id: "6.1",
+    title: "6.1 · Geometric Constructions",
+    questions: [
+      { q:"To copy an angle exactly, without measuring, the most reliable tools are… 📐",
+        opts:["a compass and a straightedge (ruler)","a protractor and scissors","only a protractor","a set square alone"], a:0,
+        why:"Classic constructions copy an angle using compass arcs and straightedge lines — no measuring needed.",
+        followUp:{ q:"Geometric constructions avoid measuring by using… 🧭",
+          opts:["a compass and ruler","a calculator","a protractor only","guesswork"], a:0,
+          why:"Compass (for arcs) and straightedge (for lines) are the construction tools." } },
+      { q:"You can construct a UNIQUE triangle when you are given… 📏",
+        opts:["the lengths of all three sides","only one side length","only one angle","the perimeter alone"], a:0,
+        why:"Three side lengths (SSS) fix a triangle completely, as long as they satisfy the triangle inequality.",
+        followUp:{ q:"Which information fixes a triangle's shape and size? 📏",
+          opts:["all three side lengths","just its area","one angle only","its colour"], a:0,
+          why:"SSS — three sides — determines the triangle uniquely." } },
+      { q:"A line that cuts a segment into two equal halves at a right angle is its… ✂️",
+        opts:["perpendicular bisector","angle bisector","median","tangent"], a:0,
+        why:"The perpendicular bisector passes through the midpoint and meets the segment at 90°.",
+        followUp:{ q:"The perpendicular bisector of a segment passes through its… 📍",
+          opts:["midpoint","end only","longest side","corner"], a:0,
+          why:"It goes through the midpoint at a right angle." } },
+      { q:"A ray that splits an angle into two equal angles is called the… 📏",
+        opts:["angle bisector","perpendicular bisector","median","diagonal"], a:0,
+        why:"An angle bisector divides an angle into two equal parts.",
+        followUp:{ q:"An angle bisector creates two angles that are… 📏",
+          opts:["equal","always 90°","always 60°","different"], a:0,
+          why:"By definition it splits the angle into two equal angles." } },
+      { q:"To construct a 60° angle with compass and straightedge, you build part of a… 🧭",
+        opts:["equilateral triangle","square","circle only","pentagon"], a:0,
+        why:"Each angle of an equilateral triangle is 60°, so its construction gives a 60° angle.",
+        followUp:{ q:"A 60° angle is naturally linked to which shape? 🧭",
+          opts:["the equilateral triangle","the square","the hexagon","the circle"], a:0,
+          why:"An equilateral triangle's corners are all 60°." } },
+      { q:"Every point on the perpendicular bisector of a segment is… 📍",
+        opts:["the same distance from both endpoints","closer to one endpoint","outside the segment","at the midpoint only"], a:0,
+        why:"The perpendicular bisector is exactly the set of points equidistant from the two endpoints.",
+        followUp:{ q:"Points equidistant from two fixed points lie on the… 📍",
+          opts:["perpendicular bisector","angle bisector","median","tangent"], a:0,
+          why:"Equal-distance points form the perpendicular bisector of the segment." } }
+    ]
+  },
+  {
+    id: "6.2",
+    title: "6.2 · Tiling",
+    questions: [
+      { q:"Which of these regular shapes does NOT tile the plane on its own? ⬠",
+        opts:["regular pentagon","square","equilateral triangle","regular hexagon"], a:0,
+        why:"A pentagon's angle is 108° and 360 ÷ 108 isn't whole — copies leave a gap. Squares, triangles and hexagons all tile.",
+        followUp:{ q:"Three regular pentagons (108° each) around a point leave a gap of… ⬠",
+          opts:["36°","0°","72°","90°"], a:0,
+          why:"3 × 108° = 324°, which is 36° short of 360°." } },
+      { q:"What is the interior angle of a regular hexagon? ⬢",
+        opts:["120°","108°","135°","90°"], a:0,
+        why:"(6−2) × 180 ÷ 6 = 720 ÷ 6 = 120°.",
+        followUp:{ q:"How many regular hexagons meet at a single point in a tiling? ⬢",
+          opts:["3","4","6","2"], a:0,
+          why:"3 × 120° = 360°, so three hexagons fit around a point." } },
+      { q:"The angles meeting at a vertex of a tiling must add up to exactly… 🔄",
+        opts:["360°","180°","270°","90°"], a:0,
+        why:"A full turn around a point is 360°, so there's no gap and no overlap.",
+        followUp:{ q:"A full turn around a point measures… 🔄",
+          opts:["360°","180°","90°","720°"], a:0,
+          why:"One complete rotation is 360°." } },
+      { q:"How many equilateral triangles meet at a single point in a triangular tiling? △",
+        opts:["6","3","4","5"], a:0,
+        why:"Each corner is 60° and 360 ÷ 60 = 6.",
+        followUp:{ q:"Each corner of an equilateral triangle measures… △",
+          opts:["60°","90°","120°","45°"], a:0,
+          why:"All three angles are equal and sum to 180°, giving 60° each." } },
+      { q:"A tiling that uses just ONE kind of regular polygon is called a… ▢",
+        opts:["regular tiling","semi-regular tiling","random tiling","broken tiling"], a:0,
+        why:"A regular tiling uses one regular polygon — only the triangle, square and hexagon can form one.",
+        followUp:{ q:"Which three regular shapes can each tile the plane alone? ▢",
+          opts:["triangle, square, hexagon","pentagon, square, octagon","triangle, pentagon, circle","square, pentagon, hexagon"], a:0,
+          why:"Only the equilateral triangle, square and regular hexagon tile by themselves." } },
+      { q:"A shape tiles the plane if copies of it cover it with… 🧩",
+        opts:["no gaps and no overlaps","small gaps only","some overlaps only","gaps and overlaps both"], a:0,
+        why:"A tiling (tessellation) covers the plane completely — every point covered exactly once.",
+        followUp:{ q:"Which mix can share a vertex in a semi-regular tiling (sum 360°)? 🧩",
+          opts:["two hexagons + two triangles (120+120+60+60)","three pentagons","five triangles","two squares + a hexagon"], a:0,
+          why:"120 + 120 + 60 + 60 = 360°, so hexagons and triangles can share a vertex." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch14", xp:10 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch14", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz14", "forest") });
 
 /* ---------------------------------------------------------------
    LEARN
@@ -386,7 +428,8 @@ function showLearnSlide(i){
   paintLearnDots();
   document.getElementById("learnNext").textContent =
     (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
-  groveLearn.say(LEARN_SAY[i], 3200);
+  document.getElementById("learnBack").disabled = (i === 0);
+  groveLearn.say(LEARN_SAY[i]);
   groveLearn.react(i === LEARN_SLIDES.length-1 ? "happy" : "idle");
 }
 document.getElementById("learnNext").onclick = ()=>{
@@ -396,6 +439,9 @@ document.getElementById("learnNext").onclick = ()=>{
     document.getElementById("learnSlideNav").classList.add("hide");
     startLearnCheck();
   }
+};
+document.getElementById("learnBack").onclick = ()=>{
+  if(learnI > 0) showLearnSlide(learnI-1);
 };
 function startLearnCheck(){
   lcI = 0; lcRight = 0;
@@ -462,7 +508,6 @@ document.querySelectorAll(".tab").forEach(t=>{
     ["learn","explore","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

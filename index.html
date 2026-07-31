@@ -6,6 +6,43 @@
 <title>Hiromatics by Hiromi</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
+<style>
+/* ---- home page polish (scoped to index.html only) ---- */
+.hero{position:relative;overflow:hidden;
+  background:
+    radial-gradient(120% 150% at 100% 0%,
+      color-mix(in srgb,var(--violet) 24%, transparent), transparent 58%),
+    linear-gradient(180deg,var(--panel),var(--bg2));}
+.hero h2{font-size:22px}
+.hero .lede{max-width:54ch}
+.hero .spark{position:absolute;right:-6px;top:-22px;font-size:120px;
+  opacity:.08;transform:rotate(-8deg);pointer-events:none;user-select:none}
+.progress-wrap{display:flex;align-items:center;gap:12px;margin-top:16px}
+.progress-wrap .bar{flex:1;margin-top:0;height:8px}
+.progress-wrap .count{font-size:13px;font-weight:700;
+  color:var(--accentText);white-space:nowrap}
+
+.chapters{gap:14px}
+.chapter-card{isolation:isolate;animation:cardIn .4s both;
+  box-shadow:0 1px 0 #0003}
+.chapter-card::after{content:attr(data-emoji);position:absolute;
+  right:10px;bottom:-14px;font-size:58px;line-height:1;opacity:.10;
+  transform:rotate(-8deg);transition:.2s;pointer-events:none;user-select:none}
+.chapter-card:hover{transform:translateY(-3px);
+  box-shadow:0 14px 32px -14px #000a, 0 0 0 1px var(--violet)}
+.chapter-card:hover::after{opacity:.22;bottom:-8px}
+.chapter-card:hover .desc{color:var(--ink)}
+.chapter-card .num{background:linear-gradient(135deg,var(--violet),var(--violet2));
+  color:#fff;border-color:transparent;box-shadow:0 4px 12px -4px #0009}
+.chapter-card .go{margin-top:11px;font-size:12px;font-weight:700;
+  color:var(--accentText);display:inline-flex;align-items:center;gap:6px;
+  opacity:0;transform:translateX(-5px);transition:.2s}
+.chapter-card:hover .go{opacity:1;transform:none}
+.chapter-card .done{background:color-mix(in srgb,var(--green) 20%, transparent);
+  border:1px solid var(--green);padding:2px 9px;border-radius:99px}
+@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.chapter-card{animation:none}}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -19,10 +56,15 @@
     <div class="sub">Ganita Prakash · Grade 7 · pick a chapter</div>
   </header>
 
-  <div class="panel">
+  <div class="panel hero">
+    <div class="spark">📐</div>
     <h2>Every chapter, playable</h2>
     <p class="lede">Fifteen chapters from the Grade 7 book — each one has something to zoom into, drag around, or try
       before it turns into a quiz straight from the textbook.</p>
+    <div class="progress-wrap">
+      <div class="bar"><i id="homeBar"></i></div>
+      <span class="count" id="homeCount">0 / 15</span>
+    </div>
   </div>
 
   <div class="part-label">Part 1</div>
@@ -66,20 +108,37 @@ const THEME = {
   ch13:"pirate", ch14:"forest", ch15:"shadow"
 };
 
+const EMOJI = {
+  ch01:"🔢", ch02:"➕", ch03:"📏", ch04:"✍️",
+  ch05:"📊", ch06:"🎲", ch07:"🔺", ch08:"🍰",
+  ch09:"👯", ch10:"⚖️", ch11:"🔗", ch12:"🎯",
+  ch13:"📈", ch14:"🎨", ch15:"❓"
+};
+
 function card(ch, n){
   const done = BTP.isDone(ch.id);
   const theme = THEME[ch.id] || "";
+  const emoji = EMOJI[ch.id] || "";
   return '<a class="chapter-card" href="'+ch.file+'"' +
-    (theme ? ' data-theme="'+theme+'"' : '') + '>' +
+    (theme ? ' data-theme="'+theme+'"' : '') +
+    ' data-emoji="'+emoji+'"' +
+    ' style="animation-delay:'+(n*40)+'ms">' +
     (done ? '<span class="done">✓ done</span>' : '') +
     '<div class="num">'+n+'</div>' +
     '<div class="title">'+ch.title+'</div>' +
     '<div class="desc">'+ch.desc+'</div>' +
+    '<div class="go">'+(done ? 'Play again' : 'Start')+' →</div>' +
   '</a>';
 }
 
 document.getElementById("part1").innerHTML = PART1.map((c,i)=>card(c,i+1)).join("");
 document.getElementById("part2").innerHTML = PART2.map((c,i)=>card(c,i+1)).join("");
+
+// home progress: how many chapters are marked done
+const ALL = PART1.concat(PART2);
+const doneCount = ALL.filter(c => BTP.isDone(c.id)).length;
+document.getElementById("homeBar").style.width = (doneCount / ALL.length * 100) + "%";
+document.getElementById("homeCount").textContent = doneCount + " / " + ALL.length;
 
 BTP.paintStats();
 </script>

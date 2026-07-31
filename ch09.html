@@ -89,6 +89,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -158,24 +159,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Straight from the chapter — SSS, SAS, ASA, AAS, RHS, and why SSA doesn't count.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz09"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 1.2</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -371,41 +376,84 @@ document.getElementById("fnext").onclick = ()=>{
 };
 
 /* ---------------------------------------------------------------
-   CHALLENGE
+   CHALLENGE — one quiz per textbook section (need 80% to master).
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 1.2 · naming", q:"ΔHEN ≅ ΔBIG. Which of these also correctly expresses this congruence?",
-    opts:["ΔNEH ≅ ΔGIB","ΔHEN ≅ ΔGIB","ΔNEH ≅ ΔBIG","ΔHNE ≅ ΔBIG"], a:0,
-    why:"H↔B, E↔I, N↔G. Reversing the letter order the SAME way on both sides — N,E,H and G,I,B — keeps every correspondence intact." },
-  { src:"SECTION 1.2", q:"Two triangles have all three pairs of sides equal (40cm/60cm/80cm matching 40cm/60cm/80cm). What guarantees they're congruent?",
-    opts:["SSS condition","SSA condition","No condition — need angles too","AAA condition"], a:0,
-    why:"Meera was right: three matching sidelengths pin down the triangle completely. This is the SSS (Side Side Side) condition." },
-  { src:"SECTION 1.2", q:"Two sides of a triangle equal two sides of another, AND the angle between those two sides is also equal. What's this called?",
-    opts:["SAS condition","ASA condition","SSA condition","AAS condition"], a:0,
-    why:"Two sides plus the INCLUDED angle is the SAS (Side Angle Side) condition — it guarantees congruence." },
-  { src:"SECTION 1.2", q:"Two angles of a triangle equal two angles of another, and the side BETWEEN those angles also matches. What's this called?",
-    opts:["ASA condition","SSA condition","AAS condition","SSS condition"], a:0,
-    why:"Two angles with the included side is the ASA (Angle Side Angle) condition." },
-  { src:"SECTION 1.2 · Rabia's discovery", q:"AB = XY, AC = XZ, and ∠B = ∠Y — but that angle is not between the two given sides. Are the triangles definitely congruent?",
-    opts:["No — this is SSA, which doesn't guarantee congruence","Yes, always","Yes, but only for right triangles","Yes, if the triangle is equilateral"], a:0,
-    why:"Rabia's own construction showed two different triangles (△PQR and △PQS) sharing the same SSA measurements. SSA alone isn't enough." },
-  { src:"SECTION 1.2 · right triangles", q:"In a right-angled triangle, matching the hypotenuse and one other side to another right triangle's hypotenuse and side is called...",
-    opts:["the RHS condition","the SSA condition","the AAS condition","not sufficient for congruence"], a:0,
-    why:"Right angle + Hypotenuse + Side is exactly the RHS condition — one of the special cases where SSA-type info does guarantee congruence." },
-  { src:"SECTION 1.3 · isosceles", q:"ΔABC is isosceles with AB = AC. What must be true of ∠B and ∠C?",
-    opts:["∠B = ∠C","∠B + ∠C = 90°","∠B = 2∠C","Nothing can be said"], a:0,
-    why:"By constructing the altitude from A and using RHS, ΔADB ≅ ΔADC — so ∠B and ∠C, being corresponding parts, must be equal. Angles opposite equal sides are equal." },
-  { src:"SECTION 1.3 · equilateral", q:"What is each angle of an equilateral triangle?",
-    opts:["60°","90°","45°","Depends on the side length"], a:0,
-    why:"All three angles are equal (angles opposite equal sides), and they sum to 180°, so 3 × angle = 180° gives 60° each — no matter the triangle's size." },
-  { src:"SECTION 1.2 · the rectangle", q:"In rectangle ABCD, the diagonal BD splits it into ΔABD and ΔCDB. Which condition proves they're congruent?",
-    opts:["SSS (AB=CD, AD=CB, and BD is common)","SAS","This can't be shown","ASA"], a:0,
-    why:"AB = CD and AD = CB come from the rectangle's opposite sides, and BD is shared by both triangles — three matching sides, so SSS applies." },
-  { src:"SECTION 1.2 · O the midpoint", q:"O is the midpoint of both AD and BC. Which condition shows ΔAOB ≅ ΔDOC?",
-    opts:["SAS (AO=OD, BO=OC, and the vertically opposite angles at O are equal)","SSS","ASA","RHS"], a:0,
-    why:"AO=OD and BO=OC come from O being the midpoint of each segment, and ∠AOB=∠DOC as vertically opposite angles — two sides and the included angle: SAS." }
+const SECTIONS = [
+  {
+    id: "1.2",
+    title: "1.2 · Twin tests (SSS · SAS · ASA · RHS)",
+    questions: [
+      { q:"ΔHEN ≅ ΔBIG. Which of these ALSO correctly expresses this congruence? 🔤",
+        opts:["ΔNEH ≅ ΔGIB","ΔHEN ≅ ΔGIB","ΔNEH ≅ ΔBIG","ΔHNE ≅ ΔBIG"], a:0,
+        why:"H↔B, E↔I, N↔G. Reversing the letter order the SAME way on both sides — N,E,H and G,I,B — keeps every correspondence intact.",
+        followUp:{ q:"If ΔCAT ≅ ΔDOG, which vertex matches A? 🐱",
+          opts:["O","D","G","C"], a:0,
+          why:"Read the names in order: C↔D, A↔O, T↔G. So A corresponds to O." } },
+      { q:"Two triangles have all three pairs of sides equal (40cm/60cm/80cm matching 40cm/60cm/80cm). What guarantees they're congruent? 📏",
+        opts:["SSS condition","SSA condition","No condition — need angles too","AAA condition"], a:0,
+        why:"Three matching side lengths pin down the triangle completely. This is the SSS (Side Side Side) condition.",
+        followUp:{ q:"Which set of clues is the SSS condition? 📐",
+          opts:["Three pairs of equal sides","Three pairs of equal angles","Two sides and any angle","One side and one angle"], a:0,
+          why:"SSS = all three pairs of sides equal. (Three equal angles, AAA, only fixes shape, not size.)" } },
+      { q:"Two sides of a triangle equal two sides of another, AND the angle BETWEEN those two sides is equal. What's this called? 📐",
+        opts:["SAS condition","ASA condition","SSA condition","AAS condition"], a:0,
+        why:"Two sides plus the INCLUDED angle is the SAS (Side Angle Side) condition — it guarantees congruence.",
+        followUp:{ q:"In SAS, where must the equal angle sit? 🔺",
+          opts:["Between the two equal sides","Opposite the longest side","Anywhere in the triangle","At the base only"], a:0,
+          why:"The 'A' in SAS is the INCLUDED angle — the one between the two given sides." } },
+      { q:"Two angles of a triangle equal two angles of another, and the side BETWEEN those angles also matches. What's this called? 📐",
+        opts:["ASA condition","SSA condition","AAS condition","SSS condition"], a:0,
+        why:"Two angles with the included side is the ASA (Angle Side Angle) condition.",
+        followUp:{ q:"ASA needs which side to match? 📏",
+          opts:["The side between the two equal angles","Any longest side","The hypotenuse only","No side at all"], a:0,
+          why:"ASA uses the INCLUDED side — the one lying between the two equal angles." } },
+      { q:"AB = XY, AC = XZ, and ∠B = ∠Y — but that angle is NOT between the two given sides. Are the triangles definitely congruent? 🤔",
+        opts:["No — this is SSA, which doesn't guarantee congruence","Yes, always","Yes, but only for right triangles","Yes, if the triangle is equilateral"], a:0,
+        why:"Rabia's own construction showed two different triangles sharing the same SSA measurements. SSA alone isn't enough.",
+        followUp:{ q:"Why is SSA (two sides + a non-included angle) unreliable? ⚠️",
+          opts:["It can build two different triangles","It always builds a square","It needs a protractor","It only works for big triangles"], a:0,
+          why:"The arc can meet the ray in two places, giving two different triangles — so SSA doesn't pin one down." } },
+      { q:"In a right-angled triangle, matching the hypotenuse and one other side to another right triangle's hypotenuse and side is called… 📐",
+        opts:["the RHS condition","the SSA condition","the AAS condition","not sufficient for congruence"], a:0,
+        why:"Right angle + Hypotenuse + Side is exactly the RHS condition — a special case where this info DOES guarantee congruence.",
+        followUp:{ q:"RHS congruence needs which three things? 📐",
+          opts:["A right angle, equal hypotenuse, and one equal side","Three equal angles","Two equal angles only","Equal perimeter only"], a:0,
+          why:"RHS = Right angle + Hypotenuse + one Side. That's enough for right triangles." } }
+    ]
+  },
+  {
+    id: "1.3",
+    title: "1.3 · Using congruence",
+    questions: [
+      { q:"ΔABC is isosceles with AB = AC. What must be true of ∠B and ∠C? 📐",
+        opts:["∠B = ∠C","∠B + ∠C = 90°","∠B = 2∠C","Nothing can be said"], a:0,
+        why:"Dropping the altitude from A and using RHS, ΔADB ≅ ΔADC — so ∠B and ∠C are corresponding parts and must be equal. Angles opposite equal sides are equal.",
+        followUp:{ q:"In any triangle, angles opposite EQUAL sides are… 📐",
+          opts:["equal to each other","always 90°","always different","always 60°"], a:0,
+          why:"Equal sides face equal angles — that's the isosceles triangle property." } },
+      { q:"What is each angle of an equilateral triangle? 🔺",
+        opts:["60°","90°","45°","Depends on the side length"], a:0,
+        why:"All three angles are equal and sum to 180°, so 3 × angle = 180° gives 60° each — no matter the triangle's size.",
+        followUp:{ q:"The three angles of any triangle add up to… ➕",
+          opts:["180°","90°","360°","60°"], a:0,
+          why:"The angle sum of a triangle is always 180°; splitting it equally gives 60° for an equilateral triangle." } },
+      { q:"In rectangle ABCD, the diagonal BD splits it into ΔABD and ΔCDB. Which condition proves they're congruent? ▭",
+        opts:["SSS (AB=CD, AD=CB, and BD is common)","SAS","This can't be shown","ASA"], a:0,
+        why:"AB = CD and AD = CB are the rectangle's opposite sides, and BD is shared — three matching sides, so SSS applies.",
+        followUp:{ q:"A diagonal of a rectangle splits it into two triangles that are… ▭",
+          opts:["congruent","never congruent","always equilateral","different sizes"], a:0,
+          why:"Opposite sides are equal and the diagonal is shared, so the two triangles are congruent (SSS)." } },
+      { q:"O is the midpoint of both AD and BC. Which condition shows ΔAOB ≅ ΔDOC? ✖️",
+        opts:["SAS (AO=OD, BO=OC, and the vertically opposite angles at O are equal)","SSS","ASA","RHS"], a:0,
+        why:"AO=OD and BO=OC come from O being each segment's midpoint, and ∠AOB=∠DOC are vertically opposite — two sides and the included angle: SAS.",
+        followUp:{ q:"Two lines crossing at a point make vertically opposite angles that are… ✖️",
+          opts:["equal","supplementary only","always right angles","unrelated"], a:0,
+          why:"Vertically opposite angles are always equal — that's the included angle used in the SAS proof." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch09", xp:10 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch09", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz09", "berry") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -419,7 +467,6 @@ document.querySelectorAll(".tab").forEach(t=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "find" && !document.getElementById("fopts").children.length) loadMatch();
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

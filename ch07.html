@@ -78,6 +78,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -142,25 +143,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Real questions from the chapter &mdash; the triangle inequality and the angle
-      sum property.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz07"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">FIGURE IT OUT</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -368,68 +372,112 @@ document.getElementById("pnext").onclick = ()=>{
 /* ---------------------------------------------------------------
    CHALLENGE — real Figure-it-Out / worked-example content
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"FIGURE IT OUT", q:"Do the sidelengths 3 cm, 4 cm and 8 cm form a triangle?",
-    opts:["No — 3+4 is less than 8","Yes, any three lengths work","Yes — a right triangle","No — 3+4 equals 8"], a:0,
-    why:"3+4=7, which is less than 8 — the triangle inequality fails, so no triangle exists." },
-
-  { src:"FIGURE IT OUT", q:"Do the sidelengths 2 cm, 3 cm and 6 cm form a triangle?",
-    opts:["No — 2+3 is less than 6","Yes","No — 2+3 equals 6","Cannot say"], a:0,
-    why:"2+3=5, which is less than 6 — the triangle inequality fails." },
-
-  { src:"FIGURE IT OUT", q:"10 km, 10 km and 25 km — can these be the sides of a triangle?",
-    opts:["No","Yes","Only if it's isosceles","Only if it's a right triangle"], a:0,
-    why:"10+10=20, which is less than 25 — the triangle inequality fails, so a triangle does not exist (matches the book's answer key)." },
-
-  { src:"FIGURE IT OUT", q:"Which of these sets CAN be the sidelengths of a triangle?",
-    opts:["3, 4, 6","2, 2, 5","2, 4, 8","10, 20, 35"], a:0,
-    why:"For 3, 4, 6: each length is less than the sum of the other two (3<10, 4<9, 6<7). The rest all fail the triangle inequality." },
-
-  { src:"FIGURE IT OUT", q:"Does an equilateral triangle with sides 50, 50, 50 exist?",
-    opts:["Yes — each side is less than the sum of the other two","No — equal sides break the rule","Only if the sides are under 10 cm","No, equilateral triangles are impossible"], a:0,
-    why:"50 < 50+50 for every side, so the triangle inequality holds. In fact an equilateral triangle exists for any sidelength." },
-
-  { src:"FIGURE IT OUT", q:"Do the lengths 1, 100, 100 form a triangle?",
-    opts:["Yes","No","Only a flat (degenerate) one","Cannot say without a protractor"], a:0,
-    why:"1<100+100, and 100<1+100 — the triangle inequality holds, so a (very thin) triangle exists." },
-
-  { src:"FIGURE IT OUT", q:"Do the lengths 3, 6, 9 form a triangle?",
-    opts:["No — 3+6 equals 9, not less than it","Yes","No — 6+9 is less than 3","Yes, a right triangle"], a:0,
-    why:"3+6=9, which is NOT strictly less than 9 — the triangle inequality needs each side strictly smaller than the sum of the other two." },
-
-  { src:"SECTION 7.2", q:"Two angles of a triangle are 50° and 65°. What is the third?",
-    opts:["65°","115°","50°","180°"], a:0,
-    why:"180 − 50 − 65 = 65°." },
-
-  { src:"FIGURE IT OUT", q:"Two angles of a triangle are 36° and 72°. What is the third? (Hint: draw a line parallel to the base through the top vertex.)",
-    opts:["72°","108°","36°","144°"], a:0,
-    why:"180 − 36 − 72 = 72° — matches the book's worked answer." },
-
-  { src:"MATH TALK", q:"Can a triangle have all three of its angles equal to 70°?",
-    opts:["No — they'd add up to 210°, not 180°","Yes, that's an equilateral triangle","Yes, if the sides are short enough","Only if it's a right triangle"], a:0,
-    why:"70+70+70=210°, but a triangle's angles must add to exactly 180° — so this is impossible." },
-
-  { src:"EXTERIOR ANGLES", q:"In a triangle, ∠A = 50° and ∠B = 60°. What is the exterior angle at C (∠ACD, where D extends side BC)?",
-    opts:["110°","70°","180°","50°"], a:0,
-    why:"∠A+∠B+∠ACB=180°, so ∠ACB=70°. The exterior angle and ∠ACB form a straight line: 180−70=110°." },
-
-  { src:"TRY THIS", q:"In an isosceles triangle, ∠B = ∠C and ∠A = 50°. What is ∠B?",
-    opts:["65°","50°","90°","115°"], a:0,
-    why:"∠B+∠C = 180−50 = 130°, and since ∠B=∠C, each is 130 ÷ 2 = 65°." },
-
-  { src:"ANGLE SUM PROPERTY", q:"What is the sum of the interior angles of any triangle?",
-    opts:["180°","360°","90°","270°"], a:0,
-    why:"This is the angle sum property of triangles — always 180°, however the triangle is shaped." },
-
-  { src:"SECTION 7.5", q:"A triangle has one right angle (90°). What do we call this type of triangle?",
-    opts:["Right-angled triangle","Obtuse-angled triangle","Acute-angled triangle","Equilateral triangle"], a:0,
-    why:"A triangle with one 90° angle is a right-angled (or right) triangle." },
-
-  { src:"SECTION 7.4", q:"An altitude of a triangle is...",
-    opts:["a perpendicular line segment from a vertex to the opposite side","any line segment joining two vertices","a line that bisects an angle","the longest side of the triangle"], a:0,
-    why:"The altitude is the perpendicular dropped from a vertex to (the line containing) the opposite side — it measures the triangle's height from that vertex." }
+const SECTIONS = [
+  {
+    id: "7.2",
+    title: "7.2 · Triangle Inequality",
+    questions: [
+      { q:"Do the sidelengths 3 cm, 4 cm and 8 cm form a triangle? 📐",
+        opts:["No — 3+4 is less than 8","Yes, any three lengths work","Yes — a right triangle","No — 3+4 equals 8"], a:0,
+        why:"3+4 = 7, which is less than 8 — the triangle inequality fails.",
+        followUp:{ q:"The triangle inequality says each side must be… ⚖️",
+          opts:["less than the sum of the other two","equal to the other two","the longest possible","a whole number"], a:0,
+          why:"Every side must be smaller than the sum of the other two." } },
+      { q:"Can 10 km, 10 km and 25 km be the sides of a triangle? 🛣️",
+        opts:["No","Yes","Only if it's isosceles","Only if it's a right triangle"], a:0,
+        why:"10+10 = 20, which is less than 25 — the inequality fails.",
+        followUp:{ q:"The two short sides here add to… ➕",
+          opts:["20","25","35","30"], a:0,
+          why:"10 + 10 = 20, less than 25." } },
+      { q:"Which set CAN be the sidelengths of a triangle? ✅",
+        opts:["3, 4, 6","2, 2, 5","2, 4, 8","10, 20, 35"], a:0,
+        why:"For 3,4,6 each length is less than the sum of the other two; the rest all fail.",
+        followUp:{ q:"For 3, 4, 6, check the biggest side: is 6 < 3+4? 🔍",
+          opts:["Yes, 6 < 7","No, 6 > 7","6 = 7","cannot tell"], a:0,
+          why:"6 < 7, so the inequality holds." } },
+      { q:"Do the lengths 3, 6, 9 form a triangle? 📏",
+        opts:["No — 3+6 equals 9, not less than it","Yes","No — 6+9 is less than 3","Yes, a right triangle"], a:0,
+        why:"3+6 = 9, which is NOT strictly less than 9 — each side must be strictly smaller than the sum of the other two.",
+        followUp:{ q:"When the two shorter sides add to exactly the longest, the 'triangle' is… 📐",
+          opts:["flat (degenerate)","equilateral","right-angled","isosceles"], a:0,
+          why:"The three points fall on a line, so no real triangle forms." } },
+      { q:"Does an equilateral triangle with sides 50, 50, 50 exist? 🔺",
+        opts:["Yes — each side is less than the sum of the other two","No — equal sides break the rule","Only if the sides are under 10 cm","No, equilateral triangles are impossible"], a:0,
+        why:"50 < 50+50 for every side, so the inequality holds — equilateral triangles exist for any side length.",
+        followUp:{ q:"For sides 50, 50, 50, is 50 < 50+50? ⚖️",
+          opts:["Yes","No","Only sometimes","50 = 100"], a:0,
+          why:"50 < 100, so it satisfies the triangle inequality." } }
+    ]
+  },
+  {
+    id: "7.3",
+    title: "7.3 · Angles in a Triangle",
+    questions: [
+      { q:"What is the sum of the interior angles of any triangle? 📐",
+        opts:["180°","360°","90°","270°"], a:0,
+        why:"The angle sum property: a triangle's angles always add to 180°.",
+        followUp:{ q:"Can a triangle have all three angles equal to 70°? 🤔",
+          opts:["No — they'd total 210°","Yes, it's equilateral","Yes, if sides are short","Only if right-angled"], a:0,
+          why:"70+70+70 = 210°, but a triangle needs exactly 180°." } },
+      { q:"Two angles of a triangle are 50° and 65°. What is the third? 🔺",
+        opts:["65°","115°","50°","180°"], a:0,
+        why:"180 − 50 − 65 = 65°.",
+        followUp:{ q:"To find a missing angle, subtract the known two from… ➖",
+          opts:["180°","360°","90°","the largest angle"], a:0,
+          why:"All three angles total 180°." } },
+      { q:"In a triangle, ∠A = 50° and ∠B = 60°. What is the exterior angle at C? 📐",
+        opts:["110°","70°","180°","50°"], a:0,
+        why:"∠ACB = 180−50−60 = 70°, and the exterior angle is 180−70 = 110° (also 50+60).",
+        followUp:{ q:"An exterior angle equals the sum of the… ➕",
+          opts:["two opposite interior angles","three interior angles","adjacent angle","right angle"], a:0,
+          why:"The exterior angle equals the sum of the two remote interior angles: 50+60 = 110°." } },
+      { q:"In an isosceles triangle, ∠B = ∠C and ∠A = 50°. What is ∠B? 🔺",
+        opts:["65°","50°","90°","115°"], a:0,
+        why:"∠B+∠C = 180−50 = 130°, and since they're equal each is 65°.",
+        followUp:{ q:"In an isosceles triangle the two base angles are… ⚖️",
+          opts:["equal","always 90°","always 60°","different"], a:0,
+          why:"Equal sides give equal base angles." } },
+      { q:"Two angles of a triangle are 36° and 72°. What is the third? 🔺",
+        opts:["72°","108°","36°","144°"], a:0,
+        why:"180 − 36 − 72 = 72°.",
+        followUp:{ q:"36 + 72 equals… ➕",
+          opts:["108","98","118","106"], a:0,
+          why:"36 + 72 = 108, and 180 − 108 = 72°." } }
+    ]
+  },
+  {
+    id: "7.5",
+    title: "7.5 · Types of Triangles",
+    questions: [
+      { q:"A triangle has one right angle (90°). What is it called? 📐",
+        opts:["Right-angled triangle","Obtuse-angled triangle","Acute-angled triangle","Equilateral triangle"], a:0,
+        why:"A triangle with one 90° angle is a right-angled triangle.",
+        followUp:{ q:"In a right triangle, the side opposite the right angle is the… 📏",
+          opts:["hypotenuse","base","altitude","median"], a:0,
+          why:"The longest side, opposite the right angle, is the hypotenuse." } },
+      { q:"An altitude of a triangle is… 📏",
+        opts:["a perpendicular segment from a vertex to the opposite side","any segment joining two vertices","a line that bisects an angle","the longest side"], a:0,
+        why:"The altitude is the perpendicular dropped from a vertex to the opposite side — the triangle's height.",
+        followUp:{ q:"An altitude meets the opposite side at what angle? 📐",
+          opts:["90°","60°","45°","180°"], a:0,
+          why:"An altitude is perpendicular, so it meets at 90°." } },
+      { q:"A triangle with all three sides equal is called… 🔺",
+        opts:["equilateral","isosceles","scalene","right-angled"], a:0,
+        why:"Equal sides make an equilateral triangle, and each angle is 60°.",
+        followUp:{ q:"Each angle of an equilateral triangle is… 📐",
+          opts:["60°","90°","45°","30°"], a:0,
+          why:"180 ÷ 3 = 60° per angle." } },
+      { q:"A triangle with all three sides of different lengths is… 🔻",
+        opts:["scalene","equilateral","isosceles","right-angled"], a:0,
+        why:"All sides different means a scalene triangle — its angles are all different too.",
+        followUp:{ q:"How many equal sides does a scalene triangle have? 🔢",
+          opts:["0","2","3","1"], a:0,
+          why:"None of its sides are equal." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch07", xp:10 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch07", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz07", "ninja") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -443,7 +491,6 @@ document.querySelectorAll(".tab").forEach(t=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("popts").children.length) renderPractice();
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

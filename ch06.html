@@ -104,6 +104,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -178,24 +179,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Parity, magic squares, Virahāṅka numbers, and a cryptarithm &mdash; straight from the chapter.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz06"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 6.2</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -433,46 +438,106 @@ const practiceQuiz = makeMiniQuiz(PRACTICE, {
 /* ---------------------------------------------------------------
    CHALLENGE — real Figure-it-Out & chapter questions
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 6.2 · Kishor's puzzle", q:"Kishor has 5 boxes and only odd-numbered cards. Can he make them sum to 30?",
-    opts:["No — 5 odd numbers always sum to an odd number","Yes, always","Only with even cards","Yes, if he picks carefully"], a:0,
-    why:"An odd count of odd numbers always sums to odd, and 30 is even — so it's impossible no matter which cards he picks." },
-
-  { src:"SECTION 6.2 · Martin and Maria", q:"Two siblings were born exactly one year apart. Can the sum of their (whole-number) ages be 112?",
-    opts:["No — consecutive numbers always sum to an odd number","Yes","Only if both are even","Depends on the year"], a:0,
-    why:"Consecutive numbers are always one even, one odd — even + odd is always odd, and 112 is even." },
-
-  { src:"FIGURE IT OUT 6.2 · Lakpa's coins", q:"Lakpa has an odd number of ₹1 coins, an odd number of ₹5 coins, and an even number of ₹10 coins. He says the total is ₹205. Possible?",
-    opts:["No — his total must actually come out even, not odd","Yes, that's exactly right","Only if he has zero ₹10 coins","Impossible to tell"], a:0,
-    why:"odd(₹1s) + odd(₹5s) is even, and the ₹10s (even count) add an even amount too — so his total must be even, not the odd number 205." },
-
-  { src:"SECTION 6.3 · magic squares", q:"In a magic square filled with 1–9, why can't 9 sit at the centre?",
-    opts:["Because 8 sits alongside it in some line, and 8 + 9 already exceeds the magic sum of 15","Because 9 is odd","Because 9 must be a corner","There's no reason, it can"], a:0,
-    why:"Any line through the centre containing 9 and 8 would need a third number of 15 − 9 − 8 = −2, which isn't available." },
-
-  { src:"SECTION 6.3 · the Chautīsā Yantra", q:"The first-ever recorded 4×4 magic square, found at a 10th-century temple in Khajuraho, has every row, column and diagonal adding to...",
-    opts:["34","15","40","36"], a:0, why:"Chau̐tīs means 34 — the magic sum that gives the square its name." },
-
-  { src:"SECTION 6.4 · Virahāṅka–Fibonacci", q:"In the sequence 1, 2, 3, 5, 8, 13, 21, 34, 55, ..., what comes right after 55?",
-    opts:["89","68","60","90"], a:0, why:"Each term is the sum of the two before it: 34 + 55 = 89." },
-
-  { src:"SECTION 6.4 · history", q:"Virahāṅka wrote down these numbers (in a Prakrit poem about rhythm) roughly how long before the Italian mathematician Fibonacci wrote about the same numbers?",
-    opts:["about 500 years","about 50 years","about 5 years","the same year"], a:0,
-    why:"Virahāṅka worked around 700 CE; Fibonacci wrote about the numbers in 1202 CE — about 500 years later." },
-
-  { src:"SECTION 6.5 · Digits in Disguise", q:"In the cryptarithm T + T + T = UT (a 2-digit answer), each letter is one digit. What is T?",
-    opts:["5","3","1","9"], a:0, why:"3 × 5 = 15 — a 2-digit number whose units digit matches T. T = 5 and UT = 15." },
-
-  { src:"FIGURE IT OUT 6.5 · Angaan's staircase", q:"Angaan climbs an 8-step staircase, taking 1 or 2 steps at a time. In how many different ways can he reach the top?",
-    opts:["34","21","13","55"], a:0, why:"This is exactly the Virahāṅka count for 8 beats — the 8th term of the sequence, 34." },
-
-  { src:"FIGURE IT OUT 6.2", q:"What is the parity of the sum of all whole numbers from 1 to 100?",
-    opts:["even","odd","can't say","zero"], a:0, why:"The numbers pair up as (1+100), (2+99), ... — 50 pairs, each summing to 101 (odd), and an even count of odd sums is even." },
-
-  { src:"SECTION 6.1 · numbers tell us things", q:"Each child calls out how many taller children are standing in front of them. In a line of 8 children, what is the largest number any child could possibly call out?",
-    opts:["7","8","0","4"], a:0, why:"The very last child could have all 7 others in front of them taller — the largest possible count is one less than the group size." }
+const SECTIONS = [
+  {
+    id: "6.2",
+    title: "6.2 · Parity (Odd & Even)",
+    questions: [
+      { q:"Kishor has 5 boxes and only odd-numbered cards. Can he make them sum to 30? 🃏",
+        opts:["No — 5 odd numbers always sum to an odd number","Yes, always","Only with even cards","Yes, if he picks carefully"], a:0,
+        why:"An odd count of odd numbers is always odd, and 30 is even — impossible.",
+        followUp:{ q:"odd + odd + odd (three odds) is… ➕",
+          opts:["odd","even","zero","can't tell"], a:0,
+          why:"An odd number of odd terms always sums to odd." } },
+      { q:"Two siblings born exactly one year apart. Can their whole-number ages sum to 112? 👧👦",
+        opts:["No — consecutive numbers always sum to an odd number","Yes","Only if both are even","Depends on the year"], a:0,
+        why:"Consecutive numbers are one even and one odd, so their sum is odd — but 112 is even.",
+        followUp:{ q:"even + odd always gives… ➕",
+          opts:["an odd number","an even number","zero","either"], a:0,
+          why:"Even + odd is always odd." } },
+      { q:"Lakpa has an odd number of ₹1 coins, an odd number of ₹5 coins, and an even number of ₹10 coins. Can his total be ₹205? 🪙",
+        opts:["No — his total must come out even","Yes, exactly right","Only with zero ₹10 coins","Impossible to tell"], a:0,
+        why:"odd(₹1s)+odd(₹5s) is even, and the ₹10s add an even amount — so the total is even, not 205.",
+        followUp:{ q:"An even count of ₹10 coins adds a total that is… 💰",
+          opts:["even","odd","zero","either"], a:0,
+          why:"Any multiple of an even count of 10s is even." } },
+      { q:"What is the parity of the sum of all whole numbers from 1 to 100? 🔢",
+        opts:["even","odd","can't say","zero"], a:0,
+        why:"The numbers pair as (1+100),(2+99),… — 50 pairs each summing to 101, and 50×101 = 5050, an even number.",
+        followUp:{ q:"The sum 1+2+…+100 equals… ➕",
+          opts:["5050","5000","10000","550"], a:0,
+          why:"50 pairs × 101 = 5050." } },
+      { q:"In a line of 8 children each calling how many taller kids stand in front, the largest possible call is… 📏",
+        opts:["7","8","0","4"], a:0,
+        why:"The last child could have all 7 others in front and taller — one less than the group size.",
+        followUp:{ q:"With N children, the biggest possible count is… 🔢",
+          opts:["N − 1","N","N + 1","0"], a:0,
+          why:"A child can see at most everyone else in front, N − 1." } }
+    ]
+  },
+  {
+    id: "6.3",
+    title: "6.3 · Magic Squares",
+    questions: [
+      { q:"In a 3×3 magic square using 1–9, the magic sum of each line is… ✨",
+        opts:["15","9","10","45"], a:0,
+        why:"1+2+…+9 = 45, and 45 ÷ 3 rows = 15.",
+        followUp:{ q:"The sum 1+2+…+9 equals… ➕",
+          opts:["45","36","40","54"], a:0,
+          why:"1 through 9 add to 45." } },
+      { q:"Which number must sit at the CENTRE of the 1–9 magic square? 🎯",
+        opts:["5","1","9","3"], a:0,
+        why:"The centre is the middle value 5, which balances every line through it.",
+        followUp:{ q:"Why can't 9 sit at the centre? 🚫",
+          opts:["9 + 8 already exceeds the magic sum 15","9 is odd","9 must be a corner","it can sit there"], a:0,
+          why:"A centre line with 9 and 8 would need a third number of 15−17 = −2, which isn't available." } },
+      { q:"The famous Chautīsā Yantra 4×4 magic square (Khajuraho, 10th century) has every line adding to… 🛕",
+        opts:["34","15","40","36"], a:0,
+        why:"'Chautīs' means 34 — the magic sum that names the square.",
+        followUp:{ q:"'Chautīs' in the name of the square means… 🔢",
+          opts:["34","15","44","24"], a:0,
+          why:"It is the Hindi/Prakrit word for 34." } },
+      { q:"In a magic square, which lines must all share the same sum? 🔁",
+        opts:["every row, column and diagonal","only the rows","only the diagonals","only the corners"], a:0,
+        why:"By definition every row, every column and both diagonals add to the magic sum.",
+        followUp:{ q:"A 3×3 magic square using 1–9 has how many such lines summing to 15? ➕",
+          opts:["8","3","4","6"], a:0,
+          why:"3 rows + 3 columns + 2 diagonals = 8 lines." } }
+    ]
+  },
+  {
+    id: "6.4",
+    title: "6.4 · Virahāṅka–Fibonacci Numbers",
+    questions: [
+      { q:"In 1, 2, 3, 5, 8, 13, 21, 34, 55, … what comes right after 55? 🌀",
+        opts:["89","68","60","90"], a:0,
+        why:"Each term is the sum of the two before it: 34 + 55 = 89.",
+        followUp:{ q:"The rule for the next term is 'add the… ➕",
+          opts:["two before it","last one twice","first two","previous three"], a:0,
+          why:"Each Virahāṅka–Fibonacci term is the sum of the previous two." } },
+      { q:"Virahāṅka wrote these numbers roughly how long before Fibonacci? 📜",
+        opts:["about 500 years","about 50 years","about 5 years","the same year"], a:0,
+        why:"Virahāṅka worked around 700 CE; Fibonacci wrote of them in 1202 CE — about 500 years later.",
+        followUp:{ q:"Virahāṅka described the numbers in a poem about… 🎵",
+          opts:["rhythm/beats","cooking","farming","travel"], a:0,
+          why:"He counted rhythms of long and short beats." } },
+      { q:"Angaan climbs an 8-step staircase taking 1 or 2 steps at a time. How many different ways? 🪜",
+        opts:["34","21","13","55"], a:0,
+        why:"This is the Virahāṅka count for 8 beats — the 8th term, 34.",
+        followUp:{ q:"The staircase-climbing counts follow which famous sequence? 🌀",
+          opts:["Virahāṅka–Fibonacci","even numbers","square numbers","primes"], a:0,
+          why:"Ways to climb with 1 or 2 steps form the Fibonacci sequence." } },
+      { q:"In the cryptarithm T + T + T = UT (a 2-digit answer, each letter a digit), what is T? 🔤",
+        opts:["5","3","1","9"], a:0,
+        why:"3 × 5 = 15 — a 2-digit number whose units digit matches T. T = 5, UT = 15.",
+        followUp:{ q:"With T = 5, the two-digit answer UT is… 🔢",
+          opts:["15","35","25","55"], a:0,
+          why:"3 × 5 = 15." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch06", xp:10, count:8 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch06", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz06", "imp") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -486,7 +551,6 @@ document.querySelectorAll(".tab").forEach(t=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("propts").children.length) practiceQuiz.start();
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 

@@ -96,6 +96,7 @@
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">&larr; Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next &rarr;</button>
     </div>
@@ -191,24 +192,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Real Figure-it-Out questions from the chapter — bounces, guavas, races, and more.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz13"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 5.2</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -398,58 +403,138 @@ document.getElementById("ragain").onclick = ()=>{
 };
 
 /* ---------------------------------------------------------------
-   CHALLENGE — real Figure-it-Out questions from the chapter
+   CHALLENGE — one quiz per textbook section (need 80% to master).
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 5.2 · bounces", q:"Shreyas bounces a ball on his bat. His 8 attempts were 6, 2, 9, 5, 4, 6, 3, 5. What's the average number of bounces?",
-    opts:["5","6","4","8"], a:0,
-    why:"Total = 6+2+9+5+4+6+3+5 = 40. Average = 40 ÷ 8 = 5." },
-
-  { src:"SECTION 5.2 · guavas", q:"Shreyas's group of 5 collected 30 guavas in total; Parag's group of 6 also collected 30. Whose group gets a bigger fair-share each?",
-    opts:["Shreyas's group","Parag's group","Both get the same","Cannot tell"], a:0,
-    why:"30 ÷ 5 = 6 guavas each for Shreyas's group, but 30 ÷ 6 = 5 each for Parag's group — same total, different group size." },
-
-  { src:"FIGURE IT OUT · school enrolment", q:"A school's enrolment over 6 years was 1555, 1670, 1750, 2013, 2040, 2126. What's the mean enrolment?",
-    opts:["1859","1750","1900","1820"], a:0,
-    why:"The six numbers add up to 11154. 11154 ÷ 6 = 1859." },
-
-  { src:"FIGURE IT OUT · the 100 m race", q:"Nikhil's race times were 17,18,17,16,19,17,18 s; Sunil's were 20,18,18,17,16,16,17 s. Who ran quicker on average?",
-    opts:["They tied — same average","Nikhil","Sunil","Cannot tell without more data"], a:0,
-    why:"Both sets of times add up to 122 seconds over 7 races, so both averages are 122÷7 ≈ 17.43 s. A surprising tie!" },
-
-  { src:"SECTION 5.2 · know your onions", q:"Yahapur's onion prices totalled ₹458 over the year, Wahapur's totalled ₹450. Whose average monthly price is higher?",
-    opts:["Yahapur's","Wahapur's","They're equal","Cannot tell"], a:0,
-    why:"458 ÷ 12 ≈ 38.17 for Yahapur, 450 ÷ 12 = 37.5 for Wahapur — Yahapur is very slightly costlier on average." },
-
-  { src:"SECTION 5.2 · outliers", q:"Poovizhi's family heights were 170, 173, 165, 118, 175 cm. The 118 cm height belongs to a young child and is far from the rest. What do we call such a value?",
-    opts:["An outlier","The median","The mode","The range"], a:0,
-    why:"A value that significantly deviates from the rest of the data is called an outlier — here it pulls the mean (160.2) well below the median (170)." },
-
-  { src:"SECTION 5.2 · outliers", q:"Because of that outlier in Poovizhi's family, what happened to the mean compared to the median?",
-    opts:["The mean (160.2) fell below the median (170)","The mean rose above the median","Mean and median stayed equal","The median became undefined"], a:0,
-    why:"A low outlier drags the mean down with it, but barely affects the median — the median stayed close to where most of the family's heights are." },
-
-  { src:"SECTION 5.2 · newspaper pages", q:"A newspaper's page counts Mon–Sun were 16, 18, 20, 22, 26, 16, 10. What is the median?",
-    opts:["18","20","16","22"], a:0,
-    why:"Sorted: 10, 16, 16, 18, 20, 22, 26. With 7 values, the middle (4th) one is 18." },
-
-  { src:"FIGURE IT OUT · sumo vs ballet", q:"Average sumo wrestler weight ≈ 240.4 kg; average ballet dancer weight ≈ 42.4 kg. Roughly how many times heavier is a sumo wrestler?",
-    opts:["About 5–6 times","About 2 times","About 10 times","About 3 times"], a:0,
-    why:"240.4 ÷ 42.4 ≈ 5.7 — so roughly 5 to 6 times heavier." },
-
-  { src:"SECTION 5.2 · zero median runs", q:"England scored 407/10 in an innings where extras contributed 19 runs, with 11 players batting. What's the average runs per player (excluding extras)?",
-    opts:["35.27","37.00","38.80","40.70"], a:0,
-    why:"(407 − 19) ÷ 11 = 388 ÷ 11 = 35.27 runs per player." },
-
-  { src:"SECTION 5.2 · zero vs no value", q:"A player scores 57, 13, 0, 84, (did not play), 51, 27 across a series. How many matches should you divide the total by to find the average?",
-    opts:["6 — the matches actually played","7 — the total matches in the series","5 — ignoring the zero too","It cannot be calculated"], a:0,
-    why:"A score of 0 still counts (they played and scored nothing), but a match not played doesn't count at all — so divide by 6, not 7." },
-
-  { src:"FIGURE IT OUT · player points", q:"Player C scored 8, 11, (did not play), 13 in four games. To find C's average points per game, what should you divide the total by?",
-    opts:["3, the games C actually played","4, the total number of games","2","It's impossible to say"], a:0,
-    why:"C only played 3 games (8+11+13 = 32). 32 ÷ 3 ≈ 10.67 points per game — dividing by 4 would understate it." }
+const SECTIONS = [
+  {
+    id: "5.2",
+    title: "5.2 · Representative Values (mean/median/mode)",
+    questions: [
+      { q:"Shreyas's 8 bat-bounce attempts were 6, 2, 9, 5, 4, 6, 3, 5. What is the average (mean)? 🏏",
+        opts:["5","6","4","8"], a:0,
+        why:"Total = 40, and 40 ÷ 8 = 5.",
+        followUp:{ q:"What is the mean of 4, 6 and 8? 🏏",
+          opts:["6","5","7","18"], a:0,
+          why:"(4+6+8) ÷ 3 = 18 ÷ 3 = 6." } },
+      { q:"A newspaper's page counts were 16, 18, 20, 22, 26, 16, 10. What is the median? 📰",
+        opts:["18","20","16","22"], a:0,
+        why:"Sorted: 10, 16, 16, 18, 20, 22, 26. The middle (4th) value is 18.",
+        followUp:{ q:"What is the median of 3, 7, 9, 11, 15? 📰",
+          opts:["9","11","7","45"], a:0,
+          why:"The middle value of five sorted numbers is the 3rd one: 9." } },
+      { q:"Which value is the MODE of 5, 3, 5, 2, 5, 4? 🔢",
+        opts:["5","3","4","2"], a:0,
+        why:"The mode is the most frequent value. 5 appears three times.",
+        followUp:{ q:"What is the mode of 2, 2, 3, 7, 7, 7? 🔢",
+          opts:["7","2","3","4"], a:0,
+          why:"7 appears most often, so it's the mode." } },
+      { q:"Shreyas's group of 5 collected 30 guavas; Parag's group of 6 also collected 30. Whose fair-share each is bigger? 🍈",
+        opts:["Shreyas's group","Parag's group","Both the same","Cannot tell"], a:0,
+        why:"30 ÷ 5 = 6 each vs 30 ÷ 6 = 5 each — same total, smaller group gets more.",
+        followUp:{ q:"20 sweets shared by 4 children or by 5 children — which gives more each? 🍬",
+          opts:["4 children","5 children","the same","cannot tell"], a:0,
+          why:"20 ÷ 4 = 5 each beats 20 ÷ 5 = 4 each." } },
+      { q:"A school's enrolment over 6 years was 1555, 1670, 1750, 2013, 2040, 2126. What is the mean? 🏫",
+        opts:["1859","1750","1900","1820"], a:0,
+        why:"The six numbers total 11154, and 11154 ÷ 6 = 1859.",
+        followUp:{ q:"What is the mean of 10, 20 and 30? 🏫",
+          opts:["20","30","15","60"], a:0,
+          why:"(10+20+30) ÷ 3 = 60 ÷ 3 = 20." } },
+      { q:"To find the mean of a set of values, you… ⚖️",
+        opts:["add them all and divide by how many there are","pick the middle one","pick the most common one","subtract the smallest from the largest"], a:0,
+        why:"Mean = total ÷ number of values. (Middle = median, most common = mode, largest−smallest = range.)",
+        followUp:{ q:"The 'range' of a data set is… ⚖️",
+          opts:["largest value minus smallest value","the total","the middle value","the most common value"], a:0,
+          why:"Range = maximum − minimum." } }
+    ]
+  },
+  {
+    id: "5.3",
+    title: "5.3 · Visualising Data (charts)",
+    questions: [
+      { q:"On a bar chart, what does the HEIGHT of a bar tell you? 📊",
+        opts:["the value (frequency) it stands for","its colour","the number of bars","nothing"], a:0,
+        why:"A taller bar means a larger value — height represents the quantity.",
+        followUp:{ q:"On a bar chart, a taller bar means… 📊",
+          opts:["a larger value","a smaller value","the same value","an error"], a:0,
+          why:"Bar height is proportional to the value." } },
+      { q:"In a pictograph, one apple symbol = 10 apples. How many apples do 3.5 symbols show? 🍎",
+        opts:["35","13.5","3.5","350"], a:0,
+        why:"3.5 × 10 = 35 apples.",
+        followUp:{ q:"If one star = 5 books, how many books do 4 stars show? ⭐",
+          opts:["20","9","45","5"], a:0,
+          why:"4 × 5 = 20 books." } },
+      { q:"To COMPARE two towns' onion prices month by month, which chart is best? 🧅",
+        opts:["a double bar graph","a single number","a pie of one town","no chart"], a:0,
+        why:"A double bar graph places both towns' bars side by side each month for easy comparison.",
+        followUp:{ q:"Two data sets shown side by side use a… 📊",
+          opts:["double bar graph","single bar","single dot","table only"], a:0,
+          why:"That's exactly what a double bar graph is for." } },
+      { q:"If a bar chart's scale does NOT start at zero, it can… ⚠️",
+        opts:["exaggerate the differences between bars","make all bars equal","remove the data","change the totals"], a:0,
+        why:"A cut or zoomed axis makes small differences look much bigger than they really are.",
+        followUp:{ q:"A 'broken' vertical axis makes small differences look… ⚠️",
+          opts:["bigger","smaller","equal","negative"], a:0,
+          why:"It stretches the visual gap, exaggerating the difference." } },
+      { q:"On the onion-price chart, to find the month with the HIGHEST price you look for… 🧅",
+        opts:["the tallest bar","the shortest bar","the first bar","the widest bar"], a:0,
+        why:"Highest price = tallest bar. (Shortest bar would be the lowest price.)",
+        followUp:{ q:"The LOWEST price shows up as the… 🧅",
+          opts:["shortest bar","tallest bar","last bar","widest bar"], a:0,
+          why:"Lowest value = shortest bar." } },
+      { q:"To show how a value CHANGES across 12 months, a good display is… 📈",
+        opts:["a bar or line chart across the months","a single average number","just the highest value","no display"], a:0,
+        why:"Bars or a line across months reveal the trend; a single number hides the month-to-month change.",
+        followUp:{ q:"A single average number, on its own, hides… 📈",
+          opts:["the month-to-month changes","the total","the units","nothing"], a:0,
+          why:"One number can't show how the data rose or fell over time." } }
+    ]
+  },
+  {
+    id: "5.4",
+    title: "5.4 · Data Detective",
+    questions: [
+      { q:"Poovizhi's family heights were 170, 173, 165, 118, 175 cm. The 118 cm (a young child) is far from the rest. What is it called? 🕵️",
+        opts:["an outlier","the median","the mode","the range"], a:0,
+        why:"A value far from the rest of the data is called an outlier.",
+        followUp:{ q:"A data value that sits far away from all the others is a… 🕵️",
+          opts:["an outlier","a mean","a mode","a bar"], a:0,
+          why:"That's the definition of an outlier." } },
+      { q:"Because of that low outlier, how did the mean (160.2) compare with the median (170)? 📉",
+        opts:["the mean fell below the median","the mean rose above the median","they stayed equal","the median vanished"], a:0,
+        why:"A low outlier drags the mean down, but barely moves the median.",
+        followUp:{ q:"A single very LOW value pulls the mean… 📉",
+          opts:["down","up","nowhere","to zero"], a:0,
+          why:"Low outliers reduce the mean." } },
+      { q:"Which average is LEAST affected by an extreme outlier? ⚖️",
+        opts:["the median","the mean","the total","the range"], a:0,
+        why:"The median only depends on the middle position, so a far-off value barely changes it.",
+        followUp:{ q:"To resist an extreme value, a good representative to use is the… ⚖️",
+          opts:["median","mean","range","total"], a:0,
+          why:"The median is robust to outliers." } },
+      { q:"England scored 407 with 19 extras and 11 players batting. Average runs per player (excluding extras)? 🏏",
+        opts:["35.27","37.00","38.80","40.70"], a:0,
+        why:"(407 − 19) ÷ 11 = 388 ÷ 11 ≈ 35.27.",
+        followUp:{ q:"A team scored 200 with 10 extras and 10 players. Average per player (excluding extras)? 🏏",
+          opts:["19","20","18","21"], a:0,
+          why:"(200 − 10) ÷ 10 = 190 ÷ 10 = 19." } },
+      { q:"A batter scored 57, 13, 0, 84, (did not play), 51, 27. To find the average, divide the total by… 🎯",
+        opts:["6 — the matches actually played","7 — all matches in the series","5 — ignoring the zero","it can't be found"], a:0,
+        why:"A score of 0 counts (they played), but a match not played doesn't — so divide by 6.",
+        followUp:{ q:"When a player did NOT play a match, that match… 🎯",
+          opts:["is not counted in the average","counts as zero","counts double","cancels the series"], a:0,
+          why:"'Did not play' is left out entirely; only a real score of 0 counts." } },
+      { q:"Average sumo weight ≈ 240.4 kg; average ballet dancer ≈ 42.4 kg. Roughly how many times heavier is the sumo wrestler? 🤼",
+        opts:["about 5–6 times","about 2 times","about 10 times","about 3 times"], a:0,
+        why:"240.4 ÷ 42.4 ≈ 5.7 — roughly 5 to 6 times heavier.",
+        followUp:{ q:"Roughly, 100 ÷ 20 is about how many times? 🤼",
+          opts:["5","2","10","20"], a:0,
+          why:"100 ÷ 20 = 5." } }
+    ]
+  }
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch13", xp:10, count:8 });
+BTP.setupSectionQuiz(SECTIONS, { chapterId:"ch13", passPct:0.8, xp:10,
+  mascot: BTP.Mascot("mascotQuiz13", "pirate") });
 
 /* ---------------------------------------------------------------
    TABS
@@ -462,7 +547,6 @@ document.querySelectorAll(".tab").forEach(t=>{
     ["learn","explore","read","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 
