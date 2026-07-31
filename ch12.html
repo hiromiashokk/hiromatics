@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 12</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
-<body>
+<body data-theme="aqua">
 <div class="wrap">
 
   <header>
@@ -19,13 +20,85 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Zoom</button>
     <button class="tab" data-p="find">Find It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">A tiny dot changes everything! Let's peek just beyond the
+      decimal point and learn to read, compare and add decimals.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn12"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Right on the dot — I'm Dot.</h2>
+        <p class="lede" style="margin:0">Let's find out what lives past the
+          point.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">After the point, places get smaller: <b>tenths</b>,
+        <b>hundredths</b>, <b>thousandths</b>. So 0.7 means <b>7 tenths</b>,
+        and 0.07 means 7 hundredths.</p>
+      <p class="lede">A ruler shows this: each cm is split into 10 tiny mm,
+        so 3.4 cm is 3 cm and 4 mm.</p>
+      <div class="joke"><b>Joke:</b> Why is the decimal point so calm? It
+        always knows its place! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">To <b>compare</b> decimals, line up the points and
+        check digit by digit. 0.5 is the same as 0.50, which beats 0.45.</p>
+      <p class="lede">Longer isn't always bigger — count the place values,
+        not the number of digits!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">To <b>add or subtract</b>, line up the decimal points,
+        then work like whole numbers.</p>
+      <p class="lede">Money is the perfect example: ₹2.50 + ₹1.75 = ₹4.25.
+        Two rupees fifty paise plus one rupee seventy-five paise.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Decimals are everywhere — prices, heights, weights,
+        race times. 0.5 is just another way to write one half.</p>
+      <div class="fun"><b>Fun fact:</b> ₹1 = 100 paise, so every price tag
+        you've ever seen is secretly a decimal in disguise! 💰</div>
+      <div class="joke"><b>Joke:</b> Why did the decimal break up with the
+        fraction? They couldn't agree on their place. 💧</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">💧</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Zoom</b> to use the point, then take the
+        <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh12"></div></div>
     <h2>Now do something with the point</h2>
     <p class="lede">
       Last time you just read the ruler. This time, take whatever you find and <b>use</b> it &mdash;
@@ -308,7 +381,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     mode = t.dataset.p;
-    ["explore","find","quiz"].forEach(p=>{
+    ["learn","explore","find","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
 
@@ -330,6 +403,31 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh12", "aqua")
+  .say("Read the point, then actually use it!", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn12", "aqua"),
+  say: [
+    "After the point: tenths, hundredths, thousandths.",
+    "Line up the points to compare.",
+    "Line up the points to add.",
+    "Decimals hide in money and rulers!"
+  ],
+  check: [
+    { q:"In 0.7, the 7 is in the … place.",
+      opts:["tenths","hundredths","ones","thousandths"], a:0,
+      why:"The first digit after the point is the tenths place." },
+    { q:"Which is greater, 0.5 or 0.45?",
+      opts:["0.5","0.45","they're equal","can't tell"], a:0,
+      why:"0.5 = 0.50, which is more than 0.45." },
+    { q:"₹2.50 + ₹1.75 = ?",
+      opts:["₹4.25","₹3.25","₹4.75","₹3.75"], a:0,
+      why:"Line up the points: 2.50 + 1.75 = 4.25." }
+  ]
+});
+
 BTP.paintStats();
 nl.start();
 </script>

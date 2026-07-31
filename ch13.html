@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 13</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
 /* ---- double bar chart, built with plain divs (no library) ---- */
@@ -26,7 +27,7 @@
 .ref-line span{position:absolute;right:2px;top:-16px;font-size:9.5px;background:#0d142ac9;padding:2px 6px;border-radius:6px;border:1px solid var(--line);white-space:nowrap}
 </style>
 </head>
-<body>
+<body data-theme="pirate">
 <div class="wrap">
 
   <header>
@@ -39,13 +40,86 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Onion Chart</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Onion Chart</button>
     <button class="tab" data-p="read">Read It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">Numbers tell stories once you connect the dots! Let's
+      learn <b>mean</b>, <b>median</b> and <b>mode</b> — and how charts turn
+      data into pictures.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn13"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Ahoy — I'm Pip.</h2>
+        <p class="lede" style="margin:0">Let's dig up the treasure hiding in a
+          pile of numbers.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">The <b>mean</b> (average) is: add everything up, then
+        divide by how many there are.</p>
+      <p class="lede">A batter scores 2, 4 and 6 runs in three matches. Mean
+        = (2 + 4 + 6) ÷ 3 = <b>4</b> runs per match.</p>
+      <div class="joke"><b>Joke:</b> Why did the average feel stretched? It
+        got pulled around by every single value! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">The <b>median</b> is the <b>middle</b> value once you
+        sort the numbers from small to big.</p>
+      <p class="lede">Line the class up by height and the person right in the
+        middle marks the median. For 1, 3, 9 the median is <b>3</b>.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">The <b>mode</b> is the value that shows up
+        <b>most often</b>.</p>
+      <p class="lede">If most kids in class wear size 5 shoes, then 5 is the
+        mode. A shop stocks the mode because it sells the most!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Charts turn numbers into pictures: a <b>bar chart</b>
+        compares amounts, a <b>pie chart</b> shows parts of a whole.</p>
+      <div class="fun"><b>Fun fact:</b> One giant value can drag the mean way
+        up, but the median barely budges — that's why news reports often use
+        the median! 📊</div>
+      <div class="joke"><b>Joke:</b> Why was the mode so popular? It just
+        kept showing up! 🥒</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">📊</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Onion Chart</b> to play, then take the
+        <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh13"></div></div>
     <h2>Onion Economics</h2>
     <p class="lede">
       Yahapur and Wahapur both sell onions, but the price swings differently in each town across the year.
@@ -385,7 +459,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","read","quiz"].forEach(p=>{
+    ["learn","explore","read","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
@@ -395,6 +469,31 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh13", "pirate")
+  .say("Tap a month and watch the mean and median move.", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn13", "pirate"),
+  say: [
+    "Mean: add them all, divide by how many.",
+    "Median: the middle when sorted.",
+    "Mode: the most common value.",
+    "Charts turn numbers into pictures!"
+  ],
+  check: [
+    { q:"The mean of 2, 4 and 6 is…",
+      opts:["4","6","12","3"], a:0,
+      why:"(2 + 4 + 6) ÷ 3 = 12 ÷ 3 = 4." },
+    { q:"The median of 3, 1 and 9 is…",
+      opts:["3","1","9","4"], a:0,
+      why:"Sort them: 1, 3, 9. The middle value is 3." },
+    { q:"The value that appears most often is the…",
+      opts:["mode","mean","median","range"], a:0,
+      why:"Mode = most frequent value." }
+  ]
+});
+
 BTP.paintStats();
 loadRQ();
 </script>

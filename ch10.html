@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 10</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
-<body>
+<body data-theme="ocean">
 <div class="wrap">
 
   <header>
@@ -19,13 +20,89 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Zoom</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Zoom</button>
     <button class="tab" data-p="find">Find It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">Numbers can go below zero too! Let's learn to move left
+      and right along the number line without getting lost.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn10"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Dive in — I'm Nilo.</h2>
+        <p class="lede" style="margin:0">Let's ride the number line from the
+          depths of negatives up to the positives.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede"><b>Integers</b> are the whole numbers, their negatives,
+        and zero: …−3, −2, −1, 0, 1, 2, 3… On the number line,
+        <b>right of zero is positive</b>, <b>left is negative</b>.</p>
+      <p class="lede">Think of a lift: ground floor is 0, the basement is
+        −1 and −2, the floors above are +1 and +2. Or a thermometer dipping
+        below zero on a cold morning.</p>
+      <div class="joke"><b>Joke:</b> Why was the negative number always sad?
+        It could never look on the bright (positive) side! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">Adding is just <b>moving</b> along the line. Add a
+        positive → step right. Add a negative → step left.</p>
+      <p class="lede">So 3 + (−5): start at 3, step 5 to the left, and you
+        land on <b>−2</b>. Like gaining 3 points then losing 5 — you're 2
+        in the hole.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">Subtracting a negative <b>flips</b> to adding:
+        <b>4 − (−2) = 4 + 2 = 6</b>. Two minuses make a plus!</p>
+      <p class="lede">It makes sense: taking away a debt actually makes you
+        richer.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Multiplying signs follow a neat rule: <b>same signs →
+        positive</b>, <b>different signs → negative</b>. So (−3) × (−2) = 6,
+        but (−3) × 2 = −6.</p>
+      <div class="fun"><b>Fun fact:</b> The coldest temperature ever
+        recorded on Earth was about −89°C in Antarctica — negatives are
+        very real! 🥶</div>
+      <div class="joke"><b>Joke:</b> Why did −3 and +3 cancel out? They were
+        complete opposites! ⚖️</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🌊</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Zoom</b> to slide the coin, then take the
+        <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh10"></div></div>
     <h2>Left of zero, right of zero</h2>
     <p class="lede">
       A carrom coin starts at 0. Strike it right and the movement is positive; strike it left and the
@@ -286,7 +363,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     mode = t.dataset.p;
-    ["explore","find","quiz"].forEach(p=>{
+    ["learn","explore","find","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
 
@@ -308,6 +385,32 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh10", "ocean")
+  .say("Right is positive, left is negative. Slide along!", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn10", "ocean"),
+  say: [
+    "Right of zero positive, left negative.",
+    "Adding a negative slides you left.",
+    "Two minuses make a plus.",
+    "Same signs multiply to a positive."
+  ],
+  check: [
+    { q:"On a number line, negative numbers are…",
+      opts:["to the left of zero","to the right of zero","above zero",
+        "the same as zero"], a:0,
+      why:"Negatives sit to the left of zero; positives to the right." },
+    { q:"What is 3 + (−5)?",
+      opts:["−2","8","2","−8"], a:0,
+      why:"Start at 3, step 5 to the left → −2." },
+    { q:"4 − (−2) = ?",
+      opts:["6","2","−6","−2"], a:0,
+      why:"Subtracting a negative adds: 4 + 2 = 6." }
+  ]
+});
+
 BTP.paintStats();
 nl.start();
 </script>

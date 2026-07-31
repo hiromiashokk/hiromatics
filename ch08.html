@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 8</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
   .fracpickers{display:flex;gap:14px;flex-wrap:wrap;margin:14px 0}
@@ -23,10 +24,22 @@
   .sw.a{background:linear-gradient(135deg,var(--cyan),#2bb3c8)}
   .sw.b{background:linear-gradient(135deg,var(--violet),#6a5bff)}
   .sw.ab{background:linear-gradient(135deg,var(--amber),#e0a83a)}
-  #p-build #gridBuild .grid-stage{max-width:70px;margin:14px auto;}
+  #p-build #gridBuild.grid-stage{
+    width:clamp(130px, 42vw, 200px); max-width:none; margin:14px auto;
+  }
+  .build-mode{display:flex;gap:8px;margin:4px 0 14px}
+  .mode-btn{
+    flex:1;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--ctrl);color:var(--dim);font-weight:700;font-size:15px;
+    cursor:pointer;font-family:inherit;
+  }
+  .mode-btn.on{
+    background:linear-gradient(135deg,var(--violet),var(--violet2));
+    color:#fff;border-color:transparent;
+  }
 </style>
 </head>
-<body>
+<body data-theme="candy">
 <div class="wrap">
 
   <header>
@@ -47,37 +60,98 @@
   <!-- ============ LEARN ============ -->
   <section class="panel" id="p-learn">
     <h2>Learn</h2>
-    <p class="lede">First, see how two fractions multiply as a picture. Shade one fraction across the rows and the other down the columns. The overlap is the product.</p>
+    <p class="lede">A fraction is just a piece of a whole. Let's slice up a
+      pizza 🍕 to see what the top and bottom numbers mean — then learn to
+      <b>multiply</b> and <b>divide</b> fractions with real-life examples.</p>
 
     <div class="mascot-row">
       <div id="mascotLearn"></div>
       <div style="flex:1;min-width:220px">
-        <h2 style="margin-bottom:6px">Hi! I'm Pochi.</h2>
-        <p class="lede" style="margin:0">I'll explain how the shaded overlap becomes the fraction product.</p>
+        <h2 style="margin-bottom:6px">Hi! I'm Pepper.</h2>
+        <p class="lede" style="margin:0">Grab a slice — I'll show you how
+          fractions work, one bite at a time.</p>
       </div>
     </div>
 
     <div class="learn-slide on" id="slide0">
-      <p class="lede">Split the rectangle into equal rows for the first fraction and columns for the second.</p>
-      <p class="lede">For example, 3/4 means 3 shaded rows out of 4, and 2/5 means 2 shaded columns out of 5.</p>
+      <div style="text-align:center;margin:6px 0">
+        <svg width="76" height="76" viewBox="0 0 100 100"
+             role="img" aria-label="a whole round pizza">
+          <circle cx="50" cy="50" r="46" fill="#e8b84b"/>
+          <circle cx="50" cy="50" r="38" fill="#f4d06f"/>
+          <circle cx="38" cy="38" r="6" fill="#d1462f"/>
+          <circle cx="64" cy="34" r="6" fill="#d1462f"/>
+          <circle cx="60" cy="62" r="6" fill="#d1462f"/>
+          <circle cx="34" cy="62" r="6" fill="#d1462f"/>
+          <circle cx="50" cy="50" r="5" fill="#d1462f"/>
+        </svg>
+      </div>
+      <p class="lede">Start with a <b>whole</b> — one complete pizza. A whole
+        means the entire, unbroken thing: nothing missing, nothing extra.</p>
+      <div class="fun"><b>Fun fact:</b> The word <i>fraction</i> comes from
+        the Latin <i>fractus</i>, meaning "broken". A fraction is literally a
+        broken-up whole!</div>
     </div>
 
     <div class="learn-slide" id="slide1">
-      <p class="lede">The cells shaded by both the rows and the columns are double-shaded.</p>
-      <p class="lede">These double-shaded cells are the product of the two fractions.</p>
+      <div style="font-size:38px;text-align:center;margin:6px 0">
+        🍕🍕🍕🍕</div>
+      <p class="lede">Now <b>cut it into equal parts</b>. Every slice must be
+        the exact same size. The number of equal slices is the
+        <b>bottom number</b> (the denominator).</p>
+      <p class="lede">Cut the pizza into 4 equal slices → the bottom number
+        is <b>4</b>.</p>
     </div>
 
     <div class="learn-slide" id="slide2">
-      <p class="lede">In this picture, 3 rows × 2 columns gives 6 double-shaded cells.</p>
-      <p class="lede">The whole rectangle has 4 × 5 = 20 cells, so the product is 6/20.</p>
+      <div style="font-size:38px;text-align:center;margin:6px 0">
+        🍕🍕🍕😋</div>
+      <p class="lede"><b>Take a part away</b> — eat a slice! The slices you
+        take are the <b>top number</b> (the numerator). Eat 3 of the 4 equal
+        slices and you've eaten <b>3/4</b> of the pizza.</p>
+      <div class="joke"><b>Joke:</b> Why should you never argue with a
+        fraction? Because it always knows how to break things down! 😄</div>
     </div>
 
     <div class="learn-slide" id="slide3">
-      <p class="lede">Now simplify the overlap fraction: 6/20 = 3/10.</p>
-      <p class="lede">In Build It, you'll match the target product by shading rows and columns the right way.</p>
+      <div style="font-size:44px;text-align:center;margin:6px 0">🍫</div>
+      <p class="lede"><b>Multiply</b> means "a fraction <i>of</i> a
+        fraction". To multiply, <b>multiply the tops, multiply the
+        bottoms</b>: 1/2 × 1/2 = 1×1 / 2×2 = <b>1/4</b>.</p>
+      <p class="lede"><b>Real life:</b> a recipe needs 2/3 cup of sugar, but
+        you only want <i>half</i> the recipe. So you use
+        1/2 × 2/3 = 2/6 = <b>1/3 cup</b>. 🧁</p>
+      <div class="fun"><b>Fun fact:</b> When you multiply by a fraction less
+        than 1, the answer gets <i>smaller</i> — half of a half is only a
+        quarter!</div>
+    </div>
+
+    <div class="learn-slide" id="slide4">
+      <div style="font-size:40px;text-align:center;margin:6px 0">🍕👫👭</div>
+      <p class="lede"><b>Divide</b> can mean <b>sharing</b>. Share 3/4 of a
+        pizza equally among 3 friends: 3/4 ÷ 3 = 3/4 × 1/3 = 3/12 =
+        <b>1/4</b> each. 🍕</p>
+      <p class="lede">The trick is <b>Keep · Change · Flip</b>: keep the first
+        fraction, change ÷ to ×, and flip the second number upside down
+        (3 becomes 1/3).</p>
+      <div class="joke"><b>Joke:</b> Why did the fraction go to the party
+        alone? Because it couldn't find a common denominator! 😆</div>
+    </div>
+
+    <div class="learn-slide" id="slide5">
+      <div style="font-size:40px;text-align:center;margin:6px 0">🥤🥤🥤</div>
+      <p class="lede">Divide can also ask <b>"how many fit?"</b> How many
+        half-litre bottles fill a 3-litre jug? 3 ÷ 1/2 = 3 × 2/1 =
+        <b>6 bottles</b>. 🥤</p>
+      <p class="lede">Dividing by a fraction smaller than 1 makes the answer
+        <i>bigger</i> — because lots of little pieces fit inside!</p>
+      <div class="fun"><b>Fun fact:</b> "Keep · Change · Flip" works because
+        dividing by 1/2 is the same as asking how many halves there are — and
+        that doubles your count.</div>
     </div>
 
     <div class="learn-nav" id="learnSlideNav">
+      <button class="btn ghost" id="learnBack">← Back</button>
       <div class="learn-dots" id="learnDots"></div>
       <button class="btn" id="learnNext">Next →</button>
     </div>
@@ -110,21 +184,28 @@
       </ul>
     </div>
 
+    <div class="build-mode">
+      <button class="mode-btn on" id="modeMul">× Multiply</button>
+      <button class="mode-btn" id="modeDiv">÷ Divide</button>
+    </div>
+
     <div class="quest">
       <div class="q" id="bq">Build a product of <b>1/8</b></div>
       <div class="meta" id="bmeta"></div>
+      <div class="meta" id="divHint"
+           style="display:none;color:var(--violet)"></div>
     </div>
 
     <div class="fracpickers">
       <div class="fracpicker fp-col-a">
-        <div class="fp-label">Fraction A · rows</div>
+        <div class="fp-label" id="fpALabel">Fraction A · rows</div>
         <div class="fp-frac">
           <div class="stepper"><button class="stp" id="cNumDown">−</button><span class="num" id="cNum">1</span><button class="stp" id="cNumUp">+</button></div>
           <div class="fp-bar">/</div>
           <div class="stepper"><button class="stp" id="cDenDown">−</button><span class="num" id="cDen">2</span><button class="stp" id="cDenUp">+</button></div>
         </div>
       </div>
-      <div class="fracpicker fp-col-b">
+      <div class="fracpicker fp-col-b" id="fpB">
         <div class="fp-label">Fraction B · columns</div>
         <div class="fp-frac">
           <div class="stepper"><button class="stp" id="dNumDown">−</button><span class="num" id="dNum">1</span><button class="stp" id="dNumUp">+</button></div>
@@ -138,7 +219,7 @@
 
     <div class="readout">
       <div class="card">
-        <div class="k">Your product</div>
+        <div class="k" id="prodK">Your product</div>
         <div class="v frac" id="buildProd">1/4</div>
       </div>
       <div class="card">
@@ -155,24 +236,28 @@
 
   <!-- ============ QUIZ ============ -->
   <section class="panel hide" id="p-quiz">
-    <h2>Challenge</h2>
-    <p class="lede">Aaron, his tortoise, and the rest of the chapter's own word problems.</p>
-    <div class="bar"><i id="qbar"></i></div>
+    <div class="mascot-row">
+      <div id="mascotQuiz"></div>
+      <div style="flex:1;min-width:200px">
+        <h2 style="margin-bottom:4px">Challenge</h2>
+        <p class="lede" style="margin:0">Pick a section from the chapter and
+          test yourself on it &mdash; you'll need <b>80%</b> to master it.</p>
+      </div>
+    </div>
 
-    <div id="qbox" style="margin-top:16px">
-      <div class="book" id="qsrc">SECTION 8.1</div>
+    <div id="secMenu"></div>
+
+    <div id="secQuizBox" class="hide">
+      <button class="btn ghost" id="secBack">&larr; All sections</button>
+      <div class="bar"><i id="qbar"></i></div>
+      <div class="book" id="qsrc">SECTION</div>
       <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
       <div class="opts" id="qopts"></div>
       <div class="fb" id="qfb"></div>
       <button class="btn hide" id="qnext">Next &rarr;</button>
     </div>
 
-    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
-      <div style="font-size:44px">🏆</div>
-      <h2 style="margin:10px 0">Chapter cleared</h2>
-      <p class="lede" id="qscore"></p>
-      <button class="btn" id="qagain">Play again</button>
-    </div>
+    <div id="secResult" class="hide" style="text-align:center;padding:20px 0"></div>
   </section>
 
 </div>
@@ -185,7 +270,7 @@
    CHAPTER 8 — Working with Fractions
    Explore = area-model fraction multiplication (BTP.Grid).
    Build It = choose two fractions and match their overlapping area to the target product.
-   Challenge = BTP.setupQuiz.
+   Challenge = BTP.setupSectionQuiz (one quiz per section 8.1/8.2/8.3).
    ===================================================================== */
 
 function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b,a%b]; } return a || 1; }
@@ -195,18 +280,22 @@ function fracStr(n,d){ return n + "/" + d; }
 /* ---------------------------------------------------------------
    LEARN
    --------------------------------------------------------------- */
-const LEARN_SLIDES = ["slide0","slide1","slide2","slide3"];
+const LEARN_SLIDES = ["slide0","slide1","slide2","slide3","slide4","slide5"];
 let learnI = 0;
 let lcI = 0, lcRight = 0;
 const RIGHT_PHRASES = ["Yes! Exactly right.", "Nailed it.", "Good job!"];
 const WRONG_PHRASES = ["Not quite — try again.", "Close! One more step.", "Almost there."];
 const LEARN_CHECK = [
-  { q:"What does 2/5 mean in the picture?", opts:["2 shaded columns out of 5","2 shaded rows out of 5","2 shaded cells out of 5","5 shaded columns out of 2"], a:0,
-    why:"2/5 means 2 columns are shaded out of 5 total columns." },
-  { q:"If 3 rows and 2 columns overlap, how many overlap cells are there?", opts:["6","5","3","2"], a:0,
-    why:"3 rows times 2 columns gives 6 overlapping cells." },
-  { q:"6 overlapping cells out of 20 total cells is the product fraction...", opts:["6/20","2/5","3/10","3/20"], a:0,
-    why:"The product is the overlap fraction before simplification: 6/20." }
+  { q:"A pizza is cut into 4 equal slices. The bottom number (denominator) is…", opts:["4","1","3","8"], a:0,
+    why:"The denominator is the number of equal parts the whole is cut into." },
+  { q:"You eat 3 of the 4 equal slices. What fraction did you eat?", opts:["3/4","4/3","1/4","3/8"], a:0,
+    why:"Top = slices taken (3), bottom = total slices (4), so 3/4." },
+  { q:"Half a recipe needs 1/2 × 2/3 cup of sugar. That is…", opts:["1/3","2/5","3/6","2/3"], a:0,
+    why:"Multiply tops and bottoms: 1×2 / 2×3 = 2/6 = 1/3 cup." },
+  { q:"Share 3/4 of a pizza among 3 friends. Each gets…", opts:["1/4","3/4","1/3","3/12 (unsimplified)"], a:0,
+    why:"3/4 ÷ 3 = 3/4 × 1/3 = 3/12 = 1/4 each." },
+  { q:"How many 1/2-litre bottles fill a 3-litre jug?", opts:["6","3","2","1.5"], a:0,
+    why:"3 ÷ 1/2 = 3 × 2/1 = 6 bottles (Keep · Change · Flip)." }
 ];
 
 function paintLearnDots(){
@@ -218,10 +307,13 @@ function showLearnSlide(i){
   LEARN_SLIDES.forEach((id,idx)=>document.getElementById(id).classList.toggle("on", idx===i));
   paintLearnDots();
   document.getElementById("learnNext").textContent = (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
-  if(i === 0) pochi.say("2/5 means 2 shaded columns out of 5.", 3200);
-  if(i === 1) pochi.say("The overlap is the product.", 3000);
-  if(i === 2) pochi.say("3×2 is 6 overlap cells.", 3000);
-  if(i === 3) pochi.say("Now simplify the overlap to finish.", 3000);
+  document.getElementById("learnBack").disabled = (i === 0);
+  if(i === 0) pochi.say("Start with one whole pizza!");
+  if(i === 1) pochi.say("Bottom number = equal slices.");
+  if(i === 2) pochi.say("Top number = slices you take.");
+  if(i === 3) pochi.say("Multiply tops, multiply bottoms.");
+  if(i === 4) pochi.say("Divide? Keep · Change · Flip!");
+  if(i === 5) pochi.say("Ask: how many pieces fit?");
 }
 
 document.getElementById("learnNext").onclick = ()=>{
@@ -231,6 +323,10 @@ document.getElementById("learnNext").onclick = ()=>{
     document.getElementById("learnSlideNav").classList.add("hide");
     startLearnCheck();
   }
+};
+
+document.getElementById("learnBack").onclick = ()=>{
+  if(learnI > 0) showLearnSlide(learnI-1);
 };
 
 function startLearnCheck(){
@@ -299,12 +395,39 @@ const BUILD_SET = [
   { tNum:2, tDen:5,  note:"Figure it Out 8.2(d): 4/6 × 3/5" }
 ];
 let cNum=1, cDen=2, dNum=1, dDen=2, buildI=0;
+let buildMode = "mul";
+
+// Division problems: solve aNum/aDen ÷ bNum/bDen.
+const BUILD_DIV = [
+  { aNum:3, aDen:4, bNum:3, bDen:1,
+    note:"Share 3/4 of a pizza equally among 3 friends." },
+  { aNum:3, aDen:1, bNum:1, bDen:2,
+    note:"How many 1/2-litre bottles fill a 3-litre jug?" },
+  { aNum:1, aDen:2, bNum:1, bDen:4,
+    note:"How many quarters fit inside one half?" },
+  { aNum:2, aDen:3, bNum:2, bDen:1,
+    note:"Split 2/3 of a cake between 2 people." },
+  { aNum:4, aDen:1, bNum:1, bDen:3,
+    note:"How many 1/3 scoops fill 4 cups?" },
+  { aNum:5, aDen:6, bNum:5, bDen:1,
+    note:"Share 5/6 of a ribbon among 5 kids." }
+];
+function fShow(n,d){ return d===1 ? String(n) : fracStr(n,d); }
+function curSet(){ return buildMode==="div" ? BUILD_DIV : BUILD_SET; }
+function divTarget(b){ return simplify(b.aNum*b.bDen, b.aDen*b.bNum); }
 
 function renderBuild(){
   document.getElementById("cNum").textContent = cNum;
   document.getElementById("cDen").textContent = cDen;
   document.getElementById("dNum").textContent = dNum;
   document.getElementById("dDen").textContent = dDen;
+
+  if(buildMode === "div"){
+    document.getElementById("gridBuild").innerHTML = "";
+    const [aN,aD] = simplify(cNum,cDen);
+    document.getElementById("buildProd").textContent = fShow(aN,aD);
+    return;
+  }
 
   const g = BTP.Grid("gridBuild", cDen, dDen);
   for(let r=0;r<cDen;r++){
@@ -331,28 +454,91 @@ function wireStepper2(){
   document.getElementById("dDenDown").onclick = ()=>{ dDen--; clampAndRenderBuild("d"); };
 }
 function clampAndRenderBuild(which){
+  if(buildMode === "div"){
+    cDen = Math.max(1, Math.min(12, cDen));
+    cNum = Math.max(1, Math.min(12, cNum));
+    renderBuild();
+    return;
+  }
   if(which==="c"){ cDen=Math.max(2,Math.min(6,cDen)); cNum=Math.max(1,Math.min(cDen-1,cNum)); }
   else { dDen=Math.max(2,Math.min(6,dDen)); dNum=Math.max(1,Math.min(dDen-1,dNum)); }
   renderBuild();
 }
 
+function setBuildMode(mode){
+  buildMode = mode;
+  const div = mode === "div";
+  document.getElementById("modeMul").classList.toggle("on", !div);
+  document.getElementById("modeDiv").classList.toggle("on", div);
+  document.getElementById("fpB").style.display = div ? "none" : "";
+  document.getElementById("gridBuild").style.display = div ? "none" : "";
+  document.getElementById("divHint").style.display = div ? "" : "none";
+  document.getElementById("fpALabel").textContent =
+    div ? "Your answer" : "Fraction A · rows";
+  document.getElementById("prodK").textContent =
+    div ? "Your answer" : "Your product";
+  buildI = 0;
+  loadBuild();
+}
+document.getElementById("modeMul").onclick = ()=> setBuildMode("mul");
+document.getElementById("modeDiv").onclick = ()=> setBuildMode("div");
+
 function loadBuild(){
-  const b = BUILD_SET[buildI];
-  document.getElementById("bq").innerHTML = "Build a product of <b>" + fracStr(b.tNum,b.tDen) + "</b>";
-  document.getElementById("bmeta").textContent = b.note;
-  document.getElementById("buildTarget").textContent = fracStr(b.tNum,b.tDen);
+  const set = curSet();
+  const b = set[buildI];
+  cNum=1; cDen=2; dNum=1; dDen=2;
+  if(buildMode === "div"){
+    const t = divTarget(b);
+    document.getElementById("bq").innerHTML =
+      "Solve <b>" + fShow(b.aNum,b.aDen) + " ÷ " +
+      fShow(b.bNum,b.bDen) + "</b>";
+    document.getElementById("bmeta").textContent = b.note;
+    document.getElementById("divHint").innerHTML =
+      "Keep · Change · Flip → " + fShow(b.aNum,b.aDen) + " × " +
+      fShow(b.bDen,b.bNum) + " (set your answer, then Check)";
+    document.getElementById("buildTarget").textContent = "?";
+  } else {
+    document.getElementById("bq").innerHTML =
+      "Build a product of <b>" + fracStr(b.tNum,b.tDen) + "</b>";
+    document.getElementById("bmeta").textContent = b.note;
+    document.getElementById("buildTarget").textContent =
+      fracStr(b.tNum,b.tDen);
+  }
   document.getElementById("bfb").className = "fb";
   document.getElementById("bnext").classList.add("hide");
-  document.getElementById("bbar").style.width = (buildI/BUILD_SET.length*100) + "%";
-  cNum=1; cDen=2; dNum=1; dDen=2;
+  document.getElementById("bbar").style.width = (buildI/set.length*100) + "%";
   renderBuild();
 }
 
 document.getElementById("bcheck").onclick = ()=>{
-  const b = BUILD_SET[buildI];
+  const set = curSet();
+  const b = set[buildI];
+  const fb = document.getElementById("bfb");
+  if(buildMode === "div"){
+    const [tN,tD] = divTarget(b);
+    const match = cNum*tD === tN*cDen;
+    if(match){
+      BTP.addXP(10); BTP.touchStreak();
+      fb.className = "fb good show";
+      fb.innerHTML = "<b>That's it.</b> " + fShow(b.aNum,b.aDen) + " ÷ " +
+        fShow(b.bNum,b.bDen) + " = " + fShow(tN,tD) +
+        " <span style='opacity:.75'>+10 XP</span>";
+      BTP.toast("+10 XP");
+      document.getElementById("bnext").classList.remove("hide");
+      document.getElementById("bbar").style.width =
+        ((buildI+1)/set.length*100) + "%";
+    } else {
+      const cur = cNum/cDen, target = tN/tD;
+      fb.className = "fb bad show";
+      fb.innerHTML = "Not yet — you have " + fShow(cNum,cDen) +
+        ", but " + fShow(b.aNum,b.aDen) + " ÷ " + fShow(b.bNum,b.bDen) +
+        " = " + fShow(b.aNum,b.aDen) + " × " + fShow(b.bDen,b.bNum) +
+        ". " + (cur > target ? "Make it smaller." : "Make it bigger.");
+    }
+    return;
+  }
   const pNum = cNum*dNum, pDen = cDen*dDen;
   const match = pNum*b.tDen === b.tNum*pDen;
-  const fb = document.getElementById("bfb");
   if(match){
     BTP.addXP(10); BTP.touchStreak();
     fb.className = "fb good show";
@@ -360,7 +546,7 @@ document.getElementById("bcheck").onclick = ()=>{
       " <span style='opacity:.75'>+10 XP</span>";
     BTP.toast("+10 XP");
     document.getElementById("bnext").classList.remove("hide");
-    document.getElementById("bbar").style.width = ((buildI+1)/BUILD_SET.length*100) + "%";
+    document.getElementById("bbar").style.width = ((buildI+1)/set.length*100) + "%";
   } else {
     const cur = pNum/pDen, target = b.tNum/b.tDen;
     fb.className = "fb bad show";
@@ -369,87 +555,158 @@ document.getElementById("bcheck").onclick = ()=>{
   }
 };
 document.getElementById("bnext").onclick = ()=>{
-  buildI = (buildI+1) % BUILD_SET.length;
+  buildI = (buildI+1) % curSet().length;
   loadBuild();
 };
 
 /* ---------------------------------------------------------------
-   CHALLENGE
+   CHALLENGE — one quiz per textbook section (8.1 / 8.2 / 8.3),
+   straight from Ganita Prakash Ch 8. Each needs 80% to master;
+   a miss queues a same-concept follow-up before moving on.
    --------------------------------------------------------------- */
-const QUIZ = [
-  { src:"SECTION 8.1 · Aaron's walk", q:"Aaron walks 3 km in 1 hour. How far does he walk in 1/5 hour?",
-    opts:["3/5 km","5/3 km","1/15 km","8/5 km"], a:0,
-    why:"1/5 × 3 = 3/5 — dividing 3 km into 5 equal parts." },
-
-  { src:"SECTION 8.1", q:"How far can Aaron walk in 2/5 hour, at 3 km/h?",
-    opts:["6/5 km","2/15 km","5/6 km","3/5 km"], a:0,
-    why:"2/5 × 3 = 6/5 km — twice the distance covered in 1/5 hour (3/5 km)." },
-
-  { src:"SECTION 8.1 · the tortoise", q:"Aaron's tortoise walks 1/4 km in 1 hour. How far in half an hour?",
-    opts:["1/8 km","1/2 km","1/6 km","2/4 km"], a:0,
-    why:"1/2 × 1/4 = 1/8 — split the 1/4 km strip into 2 equal parts." },
-
-  { src:"SECTION 8.1 · Fig 8.1", q:"The tortoise now walks 2/5 km/h. How far in 3/4 hour?",
-    opts:["3/10 km","2/9 km","5/9 km","3/20 km"], a:0,
-    why:"3/4 × 2/5 = 6/20 = 3/10 km — a 5×4 grid where 6 of the 20 squares are double-shaded." },
-
-  { src:"EXAMPLE 1 · grandchildren", q:"A farmer gives 2/3 acre to each of her 5 grandchildren. Total land given?",
-    opts:["10/3 acres","2/15 acres","5/3 acres","15/2 acres"], a:0,
-    why:"5 × 2/3 = 2/3+2/3+2/3+2/3+2/3 = 10/3." },
-
-  { src:"EXAMPLE 2 · internet time", q:"Internet costs ₹8 per hour. What does 1 1/4 hours cost?",
-    opts:["₹10","₹8","₹9","₹12"], a:0,
-    why:"1 1/4 hours = 5/4 hours. 5/4 × 8 = 5 × 2 = ₹10." },
-
-  { src:"FIGURE IT OUT · Tenzin", q:"Tenzin drinks 1/2 glass of milk every day. How much does he drink in a week?",
-    opts:["7/2 glasses","2/7 glasses","7 glasses","1/14 glass"], a:0,
-    why:"7 days × 1/2 glass = 7/2 glasses." },
-
-  { src:"FIGURE IT OUT · water canal", q:"A team builds 1 km of canal in 8 days. Working 5 days a week, how much do they build in a week?",
-    opts:["5/8 km","8/5 km","1/40 km","5 km"], a:0,
-    why:"One day's work is 1/8 km, so 5 days give 5 × 1/8 = 5/8 km." },
-
-  { src:"FIGURE IT OUT · Manju's oil", q:"5 litres of oil is shared equally by 3 families every week. How much does one family get in 4 weeks?",
-    opts:["20/3 litres","5/3 litres","15/4 litres","4/15 litres"], a:0,
-    why:"Each family gets 5/3 litres a week; in 4 weeks that's 4 × 5/3 = 20/3 litres." },
-
-  { src:"FIGURE IT OUT · water tank", q:"A tap fills 7/10 of a tank in 1 hour. How much fills in 3/4 hour?",
-    opts:["21/40", "7/40", "3/10", "21/10"], a:0,
-    why:"3/4 × 7/10 = 21/40 of the tank." },
-
-  { src:"FIGURE IT OUT · rectangle", q:"Find the area of a rectangle with sides 3 3/4 ft and 9 3/5 ft.",
-    opts:["36 sq ft","35 sq ft","34.5 sq ft","37.2 sq ft"], a:0,
-    why:"3 3/4 = 15/4 and 9 3/5 = 48/5. 15/4 × 48/5 = 720/20 = 36 sq ft." },
-
-  { src:"FIGURE IT OUT · saplings", q:"Tsewang plants 4 saplings in a row, each 3/4 m apart. Distance from the first to the last sapling?",
-    opts:["2 1/4 m","3 m","1 1/2 m","2 3/4 m"], a:0,
-    why:"There are 3 gaps between 4 saplings: 3 × 3/4 = 9/4 = 2 1/4 m." },
-
-  { src:"SECTION 8.2 · division", q:"What is 1 ÷ 2/3?",
-    opts:["3/2","2/3","1/6","6"], a:0,
-    why:"Multiply by the reciprocal of 2/3, which is 3/2. So 1 × 3/2 = 3/2." },
-
-  { src:"SECTION 8.2 · dividend & quotient", q:"What is 6 ÷ 1/4?",
-    opts:["24","6/4","3/2","1/24"], a:0,
-    why:"The reciprocal of 1/4 is 4. 6 × 4 = 24 — dividing by a fraction less than 1 gives a bigger answer." },
-
-  { src:"FIGURE IT OUT · Maria's lace", q:"Maria has 8 m of lace and uses 1/4 m per bag. How many bags can she decorate?",
-    opts:["32 bags","2 bags","8 bags","4 bags"], a:0,
-    why:"8 ÷ 1/4 = 8 × 4 = 32 bags." },
-
-  { src:"FIGURE IT OUT · Mira's novel", q:"Mira's novel has 400 pages. She read 1/5 of it yesterday and 3/10 today. How many pages are left?",
-    opts:["200 pages","120 pages","280 pages","80 pages"], a:0,
-    why:"1/5 + 3/10 = 2/10 + 3/10 = 5/10, half the book. Half of 400 pages remain: 200." },
-
-  { src:"FIGURE IT OUT · the car", q:"A car runs 16 km per litre of petrol. How far will it go on 2 3/4 litres?",
-    opts:["44 km","44/16 km","58 km","40 km"], a:0,
-    why:"2 3/4 = 11/4. 16 × 11/4 = 44 km." },
-
-  { src:"FIGURE IT OUT · Mariam's cake", q:"Mariam and her cousins ate 4/5 of a cake. The rest was shared equally among 3 friends. What fraction did each friend get?",
-    opts:["1/15","1/5","4/15","1/20"], a:0,
-    why:"1/5 of the cake was left. Sharing 1/5 among 3 friends: 1/5 ÷ 3 = 1/15 each." }
+const SECTIONS = [
+  { id:"8.1", title:"8.1 · Multiplication of Fractions", questions:[
+    { q:"Aaron walks 3 km in 1 hour. How far does he walk in 1/5 hour? 🚶",
+      opts:["3/5 km","5/3 km","1/15 km","8/5 km"], a:0,
+      why:"1/5 × 3 = 3/5 — split the 3 km into 5 equal parts.",
+      followUp:{ q:"How far does Aaron walk in 2/5 hour at 3 km/h? 🚶",
+        opts:["6/5 km","2/15 km","5/6 km","3/5 km"], a:0,
+        why:"2/5 × 3 = 6/5 km — twice the 3/5 km covered in 1/5 hour." } },
+    { q:"Aaron's tortoise walks 1/4 km in 1 hour. How far in half an hour? 🐢",
+      opts:["1/8 km","1/2 km","1/6 km","2/4 km"], a:0,
+      why:"1/2 × 1/4 = 1/8 — split the 1/4 km strip into 2 equal parts.",
+      followUp:{ q:"A tap fills 7/10 of a tank in 1 hour. How much in 3/4 hour? 🚰",
+        opts:["21/40","7/40","3/10","21/10"], a:0,
+        why:"3/4 × 7/10 = 21/40 of the tank." } },
+    { q:"A farmer gives 2/3 acre to each of her 5 grandchildren. Total land? 🌾",
+      opts:["10/3 acres","2/15 acres","5/3 acres","15/2 acres"], a:0,
+      why:"5 × 2/3 = 2/3+2/3+2/3+2/3+2/3 = 10/3 acres.",
+      followUp:{ q:"Internet costs ₹8 per hour. What does 1 1/4 hours cost? 🌐",
+        opts:["₹10","₹8","₹9","₹12"], a:0,
+        why:"1 1/4 hours = 5/4 hours. 5/4 × 8 = 5 × 2 = ₹10." } },
+    { q:"Find the area of a rectangle with sides 3 3/4 ft and 9 3/5 ft. 📐",
+      opts:["36 sq ft","35 sq ft","34.5 sq ft","37.2 sq ft"], a:0,
+      why:"3 3/4 = 15/4 and 9 3/5 = 48/5. 15/4 × 48/5 = 720/20 = 36 sq ft.",
+      followUp:{ q:"Find the product 2/3 × 4/5 using a unit square. 🟦",
+        opts:["8/15","6/15","8/8","2/15"], a:0,
+        why:"Multiply tops and bottoms: 2×4 / 3×5 = 8/15." } },
+    { q:"When two unit fractions are multiplied, 1/18 × 1/12 equals… 🔢",
+      opts:["1/216","1/30","1/6","2/30"], a:0,
+      why:"Unit fractions multiply to 1 over the product of denominators: 1/(18×12) = 1/216.",
+      followUp:{ q:"Using the same rule, 1/4 × 1/3 equals…",
+        opts:["1/12","1/7","2/12","1/1"], a:0,
+        why:"1/(4×3) = 1/12." } },
+    { q:"Tsewang plants 4 saplings in a row, each 3/4 m apart. First to last? 🌱",
+      opts:["2 1/4 m","3 m","1 1/2 m","2 3/4 m"], a:0,
+      why:"4 saplings have 3 gaps: 3 × 3/4 = 9/4 = 2 1/4 m.",
+      followUp:{ q:"A team makes 1 km canal in 8 days. How much in 5 days? 🚧",
+        opts:["5/8 km","8/5 km","1/40 km","5 km"], a:0,
+        why:"One day is 1/8 km, so 5 days give 5 × 1/8 = 5/8 km." } }
+  ]},
+  { id:"8.2", title:"8.2 · Division of Fractions", questions:[
+    { q:"What is 1 ÷ 2/3? ➗",
+      opts:["3/2","2/3","1/6","6"], a:0,
+      why:"Multiply by the reciprocal of 2/3, which is 3/2: 1 × 3/2 = 3/2.",
+      followUp:{ q:"What is 1 ÷ 1/4?",
+        opts:["4","1/4","1/8","2"], a:0,
+        why:"The reciprocal of 1/4 is 4, so 1 × 4 = 4." } },
+    { q:"What is 6 ÷ 1/4?",
+      opts:["24","6/4","3/2","1/24"], a:0,
+      why:"Reciprocal of 1/4 is 4. 6 × 4 = 24 — dividing by a fraction below 1 grows the answer.",
+      followUp:{ q:"Maria has 8 m of lace, using 1/4 m per bag. How many bags? 🎀",
+        opts:["32 bags","2 bags","8 bags","4 bags"], a:0,
+        why:"8 ÷ 1/4 = 8 × 4 = 32 bags." } },
+    { q:"What is the reciprocal of 3/5? 🔄",
+      opts:["5/3","3/5","1/5","8/5"], a:0,
+      why:"To make a reciprocal, flip the fraction upside down: 3/5 becomes 5/3.",
+      followUp:{ q:"A fraction multiplied by its own reciprocal always gives…",
+        opts:["1","0","2","the fraction itself"], a:0,
+        why:"e.g. 3/5 × 5/3 = 15/15 = 1 — that is what reciprocal means." } },
+    { q:"Using Brahmagupta's rule, 2/3 ÷ 3/5 equals… ➗",
+      opts:["10/9","6/15","9/10","5/9"], a:0,
+      why:"2/3 ÷ 3/5 = 2/3 × 5/3 = 10/9 (keep · change · flip).",
+      followUp:{ q:"What is 3/4 ÷ 1/2?",
+        opts:["3/2","3/8","1/2","2/3"], a:0,
+        why:"3/4 ÷ 1/2 = 3/4 × 2 = 6/4 = 3/2." } },
+    { q:"Leena uses 1/4 litre of milk across 5 cups. Milk in each cup? 🍵",
+      opts:["1/20 litre","1/9 litre","5/4 litre","4/5 litre"], a:0,
+      why:"1/4 ÷ 5 = 1/4 × 1/5 = 1/20 litre per cup.",
+      followUp:{ q:"Share 2/3 of a cake equally between 2 people. Each gets… 🍰",
+        opts:["1/3","4/3","1/2","3/4"], a:0,
+        why:"2/3 ÷ 2 = 2/3 × 1/2 = 2/6 = 1/3 each." } },
+    { q:"Dividing by a fraction smaller than 1 makes the quotient…",
+      opts:["bigger than the dividend","smaller than the dividend","equal to it","zero"], a:0,
+      why:"Lots of small pieces fit inside, so the count grows: 6 ÷ 1/2 = 12.",
+      followUp:{ q:"When you divide two whole numbers like 6 ÷ 3, the quotient is…",
+        opts:["smaller than the dividend","bigger than the dividend","equal to it","undefined"], a:0,
+        why:"6 ÷ 3 = 2, which is smaller than 6 — dividing by more than 1 shrinks it." } }
+  ]},
+  { id:"8.3", title:"8.3 · Some Problems Involving Fractions", questions:[
+    { q:"Cover 15/2 sq units with square bricks of area 1/25. How many bricks? 🧱",
+      opts:["375/2","375","2/375","15/50"], a:0,
+      why:"15/2 ÷ 1/25 = 15/2 × 25 = 375/2 bricks (Śhulbasūtra problem).",
+      followUp:{ q:"Each brick's side is 1/5 unit. Its area is… 🧱",
+        opts:["1/25","2/5","1/10","1/5"], a:0,
+        why:"Area = 1/5 × 1/5 = 1/25 square units." } },
+    { q:"Mira's 400-page novel: she read 1/5 yesterday, 3/10 today. Pages left? 📖",
+      opts:["200 pages","120 pages","280 pages","80 pages"], a:0,
+      why:"1/5 + 3/10 = 5/10 = half. Half of 400 remains: 200 pages.",
+      followUp:{ q:"A car runs 16 km per litre. How far on 2 3/4 litres? ⛽",
+        opts:["44 km","58 km","40 km","11/4 km"], a:0,
+        why:"2 3/4 = 11/4. 16 × 11/4 = 44 km." } },
+    { q:"Mariam ate 4/5 of a cake; the rest was shared among 3 friends. Each got… 🍰",
+      opts:["1/15","1/5","4/15","1/20"], a:0,
+      why:"1/5 was left. 1/5 ÷ 3 = 1/15 each.",
+      followUp:{ q:"5 litres of oil is shared by 3 families each week. One family in 4 weeks? 🫢",
+        opts:["20/3 litres","5/3 litres","15/4 litres","4/15 litres"], a:0,
+        why:"Each gets 5/3 litres a week; 4 × 5/3 = 20/3 litres." } },
+    { q:"A fountain fills a cistern in 1/2 a day. How many times per day? ⛲",
+      opts:["2","1/2","4","1"], a:0,
+      why:"1 ÷ 1/2 = 1 × 2 = 2 times a day.",
+      followUp:{ q:"A fountain fills a cistern in 1/5 of a day. How many times per day? ⛲",
+        opts:["5","1/5","4","10"], a:0,
+        why:"1 ÷ 1/5 = 1 × 5 = 5 times a day." } },
+    { q:"A yellow triangle is half of a 1/4-square. Its area is… 🔺",
+      opts:["1/8","1/4","1/2","1/16"], a:0,
+      why:"1/2 × 1/4 = 1/8 square units.",
+      followUp:{ q:"The shaded part is 3/4 of that 1/8 triangle. Its area is… 🎨",
+        opts:["3/32","3/8","1/8","3/4"], a:0,
+        why:"3/4 × 1/8 = 3/32 of the whole square." } },
+    { q:"A miser gives 1/2 of 2/3 of a dramma. What fraction is that? 🪙",
+      opts:["1/3","2/5","3/5","3/4"], a:0,
+      why:"1/2 × 2/3 = 2/6 = 1/3 of a dramma (from Līlāvatī, 1150 CE).",
+      followUp:{ q:"What is 3/4 of 2/3?",
+        opts:["1/2","6/7","5/12","3/8"], a:0,
+        why:"3/4 × 2/3 = 6/12 = 1/2." } }
+  ]}
 ];
-const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch08", xp:10, count:8 });
+
+const dotQuiz = BTP.Mascot("mascotQuiz", "candy"); // Pepper, quiz panel
+dotQuiz.say("Pick a section and let's go!", 2600);
+
+const sectionQuiz = BTP.setupSectionQuiz(SECTIONS, {
+  chapterId:"ch08", passPct:0.8, xp:10,
+  onAnswer(correct, btnEl){
+    dotQuiz.react(correct ? "happy" : "sad");
+    dotQuiz.say(BTP.pick(correct ? RIGHT_PHRASES : WRONG_PHRASES), 2200);
+    if(correct){
+      const r = btnEl.getBoundingClientRect();
+      BTP.confetti(r.left + r.width/2, r.top);
+    } else {
+      BTP.shakeEl(btnEl);
+    }
+  },
+  onFinish(passed, section){
+    dotQuiz.react(passed ? "happy" : "idle");
+    dotQuiz.say(
+      passed
+        ? BTP.pick(["You mastered it!", "Amazing work!", "Fraction champion!"])
+        : "So close! A quick look back at " + section.title +
+          " and you'll have it — try again whenever you're ready.",
+      3400
+    );
+  }
+});
 
 /* ---------------------------------------------------------------
    TABS + GO
@@ -462,13 +719,12 @@ document.querySelectorAll(".tab").forEach(t=>{
     ["learn","build","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
-    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
 });
 
-const MASCOT_CFG = { color:"#fafafa", accent:"#f2f2f2", accent2:"#b0b0b0", earStyle:"dot" };
+const MASCOT_CFG = "candy"; // Ch 8 mascot: Pepper (warm pizza pal)
 const pochi = BTP.Mascot("mascotLearn", MASCOT_CFG);
-pochi.say("Hi! I'm Pochi — let's match the overlap to the target product.", 4200);
+pochi.say("Grab a slice — let's learn fractions! 🍕", 4200);
 
 showLearnSlide(0);
 loadBuild();

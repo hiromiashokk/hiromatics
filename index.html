@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -58,9 +59,18 @@ const PART2 = [
   { id:"ch15", file:"ch15.html", title:"Finding the Unknown", desc:"Simple equations, solved on a balance." },
 ];
 
+const THEME = {
+  ch01:"pirate", ch02:"spark",  ch03:"aqua",  ch04:"shadow",
+  ch05:"kawaii", ch06:"imp",    ch07:"ninja", ch08:"candy",
+  ch09:"berry",  ch10:"ocean",  ch11:"mint",  ch12:"aqua",
+  ch13:"pirate", ch14:"forest", ch15:"shadow"
+};
+
 function card(ch, n){
   const done = BTP.isDone(ch.id);
-  return '<a class="chapter-card" href="'+ch.file+'">' +
+  const theme = THEME[ch.id] || "";
+  return '<a class="chapter-card" href="'+ch.file+'"' +
+    (theme ? ' data-theme="'+theme+'"' : '') + '>' +
     (done ? '<span class="done">✓ done</span>' : '') +
     '<div class="num">'+n+'</div>' +
     '<div class="title">'+ch.title+'</div>' +

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 4</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
 /* ---------- chapter-4-only extras: Learn tab visuals ---------- */
@@ -32,7 +33,7 @@
 .recap-chip{background:#0d142a;border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--ink);animation:agePop .4s ease backwards}
 </style>
 </head>
-<body>
+<body data-theme="shadow">
 <div class="wrap">
 
   <header>
@@ -245,7 +246,7 @@
    can't animate while another tab is showing.
    ===================================================================== */
 
-const MASCOT_CFG = { color:"#8b7bff", accent:"#ff6bd6", accent2:"#241531", earStyle:"hood" };
+const MASCOT_CFG = "shadow"; // Ch 4 mascot: Nyx (violet hood)
 
 const RIGHT_PHRASES = ["Heh — nailed it.", "Ooh, nice one!", "Yesss, that's the one.", "Look at you go.", "Correct — sneaky good."];
 const WRONG_PHRASES  = ["Ha, not quite — but watch this.", "Close! Let's peek at why.", "Nope, but a good guess. Here's the trick.", "Mm, almost — one step off."];

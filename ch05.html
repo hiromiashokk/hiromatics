@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 5</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
 /* ---- chapter-5-only: tiny diagram stage + angle pulse for the Learn tab ---- */
@@ -13,7 +14,7 @@
 @keyframes ch5Pulse{0%,100%{opacity:1}50%{opacity:.3}}
 </style>
 </head>
-<body>
+<body data-theme="kawaii">
 <div class="wrap">
 
   <header>
@@ -191,7 +192,7 @@
    Suzu (the mascot) gets her own instance per tab, since a mascot mounted
    in one hidden tab's DOM can't animate while another tab is showing.
    ===================================================================== */
-const SUZU_CFG = { color:"#fff3f6", accent:"#ff6b81", accent2:"#c23", earStyle:"bow" };
+const SUZU_CFG = "kawaii"; // Ch 5 mascot: Suzu (pastel bow)
 
 /* ---------------------------------------------------------------
    SHARED GEOMETRY HELPERS
@@ -306,7 +307,7 @@ function updateExplore(){
 // the transversal swings, rather than reacting to right/wrong (there's no
 // quiz here, just free exploration).
 const suzuExplore = BTP.Mascot("suzuExplore", SUZU_CFG);
-suzuExplore.say("Hi, I'm Suzu! Drag the violet point and watch the angles dance.", 3600);
+suzuExplore.say("Drag the violet point and watch the angles dance!", 3600);
 const EXPLORE_LINES = [
   "See how the two glowing cyan angles at the top always match the amber ones below? That's corresponding angles.",
   "However you swing it, l and m stay parallel — so those equal pairs never break.",
@@ -640,7 +641,7 @@ document.getElementById("learnNext").onclick = ()=>{
 };
 
 const suzuLearn = BTP.Mascot("suzuLearn", SUZU_CFG);
-suzuLearn.say("Hi! I'm Suzu. Let's cross some lines together.", 3200);
+suzuLearn.say("Let's cross some lines together!", 3200);
 
 const LEARN_CHECK = [
   { q:"Two lines cross and form angles a, b, c, d in order around the point. ∠a and ∠b sit next to each other on a straight line. What do we call this pair?",

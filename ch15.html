@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 15</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
-<body>
+<body data-theme="shadow">
 <div class="wrap">
 
   <header>
@@ -19,13 +20,85 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Balance It</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Balance It</button>
     <button class="tab" data-p="practice">Solve It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">There's a mystery number hiding in every equation. Let's
+      learn to keep the scale balanced and reveal the unknown.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn15"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">In the shadows — I'm Nyx.</h2>
+        <p class="lede" style="margin:0">Let's shine a light on the hidden
+          number.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">An <b>equation</b> says two sides are equal — just like
+        a balanced weighing scale. The <b>unknown</b> (a letter such as
+        <b>x</b>) is the mystery weight we want to find.</p>
+      <p class="lede">x + 3 = 7 means “some number plus 3 balances 7.”</p>
+      <div class="joke"><b>Joke:</b> Why did x go to the party alone? It was
+        still an unknown! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">The golden rule: whatever you do to one side, do the
+        <b>same to the other</b> — that keeps the scale level.</p>
+      <p class="lede">Take away 3 from both pans of x + 3 = 7 and you're left
+        with x = 4.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">To free the unknown, use <b>inverse operations</b>:
+        undo + with −, and × with ÷.</p>
+      <p class="lede">So 2x = 10 becomes x = 10 ÷ 2 = <b>5</b>. You divided
+        both sides by 2.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Always <b>check</b>: put your answer back in. For
+        x = 4, does 4 + 3 = 7? Yes — balanced!</p>
+      <div class="fun"><b>Fun fact:</b> The word “algebra” comes from an
+        Arabic book title over 1,000 years old — people have been finding
+        the unknown for a very long time! 🔮</div>
+      <div class="joke"><b>Joke:</b> Why was the equation so calm? It always
+        did the same to both sides. ⚖️</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🔮</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Balance It</b> to try the scale, then take
+        the <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh15"></div></div>
     <h2>Weigh the unknown</h2>
     <p class="lede">
       The chapter opens with a weighing scale: two pans, some numbers, one rule &mdash;
@@ -336,7 +409,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","practice","quiz"].forEach(p=>{
+    ["learn","explore","practice","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("propts").children.length) practiceQuiz.start();
@@ -347,6 +420,32 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh15", "shadow")
+  .say("Keep the scale level and the unknown appears.", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn15", "shadow"),
+  say: [
+    "An equation is a balanced scale.",
+    "Do the same to both sides.",
+    "Undo with inverse operations.",
+    "Check by putting your answer back."
+  ],
+  check: [
+    { q:"If x + 3 = 7, then x = ?",
+      opts:["4","10","3","7"], a:0,
+      why:"Subtract 3 from both sides: x = 4." },
+    { q:"To keep an equation balanced, you must…",
+      opts:["do the same to both sides","only change the left side",
+        "add to just one side","guess randomly"], a:0,
+      why:"Both sides must change the same way to stay equal." },
+    { q:"If 2x = 10, then x = ?",
+      opts:["5","20","8","12"], a:0,
+      why:"Divide both sides by 2: x = 5." }
+  ]
+});
+
 BTP.paintStats();
 loadExplore();
 </script>

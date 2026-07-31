@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 2</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
   .stepper-row{display:flex;align-items:center;gap:18px;margin:14px 0;flex-wrap:wrap}
@@ -21,7 +22,7 @@
   .term-chip.resolved{background:#123a26;border-color:var(--green);color:#b6ffd8;cursor:default}
 </style>
 </head>
-<body>
+<body data-theme="spark">
 <div class="wrap">
 
   <header>
@@ -34,13 +35,90 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Build It</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Build It</button>
     <button class="tab" data-p="simplify">Simplify</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">An <b>expression</b> is a little maths sentence made of
+      numbers and operations. Let's learn to read them in the right order.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn02"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Zap! I'm Voltling.</h2>
+        <p class="lede" style="margin:0">Let's spark some expressions to
+          life and crack the order-of-operations code.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">An expression mixes numbers with <b>+, −, ×, ÷</b>.
+        For 30 marbles plus 5 bags of 4, you write <b>30 + 5 × 4</b>. Each
+        piece joined by + or − is called a <b>term</b>.</p>
+      <p class="lede">It's just like a shopping bill: ₹50 for a book plus 3
+        pens at ₹10 each → 50 + 3 × 10.</p>
+      <div class="joke"><b>Joke:</b> Why did the brackets always go first at
+        the party? Because in maths, brackets ALWAYS go first! 🎉</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">Order matters! Do <b>× and ÷ before + and −</b>, and
+        anything in <b>brackets</b> first.</p>
+      <p class="lede">So 30 + 5 × 4 = 30 + <b>20</b> = <b>50</b> — not
+        35 × 4. Multiply the 5 bags first, then add the loose marbles.</p>
+      <p class="lede">Get the order wrong and the answer changes completely,
+        like adding sauce before you cook the pasta!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">The <b>distributive property</b> says
+        <b>a × (b + c) = a × b + a × c</b>. Picture a rectangle split into
+        two blocks — the areas add up to the whole.</p>
+      <p class="lede">6 × 21 feels hard, but 6 × (20 + 1) = 120 + 6 = 126.
+        Think of 6 rows of 21 chairs split into 20 + 1.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">This split is the secret behind <b>mental-math</b>
+        tricks: break a scary number into friendly pieces, multiply each,
+        then add.</p>
+      <div class="fun"><b>Fun fact:</b> Shopkeepers do this in their heads
+        all the time — 7 × 99 = 7 × 100 − 7 = 693, faster than a
+        calculator! ⚡</div>
+      <div class="joke"><b>Joke:</b> Why was the equal sign so humble? It
+        knew it wasn't greater OR less than anyone. 😌</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">⚡</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Build It</b> to split rectangles, then take
+        the <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh02"></div></div>
     <h2>The distributive property, as area</h2>
     <p class="lede">
       Mallesh wrote <b>30 + 5 &times; 4</b> for 30 marbles plus 5 bags of 4. Multiplying a sum works the
@@ -321,7 +399,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","simplify","quiz"].forEach(p=>{
+    ["learn","explore","simplify","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
@@ -330,6 +408,31 @@ document.querySelectorAll(".tab").forEach(t=>{
 
 renderDist();
 loadSimplify();
+BTP.Mascot("mascotCh02", "spark")
+  .say("Break it into a rectangle and the answer pops out.", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn02", "spark"),
+  say: [
+    "An expression mixes numbers and operations.",
+    "Do × and ÷ before + and −; brackets first.",
+    "Multiplying a sum = splitting a rectangle.",
+    "That's the secret behind mental-math tricks."
+  ],
+  check: [
+    { q:"Evaluate 30 + 5 × 4",
+      opts:["50","140","35","90"], a:0,
+      why:"Multiply first: 5×4=20, then 30+20=50." },
+    { q:"a × (b + c) is equal to…",
+      opts:["a×b + a×c","a+b × a+c","a×b×c","a + b×c"], a:0,
+      why:"The distributive property spreads the multiply over the sum." },
+    { q:"A quick way to do 6 × 21 is 6 × (20 + 1) =",
+      opts:["126","120","121","132"], a:0,
+      why:"6×20 + 6×1 = 120 + 6 = 126." }
+  ]
+});
+
 BTP.paintStats();
 </script>
 </body>

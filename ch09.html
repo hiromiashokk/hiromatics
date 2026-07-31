@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 9</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
   .cong-readout{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
@@ -17,7 +18,7 @@
   .rbtn span{font-size:13px;color:var(--dim);min-width:110px}
 </style>
 </head>
-<body>
+<body data-theme="berry">
 <div class="wrap">
 
   <header>
@@ -30,13 +31,88 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Build It</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Build It</button>
     <button class="tab" data-p="find">Match It</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">When are two triangles perfect <b>twins</b>? Let's learn
+      the clues that prove two shapes are exactly the same.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn09"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Sweet to meet you — I'm Momo.</h2>
+        <p class="lede" style="margin:0">Let's hunt for matching triangle
+          twins and learn how to spot a fake.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede"><b>Congruent</b> shapes have the <b>same shape AND the
+        same size</b>. Slide one on top of the other — even if you flip or
+        turn it — and it fits exactly.</p>
+      <p class="lede">Think identical twins, or two cookies from the same
+        cookie cutter. Same in every way!</p>
+      <div class="joke"><b>Joke:</b> What did one congruent triangle say to
+        the other? “You're just my type... exactly!” 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">A triangle has 6 measurements (3 sides + 3 angles), but
+        you don't need all of them. These shortcuts <b>lock it in</b>:</p>
+      <p class="lede">• <b>SSS</b> — all three sides match<br>
+        • <b>SAS</b> — two sides and the angle between them<br>
+        • <b>ASA</b> — two angles and the side between them</p>
+      <p class="lede">Match any one of these and the twins are guaranteed!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">Here's the trap: two sides and an angle that is
+        <b>not between them</b> can build <b>two different triangles</b>.</p>
+      <p class="lede">That's exactly why Rabia got two shapes from the same
+        measurements — the clues weren't enough to pin just one down.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Congruence is how factories make thousands of identical
+        parts, and how patterns repeat perfectly.</p>
+      <div class="fun"><b>Fun fact:</b> Rangoli and floor-tile designs rely
+        on congruent shapes fitting together — flip, turn, repeat, and it
+        still matches! 🪔</div>
+      <div class="joke"><b>Joke:</b> Why did the two triangles become best
+        friends? They had EVERYTHING in common. 👯</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">👯</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Build It</b> to test the twins, then take
+        the <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh09"></div></div>
     <h2>Two sides and an angle — one triangle, or two?</h2>
     <p class="lede">
       Rabia measured <b>PQ = 6 cm</b>, an angle at P, and a radius from Q. She got <b>two different triangles</b>
@@ -339,12 +415,40 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","find","quiz"].forEach(p=>{
+    ["learn","explore","find","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "find" && !document.getElementById("fopts").children.length) loadMatch();
     if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
   };
+});
+
+BTP.Mascot("mascotCh09", "berry")
+  .say("Same measurements, two triangles? Let's see why.", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn09", "berry"),
+  say: [
+    "Congruent means same shape AND same size.",
+    "SSS, SAS, ASA lock a triangle in.",
+    "Two sides + a far angle can fool you.",
+    "Congruent twins are everywhere in design!"
+  ],
+  check: [
+    { q:"Congruent shapes have…",
+      opts:["the same shape and size","the same shape only",
+        "the same size only","the same colour"], a:0,
+      why:"Congruent means identical in both shape and size." },
+    { q:"Which clue guarantees two triangles are congruent?",
+      opts:["Three matching sides (SSS)","Two matching angles only",
+        "One matching side only","Same perimeter only"], a:0,
+      why:"SSS — three matching sides — fixes a triangle completely." },
+    { q:"Why can two sides and a non-included angle be tricky?",
+      opts:["They can make two different triangles","They always fail",
+        "They need a protractor","They make a square"], a:0,
+      why:"That clue set can build two triangles, so it's not enough." }
+  ]
 });
 
 BTP.paintStats();

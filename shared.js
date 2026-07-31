@@ -1,4 +1,10 @@
 "use strict";
+/* Apply the saved colour mode before first paint to avoid a flash. */
+try{
+  document.documentElement.dataset.mode =
+    localStorage.getItem("btp.mode") || "dark";
+}catch(e){ /* localStorage may be blocked; default stays dark */ }
+
 /* =====================================================================
    BEYOND THE POINT — shared runtime
    Loaded by index.html and every chNN.html chapter page via
@@ -182,6 +188,35 @@ BTP.setupQuiz = function(QUESTIONS, opts){
 
   let quiz = [], qi = 0, qRight = 0;
 
+  /* A reactive mascot lives at the top of the Challenge panel and
+     changes expression on every answer. It auto-mounts using the
+     page's theme, so no per-chapter markup is needed. */
+  let qMascot = null;
+  (function initQuizMascot(){
+    const box = document.getElementById("qbox");
+    if(!box || document.getElementById("btp-quiz-mascot")) return;
+    const theme = opts.mascot ||
+      (document.body && document.body.dataset.theme) || "aqua";
+    const nm = (BTP.MascotThemes[theme] && BTP.MascotThemes[theme].name) || "";
+    const row = document.createElement("div");
+    row.className = "mascot-row";
+    row.style.alignItems = "center";
+    const mount = document.createElement("div");
+    mount.id = "btp-quiz-mascot";
+    const cap = document.createElement("div");
+    cap.style.cssText = "flex:1;min-width:180px";
+    cap.innerHTML = '<p class="lede" style="margin:0">' +
+      (nm ? nm + " is cheering you on — answer and watch!"
+          : "Answer and watch the reaction!") + '</p>';
+    row.appendChild(mount);
+    row.appendChild(cap);
+    box.insertBefore(row, box.firstChild);
+    qMascot = BTP.Mascot("btp-quiz-mascot", theme);
+  })();
+
+  const Q_OK = ["Yes!", "Nice!", "Boom!", "Great!"];
+  const Q_NO = ["Oops!", "Almost!", "Try again!", "So close!"];
+
   function start(){
     quiz = BTP.shuffle(QUESTIONS).slice(0, count).map(q=>{
       const right = q.opts[q.a];
@@ -227,11 +262,13 @@ BTP.setupQuiz = function(QUESTIONS, opts){
       fb.innerHTML = "<b>Correct.</b> " + q.why + " <span style='opacity:.75'>+" + xpPer + " XP</span>";
       BTP.toast("+" + xpPer + " XP");
       BTP.sound.right();
+      if(qMascot){ qMascot.react("happy"); qMascot.say(BTP.pick(Q_OK), 1600); }
     } else {
       bs[i].classList.add("wrong");
       fb.className = "fb bad show";
       fb.innerHTML = "<b>Not this time.</b> " + q.why;
       BTP.sound.wrong();
+      if(qMascot){ qMascot.react("sad"); qMascot.say(BTP.pick(Q_NO), 1600); }
     }
     document.getElementById("qnext").classList.remove("hide");
     if(opts.onAnswer) opts.onAnswer(correct, bs[i]);
@@ -255,6 +292,129 @@ BTP.setupQuiz = function(QUESTIONS, opts){
   document.getElementById("qagain").onclick = start;
 
   return { start };
+};
+
+/* ---------------------------------------------------------------
+   3C. LEARN ENGINE — concept slides + a short check quiz.
+   Each chapter provides slide markup with ids lsld0..lsldN-1 plus the
+   nav / check / done scaffold, then calls BTP.setupLearn({...}).
+
+   Required markup inside the Learn <section class="panel">:
+     <div class="learn-slide on" id="lsld0">…</div>  (lsld1, lsld2, …)
+     <div class="learn-nav" id="learnSlideNav">
+       <div class="learn-dots" id="learnDots"></div>
+       <button class="btn" id="learnNext">Next &rarr;</button>
+     </div>
+     <div id="learnCheck" class="hide">
+       <div class="quest"><div class="q" id="lcq">…</div></div>
+       <div class="opts" id="lcopts"></div>
+       <div class="fb" id="lcfb"></div>
+       <div class="bar"><i id="lcbar"></i></div>
+       <button class="btn hide" id="lcnext">Next &rarr;</button>
+     </div>
+     <div id="learnDone" class="hide">…</div>
+
+   opts: { slides:<int>, say:[…per slide…], check:[{q,opts,a,why}],
+           mascot:<BTP.Mascot instance>, xp:5 }
+   --------------------------------------------------------------- */
+BTP.setupLearn = function(opts){
+  opts = opts || {};
+  const n = opts.slides || 1;
+  const say = opts.say || [];
+  const CHECK = opts.check || [];
+  const m = opts.mascot || null;
+  const xpPer = opts.xp || 5;
+  const OK = ["Yes! Exactly.", "Nailed it.", "Great!"];
+  const NO = ["Not quite — look again.", "Close! Try once more.", "Almost!"];
+  const ids = [];
+  for(let i = 0; i < n; i++) ids.push("lsld" + i);
+  let cur = 0, ci = 0, right = 0;
+  const el = id => document.getElementById(id);
+
+  function dots(){
+    const d = el("learnDots");
+    if(d) d.innerHTML = ids.map((_,i)=>
+      '<div class="learn-dot' + (i===cur?' on':'') + '"></div>').join("");
+  }
+  function show(i){
+    cur = i;
+    ids.forEach((id,idx)=>{
+      const s = el(id);
+      if(s) s.classList.toggle("on", idx===i);
+    });
+    dots();
+    const nx = el("learnNext");
+    if(nx) nx.textContent = (i===n-1) ? "Let's check! \u2192" : "Next \u2192";
+    if(m && say[i]) m.say(say[i], 3200);
+    if(m) m.react(i===n-1 ? "happy" : "idle");
+  }
+  const nextBtn = el("learnNext");
+  if(nextBtn) nextBtn.onclick = ()=>{
+    if(cur < n-1){ show(cur+1); return; }
+    const nav = el("learnSlideNav");
+    if(nav) nav.classList.add("hide");
+    if(CHECK.length) startCheck(); else finish();
+  };
+
+  function startCheck(){
+    ci = 0; right = 0;
+    const done = el("learnDone"); if(done) done.classList.add("hide");
+    const box = el("learnCheck"); if(box) box.classList.remove("hide");
+    loadCheck();
+  }
+  function loadCheck(){
+    const item = CHECK[ci];
+    el("lcq").textContent = item.q;
+    el("lcfb").className = "fb";
+    el("lcnext").classList.add("hide");
+    el("lcbar").style.width = (ci / CHECK.length * 100) + "%";
+    const box = el("lcopts"); box.innerHTML = "";
+    item.opts.forEach((o,i)=>{
+      const b = document.createElement("button");
+      b.className = "opt"; b.textContent = o;
+      b.onclick = ()=>{
+        [...box.children].forEach(x => x.disabled = true);
+        box.children[item.a].classList.add("right");
+        const fb = el("lcfb");
+        if(i === item.a){
+          right++; BTP.addXP(xpPer); BTP.touchStreak();
+          fb.className = "fb good show";
+          fb.innerHTML = "<b>" + BTP.pick(OK) + "</b> " + item.why +
+            " <span style='opacity:.75'>+" + xpPer + " XP</span>";
+          BTP.toast("+" + xpPer + " XP");
+          if(m) m.react("happy");
+          BTP.sound.right();
+        } else {
+          box.children[i].classList.add("wrong");
+          fb.className = "fb bad show";
+          fb.innerHTML = "<b>" + BTP.pick(NO) + "</b> " + item.why;
+          if(m) m.react("sad");
+          BTP.sound.wrong();
+        }
+        el("lcnext").classList.remove("hide");
+      };
+      box.appendChild(b);
+    });
+  }
+  const lcNext = el("lcnext");
+  if(lcNext) lcNext.onclick = ()=>{
+    ci++;
+    if(ci >= CHECK.length){
+      el("lcbar").style.width = "100%";
+      el("learnCheck").classList.add("hide");
+      finish();
+    } else loadCheck();
+  };
+  function finish(){
+    const done = el("learnDone");
+    if(done) done.classList.remove("hide");
+    if(m) m.say(right === CHECK.length ?
+      "Perfect! You're ready." :
+      "Good work — now try the activities.", 3200);
+  }
+
+  show(0);
+  return { show };
 };
 
 /* ---------------------------------------------------------------
@@ -860,10 +1020,20 @@ BTP.dragPoint = function(svg, el, onDrag){
    sit next to a lesson and react to right/wrong answers. Each
    chapter can pass its own colours AND an earStyle to give it a
    distinct look — these are original designs only *inspired* by a
-   general kawaii aesthetic, not reproductions of any licensed
-   character.
+   general kawaii / anime aesthetic, not reproductions of any
+   licensed character (nothing from Sanrio, Naruto, or anywhere
+   else is copied — only the vibe).
 
-   const dot = BTP.Mascot("mascotBox", {color:"#3ddbd9", accent:"#ffc857"});
+   Two ways to style it:
+
+     // 1. a named theme from BTP.MascotThemes (recommended)
+     const dot = BTP.Mascot("mascotBox", "aqua");
+     // theme name + a per-chapter override:
+     BTP.Mascot("box", { theme:"kawaii", accent:"#ff2d78" });
+
+     // 2. a raw palette object (still supported, back-compatible)
+     BTP.Mascot("box", { color:"#3ddbd9", accent:"#ffc857" });
+
    dot.say("Let's zoom in!", 2500)   // speech bubble, auto-hides after ms (omit ms to stick)
    dot.hideBubble()
    dot.react("happy" | "sad" | "idle")   // brief animated reaction + expression change
@@ -874,9 +1044,69 @@ BTP.dragPoint = function(svg, el, onDrag){
               (opts.accent2 = hood colour, opts.accent = small tip glints)
      "bow"  — two small triangular ears plus a side bow
               (opts.accent = bow/ear-outline colour)
+     "band" — a ninja-inspired forehead band + two pointed animal ears
+              (opts.accent2 = band colour, opts.accent = ears/plate colour).
+              The band plate is deliberately blank — no village crest — so
+              it stays an original design, not a copy of any franchise.
+     "spark" — an electric-creature look: jagged lightning ears + two
+              round cheek sparks (opts.accent = ears/cheeks, opts.accent2
+              = dark ear tips).
+     "hat"  — a straw-hat sailor look sitting on top of the head
+              (opts.accent2 = brim/straw colour, opts.accent = hat band).
    --------------------------------------------------------------- */
+
+/* Named mascot themes — palette + ear-style presets. Every one is an
+   ORIGINAL character merely *inspired by* a popular art style; none copy
+   or reproduce a licensed character, name, or crest. Add your own with
+   BTP.MascotThemes.myTheme = { color, accent, accent2, earStyle, name }.
+   `name` is just a suggested default character name a chapter may use. */
+BTP.MascotThemes = {
+  // --- four franchise-INSPIRED originals (aesthetic only, not the IP) ---
+  // Sanrio-inspired: soft pastel cutie with a side bow (original "Suzu")
+  kawaii: { color:"#fff3f6", accent:"#ff6b81", accent2:"#cc2233", earStyle:"bow",  name:"Suzu" },
+  // Naruto-inspired: warm ninja with a blank forehead band (original "Kata")
+  ninja:  { color:"#ffb066", accent:"#e8542f", accent2:"#20304f", earStyle:"band", name:"Kata" },
+  // Pokemon-inspired: electric creature, lightning ears + cheek sparks (original "Voltling")
+  spark:  { color:"#ffdd55", accent:"#e8542f", accent2:"#5a3a00", earStyle:"spark", name:"Voltling" },
+  // One Piece-inspired: sunny straw-hat sailor (original "Captain Pip")
+  pirate: { color:"#ffd36b", accent:"#c8102e", accent2:"#b07a2a", earStyle:"hat",  name:"Pip" },
+
+  // --- the originals already used by chapters 3/4/5 + spare palettes ---
+  // classic bright cyan explorer (Chapter 3's "Dot")
+  aqua:   { color:"#3ddbd9", accent:"#ffc857", accent2:"#0e2a2c", earStyle:"dot",  name:"Dot" },
+  // moody violet hood (Chapter 4's "Nyx")
+  shadow: { color:"#8b7bff", accent:"#ff6bd6", accent2:"#241531", earStyle:"hood", name:"Nyx" },
+  // calm ocean blue, plain ears
+  ocean:  { color:"#5aa9ff", accent:"#3ddbd9", accent2:"#10233f", earStyle:"dot",  name:"Nilo" },
+  // fresh green sprout, plain ears
+  mint:   { color:"#3ddc84", accent:"#ffc857", accent2:"#0e2a1c", earStyle:"dot",  name:"Sprout" },
+  // berry pink hood
+  berry:  { color:"#ff8fc7", accent:"#ffe36b", accent2:"#3a0f2a", earStyle:"hood", name:"Momo" },
+  // Kuromi-INSPIRED original: white face, near-black pointed jester hood,
+  // pink lining + a cheeky look. No skull emblem, no name, no exact
+  // palette copied — an original mischievous imp, not the character.
+  imp:    { color:"#f4f0ff", accent:"#ff7ac2", accent2:"#191024", earStyle:"hood", name:"Riko" },
+  // Totoro-INSPIRED original: soft grey forest spirit, tall pointed ears,
+  // leafy-cream cheeks + whiskers. No belly chevrons, no umbrella, no
+  // name copied — an original woodland critter, not the character.
+  forest: { color:"#9aa7a0", accent:"#d6ecc4", accent2:"#333f36", earStyle:"forest", name:"Grove" },
+  // plain grey pup (Chapter 8's original "Pochi")
+  stone:  { color:"#b8c0cc", accent:"#8b95a3", accent2:"#2a3340", earStyle:"dot",  name:"Pochi" },
+  // warm tomato-and-cheese pizza pal (Chapter 8's "Pepper")
+  candy:  { color:"#ff9a4d", accent:"#ff5a5f", accent2:"#3a1e10", earStyle:"dot",  name:"Pepper" }
+};
+
 BTP.Mascot = function(containerId, opts){
-  opts = Object.assign({ color:"#3ddbd9", accent:"#ffc857", accent2:"#2a1b40", earStyle:"dot" }, opts);
+  // Accept a theme name string, or an object that may carry a `theme`
+  // key plus per-chapter overrides. Precedence: defaults < theme < opts.
+  if(typeof opts === "string") opts = { theme: opts };
+  opts = opts || {};
+  const theme = (opts.theme && BTP.MascotThemes[opts.theme]) || null;
+  opts = Object.assign(
+    { color:"#3ddbd9", accent:"#ffc857", accent2:"#2a1b40", earStyle:"dot" },
+    theme || {},
+    opts
+  );
   const root = document.getElementById(containerId);
   const uid = containerId;
 
@@ -887,6 +1117,26 @@ BTP.Mascot = function(containerId, opts){
       '<path d="M 108 42 Q 114 8 82 18 Q 90 32 100 44 Z" fill="'+opts.accent2+'"/>' +
       '<circle cx="22" cy="24" r="3" fill="'+opts.accent+'"/>' +
       '<circle cx="98" cy="24" r="3" fill="'+opts.accent+'"/>';
+  } else if(opts.earStyle === "band"){
+    earsSvg =
+      '<path d="M 22 34 L 34 6 L 46 32 Z" fill="'+opts.color+'" stroke="'+opts.accent+'" stroke-width="2.5"/>' +
+      '<path d="M 98 34 L 86 6 L 74 32 Z" fill="'+opts.color+'" stroke="'+opts.accent+'" stroke-width="2.5"/>' +
+      '<path d="M 15 52 Q 60 43 105 52 L 105 61 Q 60 52 15 61 Z" fill="'+opts.accent2+'"/>' +
+      '<rect x="50" y="46" width="20" height="12" rx="2.5" fill="'+opts.accent+'"/>' +
+      '<path d="M 105 56 L 116 64 M 105 60 L 115 70" stroke="'+opts.accent2+'" stroke-width="2.5" stroke-linecap="round"/>';
+  } else if(opts.earStyle === "spark"){
+    earsSvg =
+      '<path d="M 20 40 L 30 5 L 41 30 L 33 40 Z" fill="'+opts.color+'" stroke="'+opts.accent+'" stroke-width="2.5"/>' +
+      '<path d="M 100 40 L 90 5 L 79 30 L 87 40 Z" fill="'+opts.color+'" stroke="'+opts.accent+'" stroke-width="2.5"/>' +
+      '<path d="M 30 5 L 41 30 L 34 21 Z" fill="'+opts.accent2+'"/>' +
+      '<path d="M 90 5 L 79 30 L 86 21 Z" fill="'+opts.accent2+'"/>' +
+      '<circle cx="30" cy="82" r="6" fill="'+opts.accent+'"/>' +
+      '<circle cx="90" cy="82" r="6" fill="'+opts.accent+'"/>';
+  } else if(opts.earStyle === "hat"){
+    earsSvg =
+      '<path d="M 10 40 Q 60 24 110 40 Q 60 54 10 40 Z" fill="'+opts.accent2+'"/>' +
+      '<path d="M 34 41 Q 40 12 60 11 Q 80 12 86 41 Z" fill="'+opts.color+'" stroke="'+opts.accent2+'" stroke-width="2"/>' +
+      '<path d="M 33 33 Q 60 28 87 33" stroke="'+opts.accent+'" stroke-width="4" fill="none"/>';
   } else if(opts.earStyle === "bow"){
     earsSvg =
       '<path d="M 18 32 L 33 8 L 41 34 Z" fill="'+opts.color+'" stroke="'+opts.accent+'" stroke-width="2.5"/>' +
@@ -894,6 +1144,12 @@ BTP.Mascot = function(containerId, opts){
       '<path d="M 84 20 L 98 10 L 98 28 Z" fill="'+opts.accent+'"/>' +
       '<path d="M 112 20 L 98 10 L 98 28 Z" fill="'+opts.accent+'"/>' +
       '<circle cx="98" cy="19" r="4.5" fill="'+opts.accent2+'"/>';
+  } else if(opts.earStyle === "forest"){
+    earsSvg =
+      '<path d="M 26 40 L 34 4 L 48 38 Z" fill="'+opts.color+'" stroke="'+opts.accent2+'" stroke-width="2"/>' +
+      '<path d="M 94 40 L 86 4 L 72 38 Z" fill="'+opts.color+'" stroke="'+opts.accent2+'" stroke-width="2"/>' +
+      '<path d="M 6 74 L 26 77 M 6 84 L 26 84" stroke="'+opts.accent2+'" stroke-width="2" stroke-linecap="round"/>' +
+      '<path d="M 114 74 L 94 77 M 114 84 L 94 84" stroke="'+opts.accent2+'" stroke-width="2" stroke-linecap="round"/>';
   } else {
     earsSvg =
       '<circle cx="30" cy="36" r="8" fill="'+opts.accent+'"/>' +
@@ -1073,4 +1329,47 @@ BTP.shakeEl = function(el){
   }
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", mountToggle);
   else mountToggle();
+})();
+
+/* ---------------------------------------------------------------
+   11. COLOUR MODE — a light / dark toggle. The chosen mode persists
+   via localStorage and a sun/moon chip auto-mounts into the header's
+   ".stats" row next to the sound toggle.
+   --------------------------------------------------------------- */
+BTP.mode = (function(){
+  const KEY = "btp.mode";
+  let mode = (function(){
+    try{ return localStorage.getItem(KEY) || "dark"; }catch(e){ return "dark"; }
+  })();
+
+  function apply(){
+    document.documentElement.dataset.mode = mode;
+    const b = document.getElementById("btp-mode-btn");
+    // Show the mode you'd switch TO.
+    if(b) b.textContent = mode === "light" ? "🌙" : "☀️";
+  }
+  function set(m){
+    mode = m;
+    try{ localStorage.setItem(KEY, m); }catch(e){}
+    apply();
+  }
+  function toggle(){ set(mode === "light" ? "dark" : "light"); }
+
+  function mount(){
+    const stats = document.querySelector(".stats");
+    if(!stats || document.getElementById("btp-mode-btn")) return;
+    const b = document.createElement("button");
+    b.id = "btp-mode-btn";
+    b.className = "chip sound-toggle";
+    b.title = "Switch light / dark";
+    b.textContent = mode === "light" ? "🌙" : "☀️";
+    b.onclick = (e)=>{ e.stopPropagation(); toggle(); };
+    stats.insertBefore(b, stats.firstChild);
+  }
+
+  apply();
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount);
+  else mount();
+
+  return { set, toggle, get:()=>mode };
 })();

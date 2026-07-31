@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 6</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 <style>
   .ms-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-width:260px; margin:14px auto 16px; }
@@ -31,7 +32,7 @@
   .ms-num:hover:not(:disabled){ border-color:var(--cyan); }
 </style>
 </head>
-<body>
+<body data-theme="imp">
 <div class="wrap">
 
   <header>
@@ -44,13 +45,89 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Magic Square</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Magic Square</button>
     <button class="tab" data-p="practice">Parity Practice</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">Numbers love to play! Let's explore magic squares and
+      the odd-even rules that make number puzzles tick.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn06"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Hehe, I'm Riko.</h2>
+        <p class="lede" style="margin:0">Let's play some mischievous number
+          games and find the patterns hiding inside.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">A <b>magic square</b> uses each number 1–9 once so that
+        every row, every column, and both diagonals add up to the SAME
+        total — the <b>magic sum</b>.</p>
+      <p class="lede">It's like Sudoku's cousin: instead of "no repeats",
+        the rule is "same sum everywhere".</p>
+      <div class="joke"><b>Joke:</b> Why was 6 afraid of 7? Because
+        7 “8” 9! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">Why is the magic sum <b>15</b>? Add 1+2+3+…+9 = 45.
+        There are 3 rows, and they share the total equally: 45 ÷ 3 =
+        <b>15</b>.</p>
+      <p class="lede">A neat twist: the number <b>5</b> always sits in the
+        centre, because it's the middle value that balances every line.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede"><b>Parity</b> means odd or even. An <b>even</b> number
+        splits into two equal groups (share sweets between 2 friends, none
+        left over). An <b>odd</b> number always leaves one out.</p>
+      <p class="lede">The rules: odd + odd = <b>even</b>,
+        even + even = <b>even</b>, odd + even = <b>odd</b>. Two odds pair up
+        perfectly!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">Once you spot parity, you can predict answers without
+        even adding — that's the power of number patterns.</p>
+      <div class="fun"><b>Fun fact:</b> The 3×3 magic square (called Lo Shu)
+        is over 4000 years old. Legend says it appeared on the back of a
+        turtle in a Chinese river! 🐢</div>
+      <div class="joke"><b>Joke:</b> Why did 2 feel lonely at the odd
+        numbers' party? It was the only even one there. 🥲</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">✨</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Magic Square</b> to build one, then take the
+        <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh06"></div></div>
     <h2>Build a magic square</h2>
     <p class="lede">
       Place the numbers 1&ndash;9, one each, so every row, every column, and both diagonals add
@@ -405,7 +482,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","practice","quiz"].forEach(p=>{
+    ["learn","explore","practice","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("propts").children.length) practiceQuiz.start();
@@ -416,6 +493,31 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh06", "imp")
+  .say("Every row, column and diagonal — same magic sum!", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn06", "imp"),
+  say: [
+    "Rows, columns, diagonals — all the same sum.",
+    "1+…+9 = 45, so each line is 45÷3 = 15.",
+    "Odd or even is all about pairing up.",
+    "Number patterns are hiding everywhere!"
+  ],
+  check: [
+    { q:"In a 3×3 magic square using 1–9, the magic sum is…",
+      opts:["15","9","10","45"], a:0,
+      why:"1+2+…+9 = 45, and 45 ÷ 3 rows = 15." },
+    { q:"odd + odd = ?",
+      opts:["even","odd","zero","can't tell"], a:0,
+      why:"Two odds pair up: 3+5=8, an even number." },
+    { q:"Which number must sit in the CENTRE of the 1–9 magic square?",
+      opts:["5","1","9","3"], a:0,
+      why:"The centre is the middle value, 5 — it balances every line." }
+  ]
+});
+
 BTP.paintStats();
 </script>
 </body>

@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 7</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
-<body>
+<body data-theme="ninja">
 <div class="wrap">
 
   <header>
@@ -19,13 +20,88 @@
   </header>
 
   <nav>
-    <button class="tab on" data-p="explore">Explore</button>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Explore</button>
     <button class="tab" data-p="practice">Quick Checks</button>
     <button class="tab" data-p="quiz">Challenge</button>
   </nav>
 
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">Three lines meet and — tada! — a triangle appears. Let's
+      learn the rules it can never break.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn07"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Silent but sharp — I'm Kata.</h2>
+        <p class="lede" style="margin:0">Let's master the triangle, one
+          precise angle at a time.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="lsld0">
+      <p class="lede">A triangle has three sides, three corners, and three
+        <b>interior angles</b>. No matter its shape, those angles always add
+        up to exactly <b>180°</b>.</p>
+      <p class="lede">Try it: tear the three corners off a paper triangle and
+        line them up — they form a perfectly straight line (180°)!</p>
+      <div class="joke"><b>Joke:</b> Why was the obtuse triangle always
+        upset? Because it's never <i>right</i>! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="lsld1">
+      <p class="lede">Extend one side and you get an <b>exterior angle</b>.
+        Handy rule: it equals the <b>sum of the two opposite interior
+        angles</b>.</p>
+      <p class="lede">So if the two far corners are 50° and 60°, the exterior
+        angle is 110° — no need to measure it directly.</p>
+    </div>
+
+    <div class="learn-slide" id="lsld2">
+      <p class="lede">The <b>triangle inequality</b>: any two sides added
+        together must be <b>longer than the third side</b>, or the triangle
+        won't close up.</p>
+      <p class="lede">Two short sticks (2 cm and 3 cm) can never bridge a
+        6 cm gap — 2 + 3 = 5 is too short to reach!</p>
+    </div>
+
+    <div class="learn-slide" id="lsld3">
+      <p class="lede">These rules make the triangle the most reliable shape
+        in maths — and in the real world too.</p>
+      <div class="fun"><b>Fun fact:</b> The triangle is the strongest shape
+        in construction. That's why you see them in bridges, cranes and
+        roof frames — they can't be squished out of shape! 🌉</div>
+      <div class="joke"><b>Joke:</b> What do you call a triangle that's
+        always cold? An <i>ice</i>-sosceles! 🧊</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next &rarr;</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next &rarr;</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🔺</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Explore</b> to drag the corners, then take
+        the <b>Challenge</b>.</p>
+    </div>
+  </section>
+
   <!-- ============ EXPLORE ============ -->
-  <section class="panel" id="p-explore">
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh07"></div></div>
     <h2>Drag the corners</h2>
     <p class="lede">
       Drag any vertex of the triangle. Its three interior angles change &mdash; but however you
@@ -363,7 +439,7 @@ document.querySelectorAll(".tab").forEach(t=>{
     document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
     t.classList.add("on");
     const mode = t.dataset.p;
-    ["explore","practice","quiz"].forEach(p=>{
+    ["learn","explore","practice","quiz"].forEach(p=>{
       document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
     });
     if(mode === "practice" && !document.getElementById("popts").children.length) renderPractice();
@@ -374,6 +450,33 @@ document.querySelectorAll(".tab").forEach(t=>{
 /* ---------------------------------------------------------------
    GO
    --------------------------------------------------------------- */
+BTP.Mascot("mascotCh07", "ninja")
+  .say("Stretch the triangle — the angles still make 180°.", 4200);
+
+BTP.setupLearn({
+  slides: 4,
+  mascot: BTP.Mascot("mascotLearn07", "ninja"),
+  say: [
+    "A triangle's three angles always total 180°.",
+    "An exterior angle = the two far angles added.",
+    "Two sides must beat the third to close up.",
+    "The triangle is the strongest shape around!"
+  ],
+  check: [
+    { q:"The three interior angles of any triangle add up to…",
+      opts:["180°","360°","90°","270°"], a:0,
+      why:"Every triangle's angles total a straight line: 180°." },
+    { q:"Two sides are 4 cm and 5 cm. The third side must be…",
+      opts:["less than 9 cm","exactly 9 cm","more than 9 cm",
+        "exactly 4 cm"], a:0,
+      why:"The two sides (4+5=9) must beat the third, so it's under 9 cm." },
+    { q:"An exterior angle of a triangle equals…",
+      opts:["the two opposite interior angles added",
+        "the third interior angle","always 90°","180°"], a:0,
+      why:"An exterior angle equals the sum of the two far interior angles." }
+  ]
+});
+
 BTP.paintStats();
 buildTriangleSVG();
 </script>

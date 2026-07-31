@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hiromatics by Hiromi — Ch 14</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .shape-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+  .shape-btn{
+    flex:1;min-width:120px;background:#0d142a;border:1.5px solid var(--line);
+    border-radius:12px;padding:12px 10px;color:var(--ink);font-family:inherit;
+    font-size:14px;font-weight:700;cursor:pointer;transition:.15s;
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+  }
+  .shape-btn:hover{border-color:var(--cyan);transform:translateY(-2px)}
+  .shape-btn.on{border-color:var(--green);background:#0e2030;
+    box-shadow:0 0 0 1px var(--green) inset}
+  .shape-btn .sub{font-size:11px;color:var(--dim);font-weight:600}
+  .tile-stage{
+    display:flex;justify-content:center;align-items:center;
+    background:#0b1226;border:1px solid var(--line);border-radius:14px;
+    padding:14px;margin:6px 0 4px;
+  }
+  .tile-stage svg{width:100%;max-width:320px;height:auto}
+  .verdict{
+    text-align:center;font-weight:700;font-size:15px;margin:4px 0 2px;
+    min-height:22px;
+  }
+  .verdict.good{color:var(--green)}
+  .verdict.bad{color:var(--amber)}
+</style>
+</head>
+<body data-theme="forest">
+<div class="wrap">
+
+  <header>
+    <div class="brand"><a href="index.html"><span class="back">&larr;</span> <span>Hiromatics</span> by Hiromi</a></div>
+    <div class="stats">
+      <div class="chip">🔥 <b id="streak">0</b></div>
+      <div class="chip xp">⬡ <b id="xp">0</b></div>
+    </div>
+    <div class="sub">Ganita Prakash · Grade 7 · Part 2 · Chapter 6 · Constructions and Tilings</div>
+  </header>
+
+  <nav>
+    <button class="tab on" data-p="learn">Learn</button>
+    <button class="tab" data-p="explore">Tile It</button>
+    <button class="tab" data-p="quiz">Challenge</button>
+  </nav>
+
+  <!-- ============ LEARN ============ -->
+  <section class="panel" id="p-learn">
+    <h2>Learn</h2>
+    <p class="lede">Before you tile anything, meet the big idea: shapes
+      that fit together with <b>no gaps and no overlaps</b>. Grove will
+      walk you through it.</p>
+
+    <div class="mascot-row">
+      <div id="mascotLearn"></div>
+      <div style="flex:1;min-width:220px">
+        <h2 style="margin-bottom:6px">Hi! I'm Grove.</h2>
+        <p class="lede" style="margin:0">I live in a forest of patterns.
+          Let's learn why some shapes tile and some just... don't.</p>
+      </div>
+    </div>
+
+    <div class="learn-slide on" id="slide0">
+      <p class="lede"><b>Tiling</b> means covering a flat surface with
+        copies of a shape so there are <b>no gaps and no overlaps</b> —
+        like square tiles on a bathroom floor, or bricks in a wall.</p>
+      <p class="lede">Think of a giant chocolate bar: the little squares
+        cover the whole bar with nothing left over. That's a tiling!</p>
+      <div class="joke"><b>Joke:</b> Why were the square tiles such great
+        roommates? They always fit together — no gaps, no drama! 😄</div>
+    </div>
+
+    <div class="learn-slide" id="slide1">
+      <p class="lede">Here's the secret rule. Look at any corner where
+        tiles meet and spin all the way around that point — a full spin
+        is <b>360°</b>.</p>
+      <p class="lede">If the corners meeting there add up to exactly
+        360°, they close up perfectly. Too little leaves a gap; too much
+        and they overlap.</p>
+      <p class="lede">Like pizza slices: if the tips add up to a full
+        360° turn, they make one complete pizza — no missing bites!</p>
+    </div>
+
+    <div class="learn-slide" id="slide2">
+      <p class="lede">Which single regular shapes tile a floor by
+        themselves? Only three:</p>
+      <p class="lede">• <b>Triangle</b> — 6 corners of 60° (6 × 60 = 360°)
+        <br>• <b>Square</b> — 4 corners of 90° (4 × 90 = 360°)
+        <br>• <b>Hexagon</b> — 3 corners of 120° (3 × 120 = 360°)</p>
+      <p class="lede">The <b>pentagon</b> is the odd one out: 3 corners
+        give 3 × 108° = 324°, leaving a 36° gap. So pentagons can't tile
+        alone.</p>
+      <div class="fun"><b>Fun fact:</b> Bees build honeycomb out of
+        <b>hexagons</b> — the shape that holds the most honey using the
+        least wax. Nature did the math first! 🐝</div>
+    </div>
+
+    <div class="learn-slide" id="slide3">
+      <p class="lede">The other half of this chapter is
+        <b>constructions</b> — drawing exact shapes with only a
+        <b>compass and ruler</b>, no measuring.</p>
+      <p class="lede">The star trick is the <b>perpendicular
+        bisector</b>: it cuts a line into two equal halves at a perfect
+        90°. It's like folding a paper strip exactly in half — the crease
+        lands dead centre.</p>
+      <p class="lede">From it you can build a 90° angle, halve that for
+        45°, and make a 60° angle by drawing an equilateral triangle.</p>
+      <div class="fun"><b>Fun fact:</b> In <b>2023</b>, mathematicians
+        found a brand-new tile (nicknamed "the hat") that covers the
+        plane forever <i>without</i> repeating. New math is still being
+        found! 🎩</div>
+      <div class="joke"><b>Joke:</b> I'd tell a joke about a 360°
+        angle... but you'd end up right back where you started. 🔁</div>
+    </div>
+
+    <div class="learn-nav" id="learnSlideNav">
+      <div class="learn-dots" id="learnDots"></div>
+      <button class="btn" id="learnNext">Next →</button>
+    </div>
+
+    <div id="learnCheck" class="hide">
+      <div class="quest"><div class="q" id="lcq">…</div></div>
+      <div class="opts" id="lcopts"></div>
+      <div class="fb" id="lcfb"></div>
+      <div class="bar"><i id="lcbar"></i></div>
+      <button class="btn hide" id="lcnext">Next →</button>
+    </div>
+
+    <div id="learnDone" class="hide"
+      style="text-align:center;padding:20px 0">
+      <div style="font-size:40px">🌿</div>
+      <h2 style="margin:10px 0">You've got the idea!</h2>
+      <p class="lede">Now open <b>Tile It</b> to fan shapes around a
+        point, then take the <b>Challenge</b>.</p>
+    </div>
+  </section>
+
+  <!-- ============ EXPLORE ============ -->
+  <section class="panel hide" id="p-explore">
+    <div class="mascot-row"><div id="mascotCh14"></div></div>
+    <h2>Will it tile around a point?</h2>
+    <p class="lede">
+      A shape <b>tiles</b> the plane when copies of it meet at a corner with
+      <b>no gaps and no overlaps</b>. The test is simple: the copies meeting at
+      one point must have angles that add up to exactly <b>360°</b>. Pick a
+      regular shape and fan its corner around the centre dot.
+    </p>
+
+    <div class="shape-row" id="shapeRow">
+      <button class="shape-btn on" data-s="tri"><span>△ Triangle</span><span class="sub">3 sides</span></button>
+      <button class="shape-btn" data-s="sq"><span>▢ Square</span><span class="sub">4 sides</span></button>
+      <button class="shape-btn" data-s="pent"><span>⬠ Pentagon</span><span class="sub">5 sides</span></button>
+      <button class="shape-btn" data-s="hex"><span>⬡ Hexagon</span><span class="sub">6 sides</span></button>
+    </div>
+
+    <div class="tile-stage"><svg id="tileSvg" viewBox="0 0 240 240"></svg></div>
+    <div class="verdict" id="verdict"></div>
+
+    <div class="readout">
+      <div class="card">
+        <div class="k">Interior angle</div>
+        <div class="v" id="rAngle">—</div>
+      </div>
+      <div class="card">
+        <div class="k">360° ÷ angle</div>
+        <div class="v" id="rDiv">—</div>
+      </div>
+      <div class="card">
+        <div class="k">Gap left over</div>
+        <div class="v" id="rGap">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="panel hide" id="p-quiz">
+    <h2>Challenge</h2>
+    <p class="lede">Real questions from the chapter — which shapes tile, the
+      angle-at-a-vertex test, and the basic constructions.</p>
+    <div class="bar"><i id="qbar"></i></div>
+
+    <div id="qbox" style="margin-top:16px">
+      <div class="book" id="qsrc">FIGURE IT OUT</div>
+      <div class="quest"><div class="q" id="qq">…</div><div class="meta" id="qm"></div></div>
+      <div class="opts" id="qopts"></div>
+      <div class="fb" id="qfb"></div>
+      <button class="btn hide" id="qnext">Next &rarr;</button>
+    </div>
+
+    <div id="qdone" class="hide" style="text-align:center;padding:26px 0">
+      <div style="font-size:44px">🏆</div>
+      <h2 style="margin:10px 0">Chapter cleared</h2>
+      <p class="lede" id="qscore"></p>
+      <button class="btn" id="qagain">Play again</button>
+    </div>
+  </section>
+
+</div>
+<div id="toast"></div>
+
+<script src="shared.js"></script>
+<script>
+"use strict";
+/* =====================================================================
+   CHAPTER 14 — Constructions and Tilings
+   Explore: fan a regular polygon's corner around a point and see whether
+   the angles close up to 360° (tiles) or leave a gap (doesn't).
+   Challenge: BTP.setupQuiz over tiling / construction content.
+   Mascot: Grove (forest theme) — an original woodland critter.
+   ===================================================================== */
+
+const SHAPES = {
+  tri:  { name:"Triangle", sides:3 },
+  sq:   { name:"Square",   sides:4 },
+  pent: { name:"Pentagon", sides:5 },
+  hex:  { name:"Hexagon",  sides:6 },
+};
+
+const grove = BTP.Mascot("mascotCh14", "forest");
+
+function interior(sides){ return (sides - 2) * 180 / sides; }
+
+function polar(cx, cy, r, deg){
+  const a = deg * Math.PI / 180;
+  return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
+}
+
+function wedge(cx, cy, r, a0, a1, fill, stroke){
+  const [x0, y0] = polar(cx, cy, r, a0);
+  const [x1, y1] = polar(cx, cy, r, a1);
+  const large = (a1 - a0) > 180 ? 1 : 0;
+  return '<path d="M ' + cx + ' ' + cy + ' L ' + x0.toFixed(1) + ' ' +
+    y0.toFixed(1) + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' +
+    x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z" fill="' + fill +
+    '" stroke="' + stroke + '" stroke-width="2"/>';
+}
+
+function render(key){
+  const s = SHAPES[key];
+  const ang = interior(s.sides);
+  const n = Math.floor(360 / ang);
+  const gap = Math.round((360 - n * ang) * 100) / 100;
+  const cx = 120, cy = 120, r = 100;
+
+  let svg = "";
+  let start = -90;
+  for(let i = 0; i < n; i++){
+    svg += wedge(cx, cy, r, start, start + ang, "#3ddc84", "#0b1226");
+    start += ang;
+  }
+  if(gap > 0.01){
+    svg += wedge(cx, cy, r, start, start + gap, "#3a1220", "#ff6b81");
+  }
+  svg += '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="#e8f0ff"/>';
+  document.getElementById("tileSvg").innerHTML = svg;
+
+  document.getElementById("rAngle").textContent = ang + "°";
+  document.getElementById("rDiv").textContent =
+    (360 / ang).toFixed(2).replace(/\.00$/, "");
+  document.getElementById("rGap").textContent =
+    gap > 0.01 ? gap + "°" : "0°";
+
+  const v = document.getElementById("verdict");
+  if(gap < 0.01){
+    v.className = "verdict good";
+    v.textContent = n + " " + s.name.toLowerCase() +
+      "s meet perfectly — it tiles the plane!";
+    grove.say(n + " corners of " + ang + "° close to 360°. It tiles!",
+      4200);
+    grove.react("happy");
+  } else {
+    v.className = "verdict bad";
+    v.textContent = "Only " + n + " fit — a " + gap +
+      "° gap is left, so it can't tile alone.";
+    grove.say("Three corners make " + (n * ang) + "°, short of 360° by " +
+      gap + "°.", 4200);
+    grove.react("think");
+  }
+}
+
+document.querySelectorAll(".shape-btn").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll(".shape-btn").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    render(b.dataset.s);
+  };
+});
+
+/* ---------------------------------------------------------------
+   CHALLENGE — tiling + construction questions
+   --------------------------------------------------------------- */
+const QUIZ = [
+  { src:"TILINGS", q:"Which of these regular shapes does NOT tile the plane on its own?",
+    opts:["Regular pentagon","Square","Equilateral triangle","Regular hexagon"], a:0,
+    why:"A regular pentagon's angle is 108°, and 360 ÷ 108 is not a whole number — copies leave a 36° gap. Squares, triangles and hexagons all tile." },
+
+  { src:"TILINGS", q:"What is the interior angle of a regular hexagon?",
+    opts:["120°","108°","135°","90°"], a:0,
+    why:"(6−2) × 180 ÷ 6 = 720 ÷ 6 = 120°. Three hexagons (3 × 120° = 360°) meet at a point." },
+
+  { src:"TILINGS", q:"Why do squares tile the plane perfectly?",
+    opts:["Four 90° corners meet at a point (4 × 90° = 360°)","Because they have four equal sides","Because 90° is a right angle","Squares actually leave tiny gaps"], a:0,
+    why:"Tiling works when the angles meeting at a vertex total 360°. Four square corners give 4 × 90° = 360°." },
+
+  { src:"TILINGS", q:"How many equilateral triangles meet at a single point in a triangular tiling?",
+    opts:["6","3","4","5"], a:0,
+    why:"Each corner is 60°, and 360 ÷ 60 = 6 — so six triangles fit exactly around every vertex." },
+
+  { src:"FIGURE IT OUT", q:"The angles meeting at a vertex of a tiling must add up to exactly…",
+    opts:["360°","180°","270°","90°"], a:0,
+    why:"A full turn around a point is 360°. If the tile angles meeting there sum to 360°, there is no gap and no overlap." },
+
+  { src:"TILINGS", q:"A regular pentagon has an interior angle of 108°. What happens when you fit copies around a point?",
+    opts:["Three fit and leave a 36° gap","Four fit exactly","They overlap straight away","Five fit exactly"], a:0,
+    why:"3 × 108° = 324°, which is 36° short of 360°, so a gap is left — a regular pentagon cannot tile by itself." },
+
+  { src:"MATH TALK", q:"A tiling that uses just ONE kind of regular polygon is called a…",
+    opts:["Regular tiling","Semi-regular tiling","Random tiling","Broken tiling"], a:0,
+    why:"A regular tiling uses one regular polygon. Only the triangle, square and hexagon can form one." },
+
+  { src:"CONSTRUCTIONS", q:"To copy an angle exactly, the most reliable tools are…",
+    opts:["A compass and a ruler (straightedge)","A protractor and scissors","Only a protractor","A set square alone"], a:0,
+    why:"Classic constructions copy an angle using arcs drawn with a compass and lines drawn with a straightedge — no measuring needed." },
+
+  { src:"CONSTRUCTIONS", q:"You can construct a unique triangle when you are given…",
+    opts:["The lengths of all three sides","Only one side length","Only one angle","The perimeter alone"], a:0,
+    why:"Three side lengths (SSS) fix a triangle's shape and size completely, as long as they satisfy the triangle inequality." },
+
+  { src:"CONSTRUCTIONS", q:"A line that cuts a segment into two equal halves at a right angle is its…",
+    opts:["Perpendicular bisector","Angle bisector","Median","Tangent"], a:0,
+    why:"The perpendicular bisector passes through the midpoint of a segment and meets it at 90°." },
+
+  { src:"TILINGS", q:"Which combination can meet at a point in a semi-regular tiling (angles summing to 360°)?",
+    opts:["Two hexagons and two triangles (120+120+60+60)","Three pentagons","Two squares and a hexagon","Five triangles"], a:0,
+    why:"120 + 120 + 60 + 60 = 360°, so hexagons and triangles can share a vertex. The others do not total 360°." },
+
+  { src:"FIGURE IT OUT", q:"A shape tiles the plane if copies of it cover it with…",
+    opts:["No gaps and no overlaps","Small gaps only","Some overlaps only","Gaps and overlaps both allowed"], a:0,
+    why:"A tiling (tessellation) must cover the plane completely — every point is covered exactly once, so no gaps and no overlaps." },
+];
+const quiz = BTP.setupQuiz(QUIZ, { chapterId:"ch14", xp:10 });
+
+/* ---------------------------------------------------------------
+   LEARN
+   --------------------------------------------------------------- */
+const groveLearn = BTP.Mascot("mascotLearn", "forest");
+const LEARN_SLIDES = ["slide0","slide1","slide2","slide3"];
+let learnI = 0;
+let lcI = 0, lcRight = 0;
+const RIGHT_PHRASES = ["Yes! Exactly.", "Nailed it.", "Great!"];
+const WRONG_PHRASES = ["Not quite — look again.", "Close! Try once more.",
+  "Almost!"];
+const LEARN_SAY = [
+  "No gaps, no overlaps — that's a tiling.",
+  "A full spin around a point is 360°.",
+  "Triangle, square, hexagon — those three tile alone.",
+  "Compass plus ruler: exact shapes, no measuring."
+];
+const LEARN_CHECK = [
+  { q:"A tiling covers a surface with…",
+    opts:["No gaps and no overlaps","Tiny gaps only","Lots of overlaps",
+      "Gaps and overlaps both"], a:0,
+    why:"A tiling fills the surface completely — no gaps, no overlaps." },
+  { q:"The angles meeting at one corner of a tiling must add up to…",
+    opts:["360°","180°","90°","270°"], a:0,
+    why:"A full turn around a point is 360°, so the corners total 360°." },
+  { q:"Which regular shape can NOT tile a floor by itself?",
+    opts:["Pentagon","Triangle","Square","Hexagon"], a:0,
+    why:"3 pentagons give 324°, leaving a 36° gap — it can't tile alone." }
+];
+
+function paintLearnDots(){
+  document.getElementById("learnDots").innerHTML = LEARN_SLIDES.map((_,i)=>
+    '<div class="learn-dot'+(i===learnI?' on':'')+'"></div>').join("");
+}
+function showLearnSlide(i){
+  learnI = i;
+  LEARN_SLIDES.forEach((id,idx)=>
+    document.getElementById(id).classList.toggle("on", idx===i));
+  paintLearnDots();
+  document.getElementById("learnNext").textContent =
+    (i === LEARN_SLIDES.length-1) ? "Let's check! →" : "Next →";
+  groveLearn.say(LEARN_SAY[i], 3200);
+  groveLearn.react(i === LEARN_SLIDES.length-1 ? "happy" : "idle");
+}
+document.getElementById("learnNext").onclick = ()=>{
+  if(learnI < LEARN_SLIDES.length-1){
+    showLearnSlide(learnI+1);
+  } else {
+    document.getElementById("learnSlideNav").classList.add("hide");
+    startLearnCheck();
+  }
+};
+function startLearnCheck(){
+  lcI = 0; lcRight = 0;
+  document.getElementById("learnDone").classList.add("hide");
+  document.getElementById("learnCheck").classList.remove("hide");
+  loadLearnCheck();
+}
+function loadLearnCheck(){
+  const item = LEARN_CHECK[lcI];
+  document.getElementById("lcq").textContent = item.q;
+  document.getElementById("lcfb").className = "fb";
+  document.getElementById("lcnext").classList.add("hide");
+  document.getElementById("lcbar").style.width =
+    (lcI/LEARN_CHECK.length*100) + "%";
+  const box = document.getElementById("lcopts");
+  box.innerHTML = "";
+  item.opts.forEach((o,i)=>{
+    const b = document.createElement("button");
+    b.className = "opt"; b.textContent = o;
+    b.onclick = ()=>{
+      const bs=[...box.children]; bs.forEach(x=>x.disabled=true);
+      bs[item.a].classList.add("right");
+      const fb = document.getElementById("lcfb");
+      if(i===item.a){
+        lcRight++;
+        BTP.addXP(5); BTP.touchStreak();
+        fb.className="fb good show";
+        fb.innerHTML="<b>"+BTP.pick(RIGHT_PHRASES)+"</b> " + item.why +
+          " <span style='opacity:.75'>+5 XP</span>";
+        BTP.toast("+5 XP");
+        groveLearn.react("happy");
+      } else {
+        bs[i].classList.add("wrong");
+        fb.className="fb bad show";
+        fb.innerHTML="<b>"+BTP.pick(WRONG_PHRASES)+"</b> " + item.why;
+        groveLearn.react("sad");
+        BTP.shakeEl(fb);
+      }
+      document.getElementById("lcnext").classList.remove("hide");
+    };
+    box.appendChild(b);
+  });
+}
+document.getElementById("lcnext").onclick = ()=>{
+  lcI++;
+  if(lcI >= LEARN_CHECK.length){
+    document.getElementById("learnCheck").classList.add("hide");
+    document.getElementById("learnDone").classList.remove("hide");
+    document.getElementById("lcbar").style.width = "100%";
+    groveLearn.say(lcRight===LEARN_CHECK.length ?
+      "Perfect! You're ready to tile." : "Nice try — Tile It helps too.",
+      3200);
+  } else loadLearnCheck();
+};
+
+/* ---------------------------------------------------------------
+   TABS
+   --------------------------------------------------------------- */
+document.querySelectorAll(".tab").forEach(t=>{
+  t.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));
+    t.classList.add("on");
+    const mode = t.dataset.p;
+    ["learn","explore","quiz"].forEach(p=>{
+      document.getElementById("p-"+p).classList.toggle("hide", p !== mode);
+    });
+    if(mode === "quiz" && !document.getElementById("qopts").children.length) quiz.start();
+  };
+});
+
+/* ---------------------------------------------------------------
+   GO
+   --------------------------------------------------------------- */
+showLearnSlide(0);
+render("tri");
+BTP.paintStats();
+</script>
+</body>
+</html>

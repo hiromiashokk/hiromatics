@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hiromatics by Hiromi — Ch 3</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="shared.css">
 </head>
-<body>
+<body data-theme="aqua">
 <div class="wrap">
 
   <header>
@@ -202,8 +203,8 @@ const nl = BTP.NumberLine({
 
 let mode = "learn";
 
-const dot = BTP.Mascot("mascotBox", { color:"#3ddbd9", accent:"#ffc857" });
-dot.say("Hi! I'm Dot. Let's zoom into a decimal together.", 3200);
+const dot = BTP.Mascot("mascotBox", "aqua");
+dot.say("Let's zoom into a decimal together!", 3200);
 
 /* ---------------------------------------------------------------
    EXPLORE — read the value at the centre crosshair
@@ -490,7 +491,7 @@ const SECTIONS = [
 // Learn use "dot", but that instance is physically inside the Learn panel's
 // DOM, so it isn't visible while on the Challenge tab. This is a second,
 // independent mascot instance for here.
-const dotQuiz = BTP.Mascot("mascotQuiz", { color:"#3ddbd9", accent:"#ffc857" });
+const dotQuiz = BTP.Mascot("mascotQuiz", "aqua");
 dotQuiz.say("Pick a section and let's go!", 2600);
 
 // Growth-mindset phrasing: correct answers get specific, varied praise.
